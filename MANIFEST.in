@@ -1,0 +1,5 @@
+include README.rst CHANGES LICENSE
+recursive-include paperclip/templates *.html
+recursive-include paperclip/static *.js
+recursive-include paperclip/static *.css
+recursive-include paperclip/static *.png

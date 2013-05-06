@@ -8,7 +8,18 @@ from django.contrib.contenttypes import generic
 from django.utils.translation import ugettext_lazy as _
 from django.template.defaultfilters import slugify
 
-from caminae.common.models import FileType
+
+class FileType(models.Model):
+    type = models.CharField(max_length=128, verbose_name=_("File type"))
+
+    class Meta:
+        db_table = 'fl_b_fichier'
+        verbose_name = _(u"File type")
+        verbose_name_plural = _(u"File types")
+        ordering = ['type']
+
+    def __unicode__(self):
+        return self.type
 
 
 class AttachmentManager(models.Manager):
@@ -26,8 +37,8 @@ def attachment_upload(instance, filename):
     return 'paperclip/%s/%s/%s' % (
         '%s_%s' % (instance.content_object._meta.app_label,
                    instance.content_object._meta.object_name.lower()),
-                   instance.content_object.pk,
-                   renamed)
+        instance.content_object.pk,
+        renamed)
 
 
 class Attachment(models.Model):

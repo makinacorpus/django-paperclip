@@ -3,9 +3,9 @@ import mimetypes
 from django.template import Library, Node, Variable
 from django.core.urlresolvers import reverse
 
-from caminae.paperclip.forms import AttachmentForm
-from caminae.paperclip.views import add_url_for_obj
-from caminae.paperclip.models import Attachment
+from paperclip.forms import AttachmentForm
+from paperclip.views import add_url_for_obj
+from paperclip.models import Attachment
 
 
 register = Library()
