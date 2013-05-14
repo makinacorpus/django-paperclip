@@ -8,12 +8,17 @@ from django.contrib.contenttypes import generic
 from django.utils.translation import ugettext_lazy as _
 from django.template.defaultfilters import slugify
 
+from paperclip import app_settings
+
+
+FILETYPE_MODEL = app_settings.get('FILETYPE_MODEL', 'FileType')
+
 
 class FileType(models.Model):
     type = models.CharField(max_length=128, verbose_name=_("File type"))
 
     class Meta:
-        db_table = 'fl_b_fichier'
+        abstract = FILETYPE_MODEL != 'FileType'
         verbose_name = _(u"File type")
         verbose_name_plural = _(u"File types")
         ordering = ['type']
@@ -50,7 +55,7 @@ class Attachment(models.Model):
     content_object = generic.GenericForeignKey('content_type', 'object_id')
 
     attachment_file = models.FileField(_('Attachment'), upload_to=attachment_upload, max_length=512)
-    filetype = models.ForeignKey(FileType, verbose_name=_('File type'))
+    filetype = models.ForeignKey(FILETYPE_MODEL, verbose_name=_('File type'))
 
     creator = models.ForeignKey(User, related_name="created_attachments", verbose_name=_('Creator'),
                                 help_text=_("User that uploaded"))
@@ -65,7 +70,7 @@ class Attachment(models.Model):
     date_update = models.DateTimeField(editable=False, auto_now=True, verbose_name=_(u"Update date"))
 
     class Meta:
-        db_table = "fl_t_fichier"
+        db_table = app_settings['ATTACHMENT_TABLE_NAME']
         ordering = ['-date_insert']
         permissions = (
             ('delete_foreign_attachments', 'Can delete foreign attachments'),
