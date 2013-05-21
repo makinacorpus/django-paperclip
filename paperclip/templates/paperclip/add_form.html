@@ -1,4 +1,5 @@
 {% load i18n crispy_forms_tags %}
+{% load url from future %}
 
 {% if attachment_form %}
 <form method="post" enctype="multipart/form-data"
@@ -13,7 +14,7 @@
 $(function() {
 
     var form = $('form[action="{{ attachment_form_url }}"]');
-    var validate_url = '{% url ajax_validate_attachment %}';
+    var validate_url = '{% url 'ajax_validate_attachment' %}';
     var is_form_valid = false;
 
     form.submit(function(e) {
