@@ -10,7 +10,7 @@ from django.contrib import messages
 
 from .models import Attachment
 from .forms import AttachmentForm
-import simplejson
+import json
 
 
 def add_url_for_obj(obj):
@@ -63,7 +63,7 @@ def delete_attachment(request, attachment_pk):
 
 def ajax_validate_attachment(request):
     form = AttachmentForm(request, request.POST, request.FILES)
-    return HttpResponse(simplejson.dumps(form.errors), content_type='application/json')
+    return HttpResponse(json.dumps(form.errors), content_type='application/json')
 
 
 
