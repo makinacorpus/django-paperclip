@@ -16,8 +16,8 @@ setup(
     license='LPGL, see LICENSE file.',
     install_requires=[
         'Django',
-        'django-floppyforms == 1.0',
-        'django-crispy-forms == 1.2.3'
+        'django-floppyforms',
+        'django-crispy-forms'
     ],
     packages=find_packages(),
     include_package_data=True,
