@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import *
+from django.conf.urls import *
 from .views import add_attachment, delete_attachment, ajax_validate_attachment
 
 urlpatterns = patterns('',
