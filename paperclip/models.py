@@ -11,7 +11,7 @@ from django.template.defaultfilters import slugify
 from paperclip import app_settings
 
 
-FILETYPE_MODEL = app_settings.get('FILETYPE_MODEL', 'FileType')
+FILETYPE_MODEL = app_settings['FILETYPE_MODEL']
 
 
 class FileType(models.Model):
