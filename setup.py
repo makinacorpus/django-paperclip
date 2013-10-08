@@ -17,7 +17,8 @@ setup(
     install_requires=[
         'Django',
         'django-floppyforms',
-        'django-crispy-forms'
+        # FIXME: upgrade django-crispy-forms
+        'django-crispy-forms == 1.2.3',
     ],
     packages=find_packages(),
     include_package_data=True,
