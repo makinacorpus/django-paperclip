@@ -32,17 +32,6 @@ def attachment_form(context, obj):
     }
 
 
-@register.inclusion_tag('paperclip/delete_link.html', takes_context=True)
-def attachment_delete_link(context, attachment):
-    """
-    Renders a html link to the delete view of the given attachment. Returns
-    no content if the request-user has no permission to delete attachments.
-    """
-    return {
-        'next': context['request'].build_absolute_uri(),
-        'delete_url': reverse('delete_attachment', kwargs={'attachment_pk': attachment.pk})
-    }
-
 
 class AttachmentsForObjectNode(Node):
     def __init__(self, obj, var_name):
