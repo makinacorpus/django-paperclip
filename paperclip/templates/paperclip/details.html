@@ -27,7 +27,7 @@
                     {% else %}
                         <img src="{% get_static_prefix %}paperclip/fileicons/{{ att|icon_name }}.png"/>&nbsp;{{ att.title|default:att.filename }}
                     {% endif %}
-                </a> 
+                </a>
             </td>
             <td>{{ att.legend }}</td>
             <td>{{ att.author }}</td>
@@ -53,9 +53,9 @@
             confirmDelete($(this).data('id'), $(this).data('title'));
             return false;
         });
-        
+
         function confirmDelete(id, title) {
-            var url = "{% url 'delete_attachment' 0 %}?next={{ attachment_delete_next }}".replace('0', id);
+            var url = "{% url 'delete_attachment' 0 %}?next={{ attachment_delete_next|urlencode }}".replace('0', id);
             $('#confirm-delete-msg').confirmModal({
                 heading: '{% trans "Confirm file deletion" %}',
                 body: '{% trans "Are you sure to delete this file {file} ?" %}'.replace('{file}', title),

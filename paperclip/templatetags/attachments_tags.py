@@ -21,14 +21,14 @@ def icon_name(value):
 
 
 @register.inclusion_tag('paperclip/add_form.html', takes_context=True)
-def attachment_form(context, obj):
+def attachment_form(context, obj, next_url):
     """
     Renders a "upload attachment" form.
     """
     return {
         'attachment_form': AttachmentForm(context['request']),
         'attachment_form_url': add_url_for_obj(obj),
-        'next': context['request'].build_absolute_uri(),
+        'next': next_url,
     }
 
 
