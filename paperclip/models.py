@@ -73,7 +73,8 @@ class Attachment(models.Model):
         db_table = app_settings['ATTACHMENT_TABLE_NAME']
         ordering = ['-date_insert']
         permissions = (
-            ('delete_foreign_attachments', 'Can delete foreign attachments'),
+            ('read_attachment', _('Can read attachments')),
+            ('delete_attachment_others', _("Can delete others' attachments")),
         )
 
     def __unicode__(self):

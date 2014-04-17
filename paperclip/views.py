@@ -5,7 +5,7 @@ from django.db.models.loading import get_model
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.template.context import RequestContext
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import permission_required
 from django.contrib import messages
 
 from .models import Attachment
@@ -21,7 +21,7 @@ def add_url_for_obj(obj):
                     })
 
 @require_POST
-@login_required
+@permission_required('add_attachment', raise_exception=True)
 def add_attachment(request, app_label, module_name, pk,
                    template_name='paperclip/add.html', extra_context={}):
 
@@ -47,11 +47,12 @@ def add_attachment(request, app_label, module_name, pk,
                                   RequestContext(request))
 
 
-@login_required
+@permission_required('delete_attachment', raise_exception=True)
 def delete_attachment(request, attachment_pk):
     g = get_object_or_404(Attachment, pk=attachment_pk)
-    if request.user.has_perm('delete_foreign_attachments') \
-       or request.user == g.creator:
+    can_delete = (request.user.has_perm('delete_attachment_others') or
+                  request.user == g.creator)
+    if can_delete:
         g.delete()
         messages.success(request, _('Your attachment was deleted.'))
     else:
@@ -60,10 +61,6 @@ def delete_attachment(request, attachment_pk):
     return HttpResponseRedirect(next_url)
 
 
-
 def ajax_validate_attachment(request):
     form = AttachmentForm(request, request.POST, request.FILES)
     return HttpResponse(json.dumps(form.errors), content_type='application/json')
-
-
-
