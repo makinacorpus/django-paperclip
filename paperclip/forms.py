@@ -20,7 +20,7 @@ class AttachmentForm(forms.ModelForm):
     def __init__(self, request, *args, **kwargs):
         self.helper = FormHelper()
         self.helper.add_input(
-                Submit('submit_attachment', _('Add attachment'),
+                Submit('submit_attachment', _('Submit attachment'),
                     css_class="btn-primary offset1")
         )
         super(AttachmentForm, self).__init__(*args, **kwargs)

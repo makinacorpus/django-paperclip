@@ -23,8 +23,8 @@ msgid "Upload attachment"
 msgstr "Charger un fichier"
 
 #: forms.py:23
-msgid "Add attachment"
-msgstr "Ajouter un fichier lié"
+msgid "Submit attachment"
+msgstr "Valider le fichier lié"
 
 #: models.py:38
 msgid "Attachment"
