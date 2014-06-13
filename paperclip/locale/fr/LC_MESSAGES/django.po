@@ -104,8 +104,20 @@ msgstr "Aucun fichier attaché"
 
 #: templates/paperclip/details.html:59
 msgid "Confirm file deletion"
-msgstr ""
+msgstr "Confirmer la suppression du fichier"
 
 #: templates/paperclip/details.html:60
 msgid "Are you sure to delete this file {file} ?"
-msgstr ""
+msgstr "Êtes vous sûr de vouloir supprimer ce fichier {file} ?"
+
+msgid "Renames the file"
+msgstr "Renomme le fichier"
+
+msgid "Details displayed"
+msgstr "Détails affichés"
+
+msgid "Filename"
+msgstr "Nom de fichier"
+
+msgid "Sunset on lake"
+msgstr "Coucher de soleil sur le lac"

@@ -19,11 +19,13 @@ class AttachmentForm(forms.ModelForm):
 
     def __init__(self, request, *args, **kwargs):
         self.helper = FormHelper()
+        self.helper.help_text_inline = True
         self.helper.add_input(
-                Submit('submit_attachment', _('Submit attachment'),
-                    css_class="btn-primary offset1")
+            Submit('submit_attachment', _('Submit attachment'),
+                   css_class="btn-primary offset1")
         )
         super(AttachmentForm, self).__init__(*args, **kwargs)
+        self.fields['legend'].widget.attrs['placeholder'] = _('Sunset on lake')
         self.fields['author'].initial = request.user
 
     def save(self, request, obj, *args, **kwargs):
