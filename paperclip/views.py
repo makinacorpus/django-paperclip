@@ -1,11 +1,12 @@
 from django.shortcuts import render_to_response, get_object_or_404
 from django.views.decorators.http import require_POST
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.db.models.loading import get_model
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.template.context import RequestContext
 from django.contrib.auth.decorators import permission_required
+from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
 
 from .models import Attachment
@@ -21,7 +22,7 @@ def add_url_for_obj(obj):
                     })
 
 @require_POST
-@permission_required('add_attachment', raise_exception=True)
+@permission_required('paperclip.add_attachment', raise_exception=True)
 def add_attachment(request, app_label, module_name, pk,
                    template_name='paperclip/add.html', extra_context={}):
 
@@ -47,7 +48,7 @@ def add_attachment(request, app_label, module_name, pk,
                                   RequestContext(request))
 
 
-@permission_required('delete_attachment', raise_exception=True)
+@permission_required('paperclip.delete_attachment', raise_exception=True)
 def delete_attachment(request, attachment_pk):
     g = get_object_or_404(Attachment, pk=attachment_pk)
     can_delete = (request.user.has_perm('delete_attachment_others') or
@@ -64,3 +65,28 @@ def delete_attachment(request, attachment_pk):
 def ajax_validate_attachment(request):
     form = AttachmentForm(request, request.POST, request.FILES)
     return HttpResponse(json.dumps(form.errors), content_type='application/json')
+
+
+@permission_required('paperclip.read_attachment', raise_exception=True)
+def get_attachments(request, app_label, module_name, pk):
+
+    try:
+        ct = ContentType.objects.get_by_natural_key(app_label, module_name)
+    except ContentType.DoesNotExist:
+        raise Http404
+    attachments = Attachment.objects.filter(content_type=ct, object_id=pk)
+    reply = [
+        {
+            'id': attachment.id,
+            'title': attachment.title,
+            'legend': attachment.legend,
+            'url:': attachment.attachment_file.url,
+            'type:': attachment.filetype.type,
+            'author': attachment.author,
+            'filename:': attachment.filename,
+            'mimetype:': attachment.mimetype,
+            'is_image:': attachment.is_image,
+        }
+        for attachment in attachments
+    ]
+    return HttpResponse(json.dumps(reply), content_type='application/json')
