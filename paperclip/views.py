@@ -3,12 +3,15 @@ from django.views.decorators.http import require_POST
 from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.db.models.loading import get_model
 from django.core.urlresolvers import reverse
+from django.utils.encoding import force_text
 from django.utils.translation import ugettext_lazy as _
 from django.template.context import RequestContext
+from django.contrib.admin.models import LogEntry, CHANGE
 from django.contrib.auth.decorators import permission_required
 from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
 
+from paperclip import app_settings
 from .models import Attachment
 from .forms import AttachmentForm
 import json
@@ -34,7 +37,16 @@ def add_attachment(request, app_label, module_name, pk,
     form = AttachmentForm(request, request.POST, request.FILES)
 
     if form.is_valid():
-        form.save(request, obj)
+        attachment = form.save(request, obj)
+        if app_settings['ACTION_HISTORY_ENABLED']:
+            LogEntry.objects.log_action(
+                user_id=request.user.pk,
+                content_type_id=attachment.content_type.id,
+                object_id=obj.pk,
+                object_repr=force_text(obj),
+                action_flag=CHANGE,
+                change_message=_('Add attachment %s') % attachment.title,
+            )
         messages.success(request, _('Your attachment was uploaded.'))
         return HttpResponseRedirect(next_url)
     else:
@@ -55,6 +67,15 @@ def delete_attachment(request, attachment_pk):
                   request.user == g.creator)
     if can_delete:
         g.delete()
+        if app_settings['ACTION_HISTORY_ENABLED']:
+            LogEntry.objects.log_action(
+                user_id=request.user.pk,
+                content_type_id=g.content_type.id,
+                object_id=g.object_id,
+                object_repr=force_text(g.content_object),
+                action_flag=CHANGE,
+                change_message=_('Remove attachment %s') % g.title,
+            )
         messages.success(request, _('Your attachment was deleted.'))
     else:
         messages.error(request, _('You are not allowed to delete this attachment.'))
