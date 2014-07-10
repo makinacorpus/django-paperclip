@@ -48,7 +48,7 @@ class AttachmentsForObjectNode(Node):
         obj = self.resolve(self.obj, context)
         var_name = self.resolve(self.var_name, context)
         request = context.get('request')
-        if request.user.has_perm('read_attachment'):
+        if request.user.has_perm('paperclip.read_attachment'):
             context[var_name] = Attachment.objects.attachments_for_object(obj)
         else:
             context[var_name] = []

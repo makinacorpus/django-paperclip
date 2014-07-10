@@ -63,7 +63,7 @@ def add_attachment(request, app_label, module_name, pk,
 @permission_required('paperclip.delete_attachment', raise_exception=True)
 def delete_attachment(request, attachment_pk):
     g = get_object_or_404(Attachment, pk=attachment_pk)
-    can_delete = (request.user.has_perm('delete_attachment_others') or
+    can_delete = (request.user.has_perm('paperclip.delete_attachment_others') or
                   request.user == g.creator)
     if can_delete:
         g.delete()
