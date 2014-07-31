@@ -1,22 +1,20 @@
-{% load i18n field_verbose_name attachments_tags thumbnail static %}
+{% load i18n attachments_tags thumbnail static %}
 {% load url from future %}
 
 {% get_attachments_for object as "attachments_list" %}
 
 {% if attachments_list %}
     <table class="table">
-        {% with att=attachments_list.0 %}
         <thead>
-            <th>{{ att|verbose:"title" }}</th>
-            <th>{{ att|verbose:"legend" }}</th>
-            <th>{{ att|verbose:"author" }}</th>
-            <th>{{ att|verbose:"date_insert" }}</th>
-            <th>{{ att|verbose:"date_update" }}</th>
+            <th>{% trans "Filename" %}</th>
+            <th>{% trans "Legend" %}</th>
+            <th>{% trans "Author" %}</th>
+            <th>{% trans "Insertion date" %}</th>
+            <th>{% trans "Update date" %}</th>
             {% if can_delete_attachment %}
                 <th>{% trans "Actions" %}</th>
             {% endif %}
         </thead>
-        {% endwith %}
         <tbody>
         {% for att in attachments_list %}
         <tr>
