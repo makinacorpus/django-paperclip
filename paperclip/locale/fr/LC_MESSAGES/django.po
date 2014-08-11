@@ -39,11 +39,14 @@ msgstr "Types de fichier"
 
 #: models.py:57
 msgid "Attachment"
-msgstr "Fichier"
+msgstr "Fichier lié"
+
+msgid "Attachments"
+msgstr "Fichiers liés"
 
 #: models.py:60
 msgid "Creator"
-msgstr "Auteur"
+msgstr "Créateur"
 
 #: models.py:61
 msgid "User that uploaded"
@@ -83,7 +86,7 @@ msgstr "Date de modification"
 
 #: models.py:76
 msgid "Can read attachments"
-msgstr "Lire un fichier"
+msgstr "Lire les fichiers liés"
 
 #: models.py:77
 msgid "Can delete others' attachments"

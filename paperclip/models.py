@@ -72,6 +72,8 @@ class Attachment(models.Model):
     class Meta:
         db_table = app_settings['ATTACHMENT_TABLE_NAME']
         ordering = ['-date_insert']
+        verbose_name = _(u"Attachment")
+        verbose_name_plural = _(u"Attachments")
         permissions = (
             ('read_attachment', _('Can read attachments')),
             ('delete_attachment_others', _("Can delete others' attachments")),
