@@ -101,12 +101,12 @@ def get_attachments(request, app_label, module_name, pk):
             'id': attachment.id,
             'title': attachment.title,
             'legend': attachment.legend,
-            'url:': attachment.attachment_file.url,
-            'type:': attachment.filetype.type,
+            'url': attachment.attachment_file.url,
+            'type': attachment.filetype.type,
             'author': attachment.author,
-            'filename:': attachment.filename,
-            'mimetype:': attachment.mimetype,
-            'is_image:': attachment.is_image,
+            'filename': attachment.filename,
+            'mimetype': attachment.mimetype,
+            'is_image': attachment.is_image,
         }
         for attachment in attachments
     ]
