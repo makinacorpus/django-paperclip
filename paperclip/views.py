@@ -107,6 +107,7 @@ def get_attachments(request, app_label, module_name, pk):
             'filename': attachment.filename,
             'mimetype': attachment.mimetype,
             'is_image': attachment.is_image,
+            'starred': attachment.starred,
         }
         for attachment in attachments
     ]
