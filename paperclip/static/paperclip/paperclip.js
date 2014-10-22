@@ -1,6 +1,4 @@
-(function AttachmentsListActions () {
-
-
+(function () {
     //
     // Update attachment
     //
@@ -9,24 +7,28 @@
 
         var $this = $(this);
         var updateUrl = $this.data('update-url');
-        var $attachment = $this.parents('tr');
 
-        var $form = $('form.add-attachment');
-        $('.file-attachment-update').find('h4').html($attachment.data('form-update-title'));
-        $form.find('input[name="attachment_file"]').prop('disabled', true);
-        $form.find('input[name="title"]').val($attachment.data('title'))
-                                         .prop('disabled', true);
-        $form.find('select[name="filetype"]').val($attachment.data('filetype'));
-        $form.find('input[name="author"]').val($attachment.data('author'));
-        $form.find('input[name="legend"]').val($attachment.data('legend'));
-        $form.find('input[name="starred"]').prop('checked', $attachment.data('starred'));
+        var $form = $('.file-attachment-form');
+        var spinner = new Spinner({length: 3, radius: 5, width: 2}).spin($form[0]);
+        $.get(updateUrl, function (html) {
+            $form.find('.create').hide();
+            $form.find('.update').html(html);
+            spinner.stop();
+            // Update title on file change
+            watchFileInput();
+            // On cancel, restore Create form
+            $('#button-id-cancel').click(function () {
+                $form.find('.update').html('');
+                $form.find('.create').show();
+            });
+        });
 
         return false;
     });
 
 
     //
-    // Delete single attachment
+    // Delete single attachment with confirm modal
     //
     $('.delete-action').click(function (e) {
         e.preventDefault();
@@ -77,79 +79,24 @@
 
         return false;
     });
-})();
 
+    //
+    // Attachment form
+    //
+    function watchFileInput () {
+        var $form = $('form.attachment');
+        var $file_input = $form.find('input[type="file"]');
 
-
-(function AttachmentsForm () {
-
-    var $form = $('form.add-attachment');
-    var validate_url = $form.data('validate-url');
-    var is_form_valid = false;
-    var $file_input = $form.find('input[type="file"]');
-
-    $file_input.on('change', function (e) {
-        var chosenFiles = e.currentTarget.files;
-        if (chosenFiles.length === 0)
-            return;
-        var filename = chosenFiles[0].name;
-        $form.find('input[name="title"]').val(filename);
-    })
-
-    $form.submit(function(e) {
-        if (is_form_valid)
-            return true;
-
-        var form_data = $form.serialize();
-        $.ajax({
-            'type': 'POST',
-            'url': validate_url,
-            'dataType': 'JSON',
-            'data': form_data,
-            'success': function(errors) {
-                is_form_valid = true;
-
-                // File fields content are not sent properly in ajax
-                // We make our own check client side
-                if ($file_input.val())
-                    delete errors[$file_input.attr('name')];
-
-                // If there is at least one remaining error, the form is invalid
-                for (var i in errors) {
-                    is_form_valid = false;
-                    break;
-                }
-
-                // Reset form errors
-                $form.find('.control-group.error')
-                    .removeClass('error')
-                    .find('span.help-inline').remove();
-
-                // Submit the form if valid
-                if (is_form_valid) {
-                    $form.submit();
-                    return;
-                }
-
-                // Mark errors (mimic bootstrap error marking)
-                $.each(errors, function(name, errors) {
-                    var elem = $form.find('.controls *[name="' + name + '"]')
-                      , elem_id = elem.attr('id')
-                      , elem_parent = elem.parent();
-
-                    elem.closest('.control-group').addClass('error');
-
-                    $.each(errors, function(id, error_msg) {
-                        $('<span></span>')
-                            .addClass('help-inline')
-                            .attr('id', 'error_' + (id + 1) + '_' + elem_id)
-                            .append($('<strong></strong').text(error_msg))
-                            .appendTo(elem_parent)
-                    });
-                });
-            }
+        $file_input.on('change', function (e) {
+            var chosenFiles = e.currentTarget.files;
+            if (chosenFiles.length === 0)
+                return;
+            var filename = chosenFiles[0].name;
+            // Remove extension from filename
+            filename = filename.replace(/\.[^/.]+$/, "");
+            $form.find('input[name="title"]').val(filename);
         });
+    }
 
-        return false;
-    });
+    watchFileInput();
 })();

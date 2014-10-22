@@ -1,34 +1,83 @@
 # from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
+from django.core.urlresolvers import reverse
 
 import floppyforms as forms
-from crispy_forms.layout import Submit
+from crispy_forms.layout import Submit, Button
 from crispy_forms.helper import FormHelper
+from crispy_forms.bootstrap import FormActions
 
 from .models import Attachment
 
 
 class AttachmentForm(forms.ModelForm):
-    attachment_file = forms.FileField(label=_('Upload attachment'))
+
+    next = forms.CharField(widget=forms.HiddenInput())
 
     class Meta:
         model = Attachment
-        exclude = ('creator', 'date_insert', 'date_update',
-                   'content_type', 'object_id', 'content_object' )
+        fields = ('attachment_file', 'filetype', 'author', 'title', 'legend')
 
     def __init__(self, request, *args, **kwargs):
-        self.helper = FormHelper()
-        self.helper.help_text_inline = True
-        self.helper.add_input(
-            Submit('submit_attachment', _('Submit attachment'),
-                   css_class="btn-primary offset1")
-        )
+        self._object = kwargs.pop('object', None)
+        next_url = kwargs.pop('next_url', None)
+
         super(AttachmentForm, self).__init__(*args, **kwargs)
         self.fields['legend'].widget.attrs['placeholder'] = _('Sunset on lake')
         self.fields['author'].initial = request.user
 
-    def save(self, request, obj, *args, **kwargs):
+        # Detect fields errors without uploading (using HTML5)
+        self.fields['filetype'].widget.attrs['required'] = 'required'
+        self.fields['author'].widget.attrs['pattern'] = '^[A-Za-z0-9]+'
+        self.fields['legend'].widget.attrs['pattern'] = '^[A-Za-z0-9]+'
+
+        next_url = request.POST.get('next') or next_url
+        next_url = next_url or request.GET.get('next', '/')
+        self.fields['next'].initial = next_url
+
+        self.helper = FormHelper(form=self)
+        self.helper.form_tag = True
+        self.helper.form_class = 'attachment form-horizontal'
+        self.helper.help_text_inline = True
+
+        is_creation = not self.instance.pk
+
+        if is_creation:
+            # Mark file field as mandatory
+            self.fields['attachment_file'].widget.attrs['required'] = 'required'
+
+            form_url = reverse('add_attachment', kwargs={
+                'app_label': self._object._meta.app_label,
+                'module_name': self._object._meta.module_name,
+                'pk': self._object.pk
+            })
+            form_actions = [
+                Submit('submit_attachment',
+                       _('Submit attachment'),
+                       css_class="btn-primary offset1")
+            ]
+
+        else:
+            # When editing an attachment, changing its title won't rename!
+            self.fields['title'].widget.attrs['readonly'] = True
+            form_url = reverse( 'update_attachment', kwargs={
+                'attachment_pk': self.instance.pk
+            })
+            form_actions = [
+                Button('cancel', _('Cancel'), css_class=""),
+                Submit('submit_attachment', _('Update attachment'), css_class="btn-primary offset1")
+            ]
+
+        self.helper.form_action = form_url
+        self.helper.layout.fields.append(
+            FormActions(*form_actions, css_class="form-actions"))
+
+    def success_url(self):
+        return self.cleaned_data.get('next')
+
+    def save(self, request, *args, **kwargs):
+        obj = self._object
         self.instance.creator = request.user
         self.instance.content_type = ContentType.objects.get_for_model(obj)
         self.instance.object_id = obj.id
