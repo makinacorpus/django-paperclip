@@ -65,6 +65,8 @@ class Attachment(models.Model):
                              help_text=_("Renames the file"))
     legend = models.CharField(blank=True, default='', max_length=128, db_column='legende', verbose_name=_(u"Legend"),
                               help_text=_("Details displayed"))
+    starred = models.BooleanField(default=False, db_column='marque', verbose_name=_(u"Starred"),
+                                  help_text=_("Mark as starred"))
 
     date_insert = models.DateTimeField(editable=False, auto_now_add=True, verbose_name=_(u"Insertion date"))
     date_update = models.DateTimeField(editable=False, auto_now=True, verbose_name=_(u"Update date"))
