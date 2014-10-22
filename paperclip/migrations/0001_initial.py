@@ -94,7 +94,7 @@ class Migration(SchemaMigration):
             'creator': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'created_attachments'", 'to': u"orm['auth.User']"}),
             'date_insert': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'date_update': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
-            'filetype': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['common.FileType']"}),
+            'filetype': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['%s']" % FILETYPE_MODEL}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'legend': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '128', 'db_column': "'legende'", 'blank': 'True'}),
             'object_id': ('django.db.models.fields.PositiveIntegerField', [], {}),
@@ -104,7 +104,13 @@ class Migration(SchemaMigration):
             'Meta': {'ordering': "['type']", 'object_name': 'FileType'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'type': ('django.db.models.fields.CharField', [], {'max_length': '128'})
-        }
+        },
+        u'common.filetype': {
+            'Meta': {'ordering': "['type']", 'object_name': 'FileType', 'db_table': "'fl_b_fichier'"},
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'structure': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['authent.Structure']", 'db_column': "'structure'"}),
+            'type': ('django.db.models.fields.CharField', [], {'max_length': '128'})
+        },
     }
 
     complete_apps = ['paperclip']
