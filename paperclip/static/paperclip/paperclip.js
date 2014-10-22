@@ -2,6 +2,30 @@
 
 
     //
+    // Update attachment
+    //
+    $('.update-action').click(function (e) {
+        e.preventDefault();
+
+        var $this = $(this);
+        var updateUrl = $this.data('update-url');
+        var $attachment = $this.parents('tr');
+
+        var $form = $('form.add-attachment');
+        $('.file-attachment-update').find('h4').html($attachment.data('form-update-title'));
+        $form.find('input[name="attachment_file"]').prop('disabled', true);
+        $form.find('input[name="title"]').val($attachment.data('title'))
+                                         .prop('disabled', true);
+        $form.find('select[name="filetype"]').val($attachment.data('filetype'));
+        $form.find('input[name="author"]').val($attachment.data('author'));
+        $form.find('input[name="legend"]').val($attachment.data('legend'));
+        $form.find('input[name="starred"]').prop('checked', $attachment.data('starred'));
+
+        return false;
+    });
+
+
+    //
     // Delete single attachment
     //
     $('.delete-action').click(function (e) {
@@ -11,8 +35,6 @@
         var deleteUrl = $this.data('delete-url');
         var $attachments = $this.parents('tbody');
         var $attachment = $this.parents('tr');
-
-        console.log($attachment.data('title'));
 
         $('.confirm-modal').confirmModal({
             heading: $attachments.data('confirm-delete-heading'),

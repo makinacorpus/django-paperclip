@@ -60,6 +60,40 @@ def add_attachment(request, app_label, module_name, pk,
                                   RequestContext(request))
 
 
+@require_POST
+@permission_required('paperclip.update_attachment', raise_exception=True)
+def update_attachment(request, attachment_pk,
+                      template_name='paperclip/attachment_form.html', extra_context={}):
+
+    next_url = request.POST.get('next', '/')
+    attachment = get_object_or_404(Attachment, pk=attachment_pk)
+    obj = attachment.content_object
+    form = AttachmentForm(request, request.POST, request.FILES, instance=attachment)
+
+    if form.is_valid():
+        attachment = form.save(request, obj)
+        if app_settings['ACTION_HISTORY_ENABLED']:
+            LogEntry.objects.log_action(
+                user_id=request.user.pk,
+                content_type_id=attachment.content_type.id,
+                object_id=obj.pk,
+                object_repr=force_text(obj),
+                action_flag=CHANGE,
+                change_message=_('Update attachment %s') % attachment.title,
+            )
+        messages.success(request, _('Your attachment was updated.'))
+        return HttpResponseRedirect(next_url)
+    else:
+        template_context = {
+            'attachment_form': form,
+            'attachment_form_url': add_url_for_obj(obj),
+            'next': next_url,
+        }
+        template_context.update(extra_context)
+        return render_to_response(template_name, template_context,
+                                  RequestContext(request))
+
+
 @permission_required('paperclip.delete_attachment', raise_exception=True)
 def delete_attachment(request, attachment_pk):
     g = get_object_or_404(Attachment, pk=attachment_pk)

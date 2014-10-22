@@ -17,11 +17,12 @@
                data-confirm-delete-msg="{% trans "Are you sure to delete this file {file} ?" %}">
         {% for att in attachments_list %}
         <tr data-id="{{ att.pk }}"
-            data-title="{{ att.title|default:att.pk }}"
+            data-title="{{ att.filename }}"
             data-legend="{{ att.legend }}"
             data-author="{{ att.author }}"
-            data-filetype="{{ att.filetype }}"
-            data-starred="{{ att.starred }}">
+            data-filetype="{{ att.filetype.pk }}"
+            data-starred="{{ att.starred|yesno:"true," }}"
+            data-form-update-title="{% trans "Update" %} {{ att.filename }}">
             <td>
                 <a href="{{ att.attachment_file.url }}" target="_blank">
                     {% if att.is_image %}
@@ -45,6 +46,15 @@
             </a>
             {% else %}
                 <img src="{% get_static_prefix %}paperclip/star-{{ att.starred|yesno:"on,off" }}.svg"/>
+            {% endif %}
+
+            {% if 'paperclip.update_attachment' in perms %}
+                &nbsp;
+                <a href="#"
+                   class="update-action"
+                   data-update-url="{% url 'update_attachment' att.pk %}?next={{ attachment_form_next|urlencode }}">
+                    {% trans "Update" %}
+                </a>
             {% endif %}
 
             {% if 'paperclip.delete_attachment' in perms or 'paperclip.delete_attachment_others' in perms %}
