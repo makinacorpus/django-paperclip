@@ -11,9 +11,7 @@
             <th>{% trans "Author" %}</th>
             <th>{% trans "Insertion date" %}</th>
             <th>{% trans "Update date" %}</th>
-            {% if can_delete_attachment %}
-                <th>{% trans "Actions" %}</th>
-            {% endif %}
+            <th>{% trans "Actions" %}</th>
         </thead>
         <tbody>
         {% for att in attachments_list %}
@@ -31,11 +29,25 @@
             <td>{{ att.author }}</td>
             <td>{{ att.date_insert }}</td>
             <td>{{ att.date_update }}</td>
-            {% if can_delete_attachment %}
-                <th><a class="delete-action" data-id="{{ att.pk }}" data-title="{{ att.title|default:att.pk }}" href="#">
-                    {% trans "Delete" %}
-                </a></th>
+            <td>
+            {% if 'paperclip.update_attachment' in perms %}
+            <a href="#"
+               class="{{ att.starred|yesno:"unstar,star" }}"
+               data-star-url="{% url 'star_attachment' att.pk %}"
+               title="{% if att.starred %}{% trans "Remove star" %}{% else %}{% trans "Star item" %}{% endif %}">
+               <img src="{% get_static_prefix %}paperclip/star-{{ att.starred|yesno:"on,off" }}.svg"/>
+            </a>
+            {% else %}
+                <img src="{% get_static_prefix %}paperclip/star-{{ att.starred|yesno:"on,off" }}.svg"/>
             {% endif %}
+
+            {% if 'paperclip.delete_attachment' in perms or 'paperclip.delete_attachment_others' in perms %}
+                &nbsp;
+                <a class="delete-action" data-id="{{ att.pk }}" data-title="{{ att.title|default:att.pk }}" href="#">
+                    {% trans "Delete" %}
+                </a>
+            {% endif %}
+            </td>
         </tr>
         {% endfor %}
     </table>
@@ -49,6 +61,35 @@
         $('.delete-action').click(function (e) {
             e.preventDefault();
             confirmDelete($(this).data('id'), $(this).data('title'));
+            return false;
+        });
+
+        //
+        // Click to star/unstar attachments
+        $('a.star, a.unstar').click(function (e) {
+            var $this = $(this);
+            e.preventDefault();
+
+            // Pass parameter to unstar (see views.py code)
+            var starUrl = $this.data('star-url');
+            if ($this.hasClass('unstar'))
+                starUrl += '?unstar';
+
+            // Show spinner on link while AJAX
+            var spinner = new Spinner({length: 3, radius: 5, width: 2}).spin(this);
+            $.getJSON(starUrl)
+             .always(function () {
+                spinner.stop();
+             })
+             .done(function (data) {
+                // Replace the <img> icon after success
+                var starIcon = $this.find('img').attr('src');
+                starIcon = starIcon.replace(data.starred ? 'off' : 'on',
+                                            data.starred ? 'on' : 'off');
+                $this.find('img').attr('src', starIcon);
+                $this.toggleClass('unstar star');
+            });
+
             return false;
         });
 

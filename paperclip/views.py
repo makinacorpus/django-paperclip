@@ -107,7 +107,20 @@ def get_attachments(request, app_label, module_name, pk):
             'filename': attachment.filename,
             'mimetype': attachment.mimetype,
             'is_image': attachment.is_image,
+            'starred': attachment.starred,
         }
         for attachment in attachments
     ]
+    return HttpResponse(json.dumps(reply), content_type='application/json')
+
+
+@permission_required('paperclip.update_attachment', raise_exception=True)
+def star_attachment(request, attachment_pk):
+    g = get_object_or_404(Attachment, pk=attachment_pk)
+    g.starred = request.GET.get('unstar') is None
+    g.save()
+    reply = {
+        'status': 'ok',
+        'starred': g.starred
+    }
     return HttpResponse(json.dumps(reply), content_type='application/json')

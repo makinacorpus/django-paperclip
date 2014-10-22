@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-19 13:11+0000\n"
+"POT-Creation-Date: 2014-10-22 12:59+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -37,12 +37,9 @@ msgstr "Type de fichier"
 msgid "File types"
 msgstr "Types de fichier"
 
-#: models.py:57
+#: models.py:57 models.py:77
 msgid "Attachment"
 msgstr "Fichier lié"
-
-msgid "Attachments"
-msgstr "Fichiers liés"
 
 #: models.py:60
 msgid "Creator"
@@ -52,7 +49,7 @@ msgstr "Créateur"
 msgid "User that uploaded"
 msgstr "Utilisateur"
 
-#: models.py:62
+#: models.py:62 templates/paperclip/details.html:11
 msgid "Author"
 msgstr "Auteur"
 
@@ -60,7 +57,7 @@ msgstr "Auteur"
 msgid "Original creator"
 msgstr "Créateur original"
 
-#: models.py:64
+#: models.py:64 templates/paperclip/details.html:9
 msgid "Filename"
 msgstr "Nom de fichier"
 
@@ -68,7 +65,7 @@ msgstr "Nom de fichier"
 msgid "Renames the file"
 msgstr "Renomme le fichier"
 
-#: models.py:66
+#: models.py:66 templates/paperclip/details.html:10
 msgid "Legend"
 msgstr "Légende"
 
@@ -76,19 +73,31 @@ msgstr "Légende"
 msgid "Details displayed"
 msgstr "Détails affichés"
 
+#: models.py:68
+msgid "Starred"
+msgstr "Favorisé"
+
 #: models.py:69
+msgid "Mark as starred"
+msgstr "Favoriser"
+
+#: models.py:71 templates/paperclip/details.html:12
 msgid "Insertion date"
 msgstr "Date d'insertion"
 
-#: models.py:70
+#: models.py:72 templates/paperclip/details.html:13
 msgid "Update date"
 msgstr "Date de modification"
 
-#: models.py:76
+#: models.py:78
+msgid "Attachments"
+msgstr "Fichiers liés"
+
+#: models.py:80
 msgid "Can read attachments"
 msgstr "Lire les fichiers liés"
 
-#: models.py:77
+#: models.py:81
 msgid "Can delete others' attachments"
 msgstr "Supprimer les fichiers des autres"
 
@@ -114,22 +123,31 @@ msgstr "Votre fichier a été supprimé."
 msgid "You are not allowed to delete this attachment."
 msgstr "Vous n'êtes pas autorisé à supprimer ce fichier lié."
 
-#: templates/paperclip/details.html:16
+#: templates/paperclip/details.html:14
 msgid "Actions"
 msgstr "Actions"
 
-#: templates/paperclip/details.html:38
+#: templates/paperclip/details.html:37
+msgid "Remove star"
+msgstr "Défavoriser"
+
+#: templates/paperclip/details.html:37
+msgid "Star item"
+msgstr "Favoriser"
+
+#: templates/paperclip/details.html:47
 msgid "Delete"
 msgstr "Supprimer"
 
-#: templates/paperclip/details.html:45
+#: templates/paperclip/details.html:55
 msgid "No file attached"
 msgstr "Aucun fichier attaché"
 
-#: templates/paperclip/details.html:60
+#: templates/paperclip/details.html:99
 msgid "Confirm file deletion"
 msgstr "Confirmer la suppression du fichier"
 
-#: templates/paperclip/details.html:61
+#: templates/paperclip/details.html:100
+#, python-brace-format
 msgid "Are you sure to delete this file {file} ?"
 msgstr "Êtes vous sûr de vouloir supprimer ce fichier {file} ?"
