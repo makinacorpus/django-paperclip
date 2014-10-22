@@ -27,7 +27,7 @@ def add_url_for_obj(obj):
 @require_POST
 @permission_required('paperclip.add_attachment', raise_exception=True)
 def add_attachment(request, app_label, module_name, pk,
-                   template_name='paperclip/add.html', extra_context={}):
+                   template_name='paperclip/attachment_form.html', extra_context={}):
 
     next_url = request.POST.get('next', '/')
     model = get_model(app_label, module_name)

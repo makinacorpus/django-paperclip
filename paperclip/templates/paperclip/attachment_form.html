@@ -1,0 +1,12 @@
+{% load i18n crispy_forms_tags %}
+{% load url from future %}
+
+<form method="post" enctype="multipart/form-data"
+      action="{{ attachment_form_url }}"
+      data-validate-url="{% url 'ajax_validate_attachment' %}"
+      class="add-attachment form-horizontal">
+
+    <input type="hidden" name="next" value="{{ next }}"/>
+
+    {% crispy attachment_form %}
+</form>

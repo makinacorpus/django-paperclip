@@ -1,20 +1,68 @@
-{% load i18n crispy_forms_tags %}
-{% load url from future %}
+(function AttachmentsListActions () {
 
-{% if attachment_form %}
-<form method="post" enctype="multipart/form-data"
-      action="{{ attachment_form_url }}" class="add-attachment form-horizontal">
 
-    <input type="hidden" name="next" value="{{ next }}"/>
+    //
+    // Delete single attachment
+    //
+    $('.delete-action').click(function (e) {
+        e.preventDefault();
 
-    {% crispy attachment_form %}
-</form>
+        var $this = $(this);
+        var deleteUrl = $this.data('delete-url');
+        var $attachments = $this.parents('tbody');
+        var $attachment = $this.parents('tr');
 
-<script>
-$(function() {
+        console.log($attachment.data('title'));
 
-    var $form = $('form[action="{{ attachment_form_url }}"]');
-    var validate_url = '{% url 'ajax_validate_attachment' %}';
+        $('.confirm-modal').confirmModal({
+            heading: $attachments.data('confirm-delete-heading'),
+            body: $attachments.data('confirm-delete-msg').replace('{file}', $attachment.data('title')),
+            callback: function() {
+                window.location = deleteUrl;
+            }
+        });
+
+        return false;
+    });
+
+
+    //
+    // Click to star/unstar attachments
+    //
+    $('a.star, a.unstar').click(function (e) {
+        var $this = $(this);
+        e.preventDefault();
+
+        // Pass parameter to unstar (see views.py code)
+        var starUrl = $this.data('star-url');
+        if ($this.hasClass('unstar'))
+            starUrl += '?unstar';
+
+        // Show spinner on link while AJAX
+        var spinner = new Spinner({length: 3, radius: 5, width: 2}).spin(this);
+        $.getJSON(starUrl)
+         .always(function () {
+            spinner.stop();
+         })
+         .done(function (data) {
+            // Replace the <img> icon after success
+            var starIcon = $this.find('img').attr('src');
+            starIcon = starIcon.replace(data.starred ? 'off' : 'on',
+                                        data.starred ? 'on' : 'off');
+            $this.find('img').attr('src', starIcon);
+            $this.toggleClass('unstar star');
+        });
+
+        return false;
+    });
+})();
+
+
+
+(function AttachmentsForm () {
+
+    var $form = $('form.add-attachment');
+    var validate_url = $form.data('validate-url');
     var is_form_valid = false;
     var $file_input = $form.find('input[type="file"]');
 
@@ -82,7 +130,4 @@ $(function() {
 
         return false;
     });
-});
-</script>
-
-{% endif %}
+})();

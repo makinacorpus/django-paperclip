@@ -19,7 +19,7 @@ def icon_name(value):
     return ext[1:] if ext else 'bin'
 
 
-@register.inclusion_tag('paperclip/add_form.html', takes_context=True)
+@register.inclusion_tag('paperclip/attachment_form.html', takes_context=True)
 def attachment_form(context, obj, next_url):
     """
     Renders a "upload attachment" form.

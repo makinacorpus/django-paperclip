@@ -13,9 +13,15 @@
             <th>{% trans "Update date" %}</th>
             <th>{% trans "Actions" %}</th>
         </thead>
-        <tbody>
+        <tbody data-confirm-delete-heading="{% trans "Confirm file deletion" %}"
+               data-confirm-delete-msg="{% trans "Are you sure to delete this file {file} ?" %}">
         {% for att in attachments_list %}
-        <tr>
+        <tr data-id="{{ att.pk }}"
+            data-title="{{ att.title|default:att.pk }}"
+            data-legend="{{ att.legend }}"
+            data-author="{{ att.author }}"
+            data-filetype="{{ att.filetype }}"
+            data-starred="{{ att.starred }}">
             <td>
                 <a href="{{ att.attachment_file.url }}" target="_blank">
                     {% if att.is_image %}
@@ -43,8 +49,10 @@
 
             {% if 'paperclip.delete_attachment' in perms or 'paperclip.delete_attachment_others' in perms %}
                 &nbsp;
-                <a class="delete-action" data-id="{{ att.pk }}" data-title="{{ att.title|default:att.pk }}" href="#">
-                    {% trans "Delete" %}
+                <a href="#"
+                   class="delete-action"
+                   data-delete-url="{% url 'delete_attachment' att.pk %}?next={{ attachment_form_next|urlencode }}">
+                   {% trans "Delete" %}
                 </a>
             {% endif %}
             </td>
@@ -54,53 +62,5 @@
 {% else %}
     {% trans "No file attached" %}
 {% endif %}
-
-    <div id="confirm-delete-msg"></div>
-
-    <script type="text/javascript">
-        $('.delete-action').click(function (e) {
-            e.preventDefault();
-            confirmDelete($(this).data('id'), $(this).data('title'));
-            return false;
-        });
-
-        //
-        // Click to star/unstar attachments
-        $('a.star, a.unstar').click(function (e) {
-            var $this = $(this);
-            e.preventDefault();
-
-            // Pass parameter to unstar (see views.py code)
-            var starUrl = $this.data('star-url');
-            if ($this.hasClass('unstar'))
-                starUrl += '?unstar';
-
-            // Show spinner on link while AJAX
-            var spinner = new Spinner({length: 3, radius: 5, width: 2}).spin(this);
-            $.getJSON(starUrl)
-             .always(function () {
-                spinner.stop();
-             })
-             .done(function (data) {
-                // Replace the <img> icon after success
-                var starIcon = $this.find('img').attr('src');
-                starIcon = starIcon.replace(data.starred ? 'off' : 'on',
-                                            data.starred ? 'on' : 'off');
-                $this.find('img').attr('src', starIcon);
-                $this.toggleClass('unstar star');
-            });
-
-            return false;
-        });
-
-        function confirmDelete(id, title) {
-            var url = "{% url 'delete_attachment' 0 %}?next={{ attachment_delete_next|urlencode }}".replace('0', id);
-            $('#confirm-delete-msg').confirmModal({
-                heading: '{% trans "Confirm file deletion" %}',
-                body: '{% trans "Are you sure to delete this file {file} ?" %}'.replace('{file}', title),
-                callback: function() {
-                    window.location = url;
-                }
-             });
-        }
-    </script>
+<div class="confirm-modal"></div>
+<script type="text/javascript" src="{% static "paperclip/paperclip.js" %}"></script>
