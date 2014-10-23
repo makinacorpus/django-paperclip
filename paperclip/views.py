@@ -19,7 +19,8 @@ import json
 @require_POST
 @permission_required('paperclip.add_attachment', raise_exception=True)
 def add_attachment(request, app_label, module_name, pk,
-                   template_name='paperclip/attachment_form.html', extra_context={}):
+                   template_name='paperclip/attachment_form.html',
+                   extra_context={}):
     model = get_model(app_label, module_name)
     obj = get_object_or_404(model, pk=pk)
     form = AttachmentForm(request, request.POST, request.FILES,
@@ -32,7 +33,8 @@ def add_attachment(request, app_label, module_name, pk,
 @require_http_methods(["GET", "POST"])
 @permission_required('paperclip.update_attachment', raise_exception=True)
 def update_attachment(request, attachment_pk,
-                      template_name='paperclip/attachment_form.html', extra_context={}):
+                      template_name='paperclip/attachment_form.html',
+                      extra_context={}):
     attachment = get_object_or_404(Attachment, pk=attachment_pk)
     obj = attachment.content_object
     if request.method == 'POST':
@@ -48,7 +50,7 @@ def update_attachment(request, attachment_pk,
                                    _('Your attachment was updated.'))
 
 
-def _handle_attachment_form(request, obj, form, change_message, success_message):
+def _handle_attachment_form(request, obj, form, change_msg, success_msg):
     if form.is_valid():
         attachment = form.save(request, obj)
         if app_settings['ACTION_HISTORY_ENABLED']:
@@ -58,9 +60,9 @@ def _handle_attachment_form(request, obj, form, change_message, success_message)
                 object_id=obj.pk,
                 object_repr=force_text(obj),
                 action_flag=CHANGE,
-                change_message=change_message % attachment.title,
+                change_message=change_msg % attachment.title,
             )
-        messages.success(request, success_message)
+        messages.success(request, success_msg)
         return HttpResponseRedirect(form.success_url())
 
     template_string = """{% load attachments_tags %}
@@ -75,8 +77,8 @@ def _handle_attachment_form(request, obj, form, change_message, success_message)
 @permission_required('paperclip.delete_attachment', raise_exception=True)
 def delete_attachment(request, attachment_pk):
     g = get_object_or_404(Attachment, pk=attachment_pk)
-    can_delete = (request.user.has_perm('paperclip.delete_attachment_others') or
-                  request.user == g.creator)
+    can_delete = (request.user.has_perm('paperclip.delete_attachment_others')
+                  or request.user == g.creator)
     if can_delete:
         g.delete()
         if app_settings['ACTION_HISTORY_ENABLED']:
@@ -90,7 +92,8 @@ def delete_attachment(request, attachment_pk):
             )
         messages.success(request, _('Your attachment was deleted.'))
     else:
-        messages.error(request, _('You are not allowed to delete this attachment.'))
+        error_msg = _('You are not allowed to delete this attachment.')
+        messages.error(request, error_msg)
     next_url = request.GET.get('next', '/')
     return HttpResponseRedirect(next_url)
 
@@ -100,7 +103,10 @@ def star_attachment(request, attachment_pk):
     g = get_object_or_404(Attachment, pk=attachment_pk)
     g.starred = request.GET.get('unstar') is None
     g.save()
-    change_message = _('Star attachment %s') if g.starred else _('Unstar attachment %s')
+    if g.starred:
+        change_message = _('Star attachment %s')
+    else:
+        change_message = _('Unstar attachment %s')
     if app_settings['ACTION_HISTORY_ENABLED']:
         LogEntry.objects.log_action(
             user_id=request.user.pk,

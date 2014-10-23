@@ -54,22 +54,31 @@ class Attachment(models.Model):
     object_id = models.PositiveIntegerField()
     content_object = generic.GenericForeignKey('content_type', 'object_id')
 
-    attachment_file = models.FileField(_('Attachment'), upload_to=attachment_upload, max_length=512)
+    attachment_file = models.FileField(_('Attachment'),
+                                       upload_to=attachment_upload,
+                                       max_length=512)
     filetype = models.ForeignKey(FILETYPE_MODEL, verbose_name=_('File type'))
 
-    creator = models.ForeignKey(User, related_name="created_attachments", verbose_name=_('Creator'),
+    creator = models.ForeignKey(User, related_name="created_attachments",
+                                verbose_name=_('Creator'),
                                 help_text=_("User that uploaded"))
-    author = models.CharField(blank=True, default='', max_length=128, db_column='auteur', verbose_name=_('Author'),
+    author = models.CharField(blank=True, default='', max_length=128,
+                              db_column='auteur', verbose_name=_('Author'),
                               help_text=_("Original creator"))
-    title = models.CharField(blank=True, default='', max_length=128, db_column='titre', verbose_name=_(u"Filename"),
+    title = models.CharField(blank=True, default='', max_length=128,
+                             db_column='titre', verbose_name=_(u"Filename"),
                              help_text=_("Renames the file"))
-    legend = models.CharField(blank=True, default='', max_length=128, db_column='legende', verbose_name=_(u"Legend"),
+    legend = models.CharField(blank=True, default='', max_length=128,
+                              db_column='legende', verbose_name=_(u"Legend"),
                               help_text=_("Details displayed"))
-    starred = models.BooleanField(default=False, db_column='marque', verbose_name=_(u"Starred"),
+    starred = models.BooleanField(default=False, db_column='marque',
+                                  verbose_name=_(u"Starred"),
                                   help_text=_("Mark as starred"))
 
-    date_insert = models.DateTimeField(editable=False, auto_now_add=True, verbose_name=_(u"Insertion date"))
-    date_update = models.DateTimeField(editable=False, auto_now=True, verbose_name=_(u"Update date"))
+    date_insert = models.DateTimeField(editable=False, auto_now_add=True,
+                                       verbose_name=_(u"Insertion date"))
+    date_update = models.DateTimeField(editable=False, auto_now=True,
+                                       verbose_name=_(u"Update date"))
 
     class Meta:
         db_table = app_settings['ATTACHMENT_TABLE_NAME']
@@ -82,7 +91,8 @@ class Attachment(models.Model):
         )
 
     def __unicode__(self):
-        return '%s attached %s' % (self.creator.username, self.attachment_file.name)
+        return '%s attached %s' % (self.creator.username,
+                                   self.attachment_file.name)
 
     @property
     def filename(self):

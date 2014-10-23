@@ -18,8 +18,7 @@ setup(
         'Django',
         'django-floppyforms',
         'easy-thumbnails',
-        # FIXME: upgrade django-crispy-forms
-        'django-crispy-forms == 1.2.3',
+        'django-crispy-forms',
     ],
     packages=find_packages(),
     include_package_data=True,
