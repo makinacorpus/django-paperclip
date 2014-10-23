@@ -5,7 +5,7 @@ here = os.path.abspath(os.path.dirname(__file__))
 
 setup(
     name='paperclip',
-    version='0.1.0',
+    version='0.1.1.dev0',
     author='Makina Corpus',
     author_email='geobi@makina-corpus.com',
     url='https://github.com/makinacorpus/paperclip',
@@ -18,8 +18,7 @@ setup(
         'Django',
         'django-floppyforms',
         'easy-thumbnails',
-        # FIXME: upgrade django-crispy-forms
-        'django-crispy-forms == 1.2.3',
+        'django-crispy-forms',
     ],
     packages=find_packages(),
     include_package_data=True,

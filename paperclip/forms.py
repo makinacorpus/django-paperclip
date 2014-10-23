@@ -45,7 +45,8 @@ class AttachmentForm(forms.ModelForm):
 
         if is_creation:
             # Mark file field as mandatory
-            self.fields['attachment_file'].widget.attrs['required'] = 'required'
+            file_field = self.fields['attachment_file']
+            file_field.widget.attrs['required'] = 'required'
 
             form_url = reverse('add_attachment', kwargs={
                 'app_label': self._object._meta.app_label,
@@ -61,12 +62,14 @@ class AttachmentForm(forms.ModelForm):
         else:
             # When editing an attachment, changing its title won't rename!
             self.fields['title'].widget.attrs['readonly'] = True
-            form_url = reverse( 'update_attachment', kwargs={
+            form_url = reverse('update_attachment', kwargs={
                 'attachment_pk': self.instance.pk
             })
             form_actions = [
                 Button('cancel', _('Cancel'), css_class=""),
-                Submit('submit_attachment', _('Update attachment'), css_class="btn-primary offset1")
+                Submit('submit_attachment',
+                       _('Update attachment'),
+                       css_class="btn-primary offset1")
             ]
 
         self.helper.form_action = form_url
@@ -82,4 +85,3 @@ class AttachmentForm(forms.ModelForm):
         self.instance.content_type = ContentType.objects.get_for_model(obj)
         self.instance.object_id = obj.id
         return super(AttachmentForm, self).save(*args, **kwargs)
-
