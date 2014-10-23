@@ -8,7 +8,7 @@ urlpatterns = patterns(
         views.add_attachment,
         name="add_attachment"),
     url(r'^update/(?P<attachment_pk>\d+)/$',
-        views.supdate_attachment,
+        views.update_attachment,
         name="update_attachment"),
     url(r'^delete/(?P<attachment_pk>\d+)/$',
         views.delete_attachment,
