@@ -1,11 +1,10 @@
-from django.shortcuts import render_to_response, get_object_or_404
-from django.views.decorators.http import require_POST
+from django.shortcuts import get_object_or_404
+from django.views.decorators.http import require_POST, require_http_methods
 from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.db.models.loading import get_model
-from django.core.urlresolvers import reverse
 from django.utils.encoding import force_text
 from django.utils.translation import ugettext_lazy as _
-from django.template.context import RequestContext
+from django.template import RequestContext, Template
 from django.contrib.admin.models import LogEntry, CHANGE
 from django.contrib.auth.decorators import permission_required
 from django.contrib.contenttypes.models import ContentType
@@ -17,25 +16,39 @@ from .forms import AttachmentForm
 import json
 
 
-def add_url_for_obj(obj):
-    return reverse('add_attachment', kwargs={
-                        'app_label': obj._meta.app_label,
-                        'module_name': obj._meta.module_name,
-                        'pk': obj.pk
-                    })
-
 @require_POST
 @permission_required('paperclip.add_attachment', raise_exception=True)
 def add_attachment(request, app_label, module_name, pk,
-                   template_name='paperclip/add.html', extra_context={}):
-
-    next_url = request.POST.get('next', '/')
+                   template_name='paperclip/attachment_form.html', extra_context={}):
     model = get_model(app_label, module_name)
-    if model is None:
-        return HttpResponseRedirect(next_url)
     obj = get_object_or_404(model, pk=pk)
-    form = AttachmentForm(request, request.POST, request.FILES)
+    form = AttachmentForm(request, request.POST, request.FILES,
+                          object=obj)
+    return _handle_attachment_form(request, obj, form,
+                                   _('Add attachment %s'),
+                                   _('Your attachment was uploaded.'))
 
+
+@require_http_methods(["GET", "POST"])
+@permission_required('paperclip.update_attachment', raise_exception=True)
+def update_attachment(request, attachment_pk,
+                      template_name='paperclip/attachment_form.html', extra_context={}):
+    attachment = get_object_or_404(Attachment, pk=attachment_pk)
+    obj = attachment.content_object
+    if request.method == 'POST':
+        form = AttachmentForm(request, request.POST, request.FILES,
+                              instance=attachment,
+                              object=obj)
+    else:
+        form = AttachmentForm(request,
+                              instance=attachment,
+                              object=obj)
+    return _handle_attachment_form(request, obj, form,
+                                   _('Update attachment %s'),
+                                   _('Your attachment was updated.'))
+
+
+def _handle_attachment_form(request, obj, form, change_message, success_message):
     if form.is_valid():
         attachment = form.save(request, obj)
         if app_settings['ACTION_HISTORY_ENABLED']:
@@ -45,19 +58,18 @@ def add_attachment(request, app_label, module_name, pk,
                 object_id=obj.pk,
                 object_repr=force_text(obj),
                 action_flag=CHANGE,
-                change_message=_('Add attachment %s') % attachment.title,
+                change_message=change_message % attachment.title,
             )
-        messages.success(request, _('Your attachment was uploaded.'))
-        return HttpResponseRedirect(next_url)
-    else:
-        template_context = {
-            'attachment_form': form,
-            'attachment_form_url': add_url_for_obj(obj),
-            'next': next_url,
-        }
-        template_context.update(extra_context)
-        return render_to_response(template_name, template_context,
-                                  RequestContext(request))
+        messages.success(request, success_message)
+        return HttpResponseRedirect(form.success_url())
+
+    template_string = """{% load attachments_tags %}
+        {% attachment_form object attachment_form %}"""
+    context = RequestContext(request)
+    context['object'] = obj
+    context['attachment_form'] = form
+    t = Template(template_string)
+    return HttpResponse(t.render(context))
 
 
 @permission_required('paperclip.delete_attachment', raise_exception=True)
@@ -79,13 +91,30 @@ def delete_attachment(request, attachment_pk):
         messages.success(request, _('Your attachment was deleted.'))
     else:
         messages.error(request, _('You are not allowed to delete this attachment.'))
-    next_url = request.REQUEST.get('next', '/')
+    next_url = request.GET.get('next', '/')
     return HttpResponseRedirect(next_url)
 
 
-def ajax_validate_attachment(request):
-    form = AttachmentForm(request, request.POST, request.FILES)
-    return HttpResponse(json.dumps(form.errors), content_type='application/json')
+@permission_required('paperclip.update_attachment', raise_exception=True)
+def star_attachment(request, attachment_pk):
+    g = get_object_or_404(Attachment, pk=attachment_pk)
+    g.starred = request.GET.get('unstar') is None
+    g.save()
+    change_message = _('Star attachment %s') if g.starred else _('Unstar attachment %s')
+    if app_settings['ACTION_HISTORY_ENABLED']:
+        LogEntry.objects.log_action(
+            user_id=request.user.pk,
+            content_type_id=g.content_type.id,
+            object_id=g.object_id,
+            object_repr=force_text(g.content_object),
+            action_flag=CHANGE,
+            change_message=change_message % g.title,
+        )
+    reply = {
+        'status': 'ok',
+        'starred': g.starred
+    }
+    return HttpResponse(json.dumps(reply), content_type='application/json')
 
 
 @permission_required('paperclip.read_attachment', raise_exception=True)
@@ -111,16 +140,4 @@ def get_attachments(request, app_label, module_name, pk):
         }
         for attachment in attachments
     ]
-    return HttpResponse(json.dumps(reply), content_type='application/json')
-
-
-@permission_required('paperclip.update_attachment', raise_exception=True)
-def star_attachment(request, attachment_pk):
-    g = get_object_or_404(Attachment, pk=attachment_pk)
-    g.starred = request.GET.get('unstar') is None
-    g.save()
-    reply = {
-        'status': 'ok',
-        'starred': g.starred
-    }
     return HttpResponse(json.dumps(reply), content_type='application/json')

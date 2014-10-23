@@ -1,0 +1,30 @@
+{% load i18n attachments_tags thumbnail static %}
+
+<div class="file-attachment file-attachment-detail">
+    <h3>{% trans "Attached files" %}</h3>
+
+    {% if 'paperclip.read_attachment' in perms %}
+
+        {% get_attachments_for object as "attachments_list" %}
+        {% if attachments_list %}
+            {% include "paperclip/_attachment_table.html" %}
+        {% else %}
+            {% trans "No file attached" %}
+        {% endif %}
+
+    {% else %}
+        {% trans "You are not allowed to see attachments." %}
+    {% endif %}
+</div>
+
+{% if 'paperclip.add_attachment' in perms %}
+<div class="file-attachment-form">
+    <div class="create">
+    {% attachment_form object %}
+    </div>
+    <div class="update"></div>
+</div>
+{% endif %}
+
+<div class="confirm-modal"></div>
+<script type="text/javascript" src="{% static "paperclip/paperclip.js" %}"></script>

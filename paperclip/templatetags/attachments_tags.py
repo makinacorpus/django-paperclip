@@ -1,9 +1,9 @@
 import mimetypes
 
 from django.template import Library, Node, Variable
+from django.utils.translation import ugettext_lazy as _
 
 from paperclip.forms import AttachmentForm
-from paperclip.views import add_url_for_obj
 from paperclip.models import Attachment
 
 
@@ -19,17 +19,25 @@ def icon_name(value):
     return ext[1:] if ext else 'bin'
 
 
-@register.inclusion_tag('paperclip/add_form.html', takes_context=True)
-def attachment_form(context, obj, next_url):
+@register.inclusion_tag('paperclip/_attachment_form.html', takes_context=True)
+def attachment_form(context, obj, form=None):
     """
     Renders a "upload attachment" form.
     """
-    return {
-        'attachment_form': AttachmentForm(context['request']),
-        'attachment_form_url': add_url_for_obj(obj),
-        'next': next_url,
-    }
+    # Unbound form by default (this is why a template tag is used!)
+    if form is None:
+        request = context['request']
+        next_url = context['attachment_form_next']
+        form = AttachmentForm(request, object=obj, next_url=next_url)
 
+    form_title = _("New file attachment")
+    if form.instance.pk:
+        form_title = u"%s %s" % (_("Update"), form.instance.filename)
+
+    return {
+        'attachment_form': form,
+        'form_title': form_title,
+    }
 
 
 class AttachmentsForObjectNode(Node):
@@ -47,11 +55,7 @@ class AttachmentsForObjectNode(Node):
     def render(self, context):
         obj = self.resolve(self.obj, context)
         var_name = self.resolve(self.var_name, context)
-        request = context.get('request')
-        if request.user.has_perm('paperclip.read_attachment'):
-            context[var_name] = Attachment.objects.attachments_for_object(obj)
-        else:
-            context[var_name] = []
+        context[var_name] = Attachment.objects.attachments_for_object(obj)
         return ''
 
 
