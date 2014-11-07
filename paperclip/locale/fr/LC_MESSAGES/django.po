@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-10-23 11:26+0200\n"
+"POT-Creation-Date: 2014-11-07 15:45+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,19 +21,19 @@ msgstr ""
 msgid "Sunset on lake"
 msgstr "Coucher de soleil sur le lac"
 
-#: forms.py:57
+#: forms.py:58
 msgid "Submit attachment"
 msgstr "Soumettre le fichier"
 
-#: forms.py:68
+#: forms.py:69
 msgid "Cancel"
 msgstr "Annuler"
 
-#: forms.py:69
+#: forms.py:71
 msgid "Update attachment"
 msgstr "Modifier le fichier"
 
-#: models.py:18 models.py:22 models.py:58
+#: models.py:18 models.py:22 models.py:60
 msgid "File type"
 msgstr "Type de fichier"
 
@@ -41,107 +41,107 @@ msgstr "Type de fichier"
 msgid "File types"
 msgstr "Types de fichier"
 
-#: models.py:57 models.py:77
+#: models.py:57 models.py:86
 msgid "Attachment"
 msgstr "Fichier attaché"
 
-#: models.py:60
+#: models.py:63
 msgid "Creator"
 msgstr "Créateur"
 
-#: models.py:61
+#: models.py:64
 msgid "User that uploaded"
 msgstr "Utilisateur"
 
-#: models.py:62 templates/paperclip/_attachment_table.html:6
+#: models.py:66 templates/paperclip/_attachment_table.html:6
 msgid "Author"
 msgstr "Auteur"
 
-#: models.py:63
+#: models.py:67
 msgid "Original creator"
 msgstr "Créateur original"
 
-#: models.py:64 templates/paperclip/_attachment_table.html:4
+#: models.py:69 templates/paperclip/_attachment_table.html:4
 msgid "Filename"
 msgstr "Nom de fichier"
 
-#: models.py:65
+#: models.py:70
 msgid "Renames the file"
 msgstr "Renomme le fichier"
 
-#: models.py:66 templates/paperclip/_attachment_table.html:5
+#: models.py:72 templates/paperclip/_attachment_table.html:5
 msgid "Legend"
 msgstr "Légende"
 
-#: models.py:67
+#: models.py:73
 msgid "Details displayed"
 msgstr "Détails affichés"
 
-#: models.py:68
+#: models.py:75
 msgid "Starred"
 msgstr "Favorisé"
 
-#: models.py:69
+#: models.py:76
 msgid "Mark as starred"
 msgstr "Favoriser"
 
-#: models.py:71 templates/paperclip/_attachment_table.html:7
+#: models.py:79 templates/paperclip/_attachment_table.html:7
 msgid "Insertion date"
 msgstr "Date d'insertion"
 
-#: models.py:72 templates/paperclip/_attachment_table.html:8
+#: models.py:81 templates/paperclip/_attachment_table.html:8
 msgid "Update date"
 msgstr "Date de modification"
 
-#: models.py:78
+#: models.py:87
 msgid "Attachments"
 msgstr "Fichiers attachés"
 
-#: models.py:80
+#: models.py:89
 msgid "Can read attachments"
 msgstr "Lire les fichiers attachés"
 
-#: models.py:81
+#: models.py:90
 msgid "Can delete others' attachments"
 msgstr "Supprimer les fichiers des autres"
 
-#: views.py:28
+#: views.py:29
 #, python-format
 msgid "Add attachment %s"
 msgstr "Ajout du fichier %s"
 
-#: views.py:29
+#: views.py:30
 msgid "Your attachment was uploaded."
 msgstr "Votre fichier a été ajouté."
 
-#: views.py:47
+#: views.py:49
 #, python-format
 msgid "Update attachment %s"
 msgstr "Modifier le fichier attaché %s"
 
-#: views.py:48
+#: views.py:50
 msgid "Your attachment was updated."
 msgstr "Votre fichier a été modifié."
 
-#: views.py:89
+#: views.py:91
 #, python-format
 msgid "Remove attachment %s"
 msgstr "Suppression du fichier %s"
 
-#: views.py:91
+#: views.py:93
 msgid "Your attachment was deleted."
 msgstr "Votre fichier a été supprimé."
 
-#: views.py:93
+#: views.py:95
 msgid "You are not allowed to delete this attachment."
 msgstr "Vous n'êtes pas autorisé à supprimer ce fichier attaché."
 
-#: views.py:103
+#: views.py:107
 #, python-format
 msgid "Star attachment %s"
 msgstr "Favoriser le fichier %s"
 
-#: views.py:103
+#: views.py:109
 #, python-format
 msgid "Unstar attachment %s"
 msgstr "Défavoriser le fichier %s"
