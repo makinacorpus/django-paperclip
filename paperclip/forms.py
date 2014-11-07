@@ -29,8 +29,8 @@ class AttachmentForm(forms.ModelForm):
 
         # Detect fields errors without uploading (using HTML5)
         self.fields['filetype'].widget.attrs['required'] = 'required'
-        self.fields['author'].widget.attrs['pattern'] = '^[A-Za-z0-9]+'
-        self.fields['legend'].widget.attrs['pattern'] = '^[A-Za-z0-9]+'
+        self.fields['author'].widget.attrs['pattern'] = '^\S.*'
+        self.fields['legend'].widget.attrs['pattern'] = '^\S.*'
 
         next_url = request.POST.get('next') or next_url
         next_url = next_url or request.GET.get('next', '/')
