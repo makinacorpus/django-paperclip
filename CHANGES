@@ -2,7 +2,7 @@
 CHANGELOG
 =========
 
-0.1.2 (unreleased)
+0.1.2 (2014-11-07)
 ==================
 
 * Fix upload regular expressions for author and legend
