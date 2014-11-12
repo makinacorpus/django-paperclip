@@ -23,6 +23,11 @@ class FileType(models.Model):
         verbose_name_plural = _(u"File types")
         ordering = ['type']
 
+    @classmethod
+    def objects_for(cls, request):
+        # request ignored by default
+        return cls.objects.all()
+
     def __unicode__(self):
         return self.type
 

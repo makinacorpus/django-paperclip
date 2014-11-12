@@ -5,7 +5,7 @@ CHANGELOG
 0.1.4 (unreleased)
 ==================
 
-- Nothing changed yet.
+* Allow to override file types from request.
 
 
 0.1.3 (2014-11-07)

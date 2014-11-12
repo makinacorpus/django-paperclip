@@ -27,6 +27,10 @@ class AttachmentForm(forms.ModelForm):
         self.fields['legend'].widget.attrs['placeholder'] = _('Sunset on lake')
         self.fields['author'].initial = request.user
 
+        # Allow to override filetype choices
+        filetype_model = self.fields['filetype'].queryset.model
+        self.fields['filetype'].queryset = filetype_model.objects_for(request)
+
         # Detect fields errors without uploading (using HTML5)
         self.fields['filetype'].widget.attrs['required'] = 'required'
         self.fields['author'].widget.attrs['pattern'] = '^\S.*'
