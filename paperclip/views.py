@@ -31,7 +31,7 @@ def add_attachment(request, app_label, module_name, pk,
 
 
 @require_http_methods(["GET", "POST"])
-@permission_required('paperclip.update_attachment', raise_exception=True)
+@permission_required('paperclip.change_attachment', raise_exception=True)
 def update_attachment(request, attachment_pk,
                       template_name='paperclip/attachment_form.html',
                       extra_context={}):
@@ -98,7 +98,7 @@ def delete_attachment(request, attachment_pk):
     return HttpResponseRedirect(next_url)
 
 
-@permission_required('paperclip.update_attachment', raise_exception=True)
+@permission_required('paperclip.change_attachment', raise_exception=True)
 def star_attachment(request, attachment_pk):
     g = get_object_or_404(Attachment, pk=attachment_pk)
     g.starred = request.GET.get('unstar') is None
