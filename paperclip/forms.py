@@ -4,11 +4,17 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
 
 import floppyforms as forms
-from crispy_forms.layout import Submit, Button
-from crispy_forms.helper import FormHelper
-from crispy_forms.bootstrap import FormActions
 
 from .models import Attachment
+
+from paperclip import app_settings
+
+USE_CRISPY_FORMS = app_settings['USE_CRISPY_FORMS']
+
+if USE_CRISPY_FORMS:
+    from crispy_forms.layout import Submit, Button
+    from crispy_forms.helper import FormHelper
+    from crispy_forms.bootstrap import FormActions
 
 
 class AttachmentForm(forms.ModelForm):
@@ -40,45 +46,49 @@ class AttachmentForm(forms.ModelForm):
         next_url = next_url or request.GET.get('next', '/')
         self.fields['next'].initial = next_url
 
-        self.helper = FormHelper(form=self)
-        self.helper.form_tag = True
-        self.helper.form_class = 'attachment form-horizontal'
-        self.helper.help_text_inline = True
+        self.is_creation = not self.instance.pk
 
-        is_creation = not self.instance.pk
-
-        if is_creation:
+        if self.is_creation:
             # Mark file field as mandatory
             file_field = self.fields['attachment_file']
             file_field.widget.attrs['required'] = 'required'
 
-            form_url = reverse('add_attachment', kwargs={
+            self.form_url = reverse('add_attachment', kwargs={
                 'app_label': self._object._meta.app_label,
                 'module_name': self._object._meta.module_name,
                 'pk': self._object.pk
             })
-            form_actions = [
-                Submit('submit_attachment',
-                       _('Submit attachment'),
-                       css_class="btn-primary offset1")
-            ]
-
         else:
             # When editing an attachment, changing its title won't rename!
             self.fields['title'].widget.attrs['readonly'] = True
-            form_url = reverse('update_attachment', kwargs={
+            self.form_url = reverse('update_attachment', kwargs={
                 'attachment_pk': self.instance.pk
             })
-            form_actions = [
-                Button('cancel', _('Cancel'), css_class=""),
-                Submit('submit_attachment',
-                       _('Update attachment'),
-                       css_class="btn-primary offset1")
-            ]
 
-        self.helper.form_action = form_url
-        self.helper.layout.fields.append(
-            FormActions(*form_actions, css_class="form-actions"))
+        if USE_CRISPY_FORMS:
+
+            self.helper = FormHelper(form=self)
+            self.helper.form_tag = True
+            self.helper.form_class = 'attachment form-horizontal'
+            self.helper.help_text_inline = True
+
+            if self.is_creation:
+                form_actions = [
+                    Submit('submit_attachment',
+                           _('Submit attachment'),
+                           css_class="btn-primary offset1")
+                ]
+            else:
+                form_actions = [
+                    Button('cancel', _('Cancel'), css_class=""),
+                    Submit('submit_attachment',
+                           _('Update attachment'),
+                           css_class="btn-primary offset1")
+                ]
+
+            self.helper.form_action = self.form_url
+            self.helper.layout.fields.append(
+                FormActions(*form_actions, css_class="form-actions"))
 
     def success_url(self):
         return self.cleaned_data.get('next')
