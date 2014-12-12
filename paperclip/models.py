@@ -2,11 +2,12 @@ import os
 import mimetypes
 
 from django.db import models
-from django.contrib.auth.models import User
+
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from django.utils.translation import ugettext_lazy as _
 from django.template.defaultfilters import slugify
+from django.conf import settings
 
 from paperclip import app_settings
 
@@ -51,6 +52,12 @@ def attachment_upload(instance, filename):
         renamed)
 
 
+if hasattr(settings, 'AUTH_USER_MODEL'):
+    user_model_fk = settings.AUTH_USER_MODEL
+else:
+    user_model_fk = 'auth.User'
+
+
 class Attachment(models.Model):
 
     objects = AttachmentManager()
@@ -64,7 +71,8 @@ class Attachment(models.Model):
                                        max_length=512)
     filetype = models.ForeignKey(FILETYPE_MODEL, verbose_name=_('File type'))
 
-    creator = models.ForeignKey(User, related_name="created_attachments",
+    creator = models.ForeignKey(user_model_fk,
+                                related_name="created_attachments",
                                 verbose_name=_('Creator'),
                                 help_text=_("User that uploaded"))
     author = models.CharField(blank=True, default='', max_length=128,
