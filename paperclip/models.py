@@ -39,6 +39,12 @@ class AttachmentManager(models.Manager):
         return self.filter(content_type__pk=object_type.id,
                            object_id=obj.id)
 
+    def attachments_for_object_only_type(self, obj, filetype):
+        object_type = ContentType.objects.get_for_model(obj)
+        return self.filter(content_type__pk=object_type.id,
+                           object_id=obj.id,
+                           filetype=filetype)
+
 
 def attachment_upload(instance, filename):
     """Stores the attachment in a "per module/appname/primary key" folder"""
