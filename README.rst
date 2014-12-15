@@ -31,6 +31,7 @@ USAGE
 * Include scripts in template
 
 ::
+
     <script src="{% static "paperclip/bootstrap-confirm.js" %}" type="text/javascript"></script> 
     <script src="{% static "paperclip/spin.min.js" %}" type="text/javascript"></script> 
     <script src="{% static "paperclip/paperclip.js" %}" type="text/javascript"></script> 
