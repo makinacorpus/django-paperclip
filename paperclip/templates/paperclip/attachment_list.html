@@ -26,5 +26,9 @@
 </div>
 {% endif %}
 
-<div class="confirm-modal"></div>
+<div class="confirm-modal"
+     data-confirm-delete-heading="{% trans "Confirm file deletion" %}"
+     data-confirm-delete-msg="{% trans "Are you sure to delete this file {file} ?" %}"
+     data-confirm-delete-close-button="{% trans "Cancel" %}"
+     data-confirm-delete-confirm-button="{% trans "Delete" %}"></div>
 <script type="text/javascript" src="{% static "paperclip/paperclip.js" %}"></script>

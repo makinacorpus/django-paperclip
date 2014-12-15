@@ -35,14 +35,14 @@
 
         var $this = $(this);
         var deleteUrl = $this.data('delete-url');
-        var $attachments = $this.parents('tbody');
+        var $modal = $('.confirm-modal');
         var $attachment = $this.parents('tr');
 
-        $('.confirm-modal').confirmModal({
-            heading: $attachments.data('confirm-delete-heading'),
-            body: $attachments.data('confirm-delete-msg').replace('{file}', $attachment.data('title')),
-            closeBtnText: $attachments.data('confirm-delete-close-button'),
-            confirmBtnText: $attachments.data('confirm-delete-confirm-button'),
+        $modal.confirmModal({
+            heading: $modal.data('confirm-delete-heading'),
+            body: $modal.data('confirm-delete-msg').replace('{file}', $attachment.data('title')),
+            closeBtnText: $modal.data('confirm-delete-close-button'),
+            confirmBtnText: $modal.data('confirm-delete-confirm-button'),
             callback: function() {
                 window.location = deleteUrl;
             }
