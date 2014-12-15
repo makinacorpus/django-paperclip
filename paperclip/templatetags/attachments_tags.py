@@ -5,7 +5,9 @@ from django.utils.translation import ugettext_lazy as _
 
 from paperclip.forms import AttachmentForm
 from paperclip.models import Attachment
+from paperclip import app_settings
 
+USE_CRISPY_FORMS = app_settings['USE_CRISPY_FORMS']
 
 register = Library()
 
@@ -19,7 +21,13 @@ def icon_name(value):
     return ext[1:] if ext else 'bin'
 
 
-@register.inclusion_tag('paperclip/_attachment_form.html', takes_context=True)
+if USE_CRISPY_FORMS:
+    attachment_form_tpl_name = 'paperclip/_attachment_form.html'
+else:
+    attachment_form_tpl_name = 'paperclip/_attachment_form_no_crispy.html'
+
+
+@register.inclusion_tag(attachment_form_tpl_name, takes_context=True)
 def attachment_form(context, obj, form=None):
     """
     Renders a "upload attachment" form.
