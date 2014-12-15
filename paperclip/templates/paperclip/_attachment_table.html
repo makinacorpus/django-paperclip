@@ -9,7 +9,9 @@
         <th>{% trans "Actions" %}</th>
     </thead>
     <tbody data-confirm-delete-heading="{% trans "Confirm file deletion" %}"
-           data-confirm-delete-msg="{% trans "Are you sure to delete this file {file} ?" %}">
+           data-confirm-delete-msg="{% trans "Are you sure to delete this file {file} ?" %}"
+           data-confirm-delete-close-button="{% trans "Cancel" %}"
+           data-confirm-delete-confirm-button="{% trans "Delete" %}">
     {% for att in attachments_list %}
     <tr data-id="{{ att.pk }}"
         data-title="{{ att.filename }}">
