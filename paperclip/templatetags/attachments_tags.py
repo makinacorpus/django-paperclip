@@ -41,9 +41,10 @@ def attachment_form(context, obj, form=None):
 
 
 class AttachmentsForObjectNode(Node):
-    def __init__(self, obj, var_name):
+    def __init__(self, obj, var_name, file_type):
         self.obj = obj
         self.var_name = var_name
+        self.file_type = file_type
 
     def resolve(self, var, context):
         """Resolves a variable out of context if it's not in quotes"""
@@ -55,7 +56,19 @@ class AttachmentsForObjectNode(Node):
     def render(self, context):
         obj = self.resolve(self.obj, context)
         var_name = self.resolve(self.var_name, context)
-        context[var_name] = Attachment.objects.attachments_for_object(obj)
+        if self.file_type:
+            file_type = self.resolve(self.file_type, context)
+        else:
+            file_type = None
+
+        if file_type:
+            method = 'attachments_for_object_only_type'
+            args = [obj, file_type]
+        else:
+            method = 'attachments_for_object'
+            args = [obj]
+
+        context[var_name] = getattr(Attachment.objects, method)(*args)
         return ''
 
 
@@ -64,7 +77,8 @@ def get_attachments_for(parser, token):
     """
     Resolves attachments that are attached to a given object. You can specify
     the variable name in the context the attachments are stored using the `as`
-    argument. Default context variable name is `attachments`.
+    argument. Default context variable name is `attachments`. You can filter
+    on a specified FileType with the optional `only_type` argument.
 
     Syntax::
 
@@ -86,5 +100,6 @@ def get_attachments_for(parser, token):
     args = {
         'obj': next_bit_for(bits, 'get_attachments_for'),
         'var_name': next_bit_for(bits, 'as', '"attachments"'),
+        'file_type': next_bit_for(bits, 'only_type'),
     }
     return AttachmentsForObjectNode(**args)
