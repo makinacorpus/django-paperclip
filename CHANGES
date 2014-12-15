@@ -2,10 +2,12 @@
 CHANGELOG
 =========
 
-0.2.3 (unreleased)
+0.2.3 (2014-12-15)
 ==================
 
-- Nothing changed yet.
+- Handle swappable User model
+- Embed spinner, bootstrap-confirm and add a bootstrap-3-confirm
+- Remove crispy_forms dependency
 
 
 0.2.2 (2014-11-14)
