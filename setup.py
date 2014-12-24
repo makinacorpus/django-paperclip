@@ -33,7 +33,6 @@ setup(
     license='LPGL, see LICENSE file.',
     install_requires=[
         'Django',
-        'django-floppyforms',
         'easy-thumbnails',
     ],
     packages=find_packages(),

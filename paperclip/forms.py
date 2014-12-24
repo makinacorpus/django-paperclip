@@ -1,9 +1,7 @@
-# from django import forms
+from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
-
-import floppyforms as forms
 
 from .models import Attachment
 
