@@ -7,15 +7,6 @@ import floppyforms as forms
 
 from .models import Attachment
 
-from paperclip import app_settings
-
-USE_CRISPY_FORMS = app_settings['USE_CRISPY_FORMS']
-
-if USE_CRISPY_FORMS:
-    from crispy_forms.layout import Submit, Button
-    from crispy_forms.helper import FormHelper
-    from crispy_forms.bootstrap import FormActions
-
 
 class AttachmentForm(forms.ModelForm):
 
@@ -64,31 +55,6 @@ class AttachmentForm(forms.ModelForm):
             self.form_url = reverse('update_attachment', kwargs={
                 'attachment_pk': self.instance.pk
             })
-
-        if USE_CRISPY_FORMS:
-
-            self.helper = FormHelper(form=self)
-            self.helper.form_tag = True
-            self.helper.form_class = 'attachment form-horizontal'
-            self.helper.help_text_inline = True
-
-            if self.is_creation:
-                form_actions = [
-                    Submit('submit_attachment',
-                           _('Submit attachment'),
-                           css_class="btn-primary offset1")
-                ]
-            else:
-                form_actions = [
-                    Button('cancel', _('Cancel'), css_class=""),
-                    Submit('submit_attachment',
-                           _('Update attachment'),
-                           css_class="btn-primary offset1")
-                ]
-
-            self.helper.form_action = self.form_url
-            self.helper.layout.fields.append(
-                FormActions(*form_actions, css_class="form-actions"))
 
     def success_url(self):
         return self.cleaned_data.get('next')
