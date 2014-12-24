@@ -19,7 +19,6 @@ import json
 @require_POST
 @permission_required('paperclip.add_attachment', raise_exception=True)
 def add_attachment(request, app_label, module_name, pk,
-                   template_name='paperclip/attachment_form.html',
                    attachment_form=AttachmentForm,
                    extra_context=None):
     model = get_model(app_label, module_name)
@@ -34,7 +33,6 @@ def add_attachment(request, app_label, module_name, pk,
 @require_http_methods(["GET", "POST"])
 @permission_required('paperclip.change_attachment', raise_exception=True)
 def update_attachment(request, attachment_pk,
-                      template_name='paperclip/attachment_form.html',
                       attachment_form=AttachmentForm,
                       extra_context=None):
     attachment = get_object_or_404(Attachment, pk=attachment_pk)
