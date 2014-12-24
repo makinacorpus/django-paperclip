@@ -20,21 +20,22 @@ import json
 @permission_required('paperclip.add_attachment', raise_exception=True)
 def add_attachment(request, app_label, module_name, pk,
                    template_name='paperclip/attachment_form.html',
-                   extra_context={}):
+                   extra_context=None):
     model = get_model(app_label, module_name)
     obj = get_object_or_404(model, pk=pk)
     form = AttachmentForm(request, request.POST, request.FILES,
                           object=obj)
     return _handle_attachment_form(request, obj, form,
                                    _('Add attachment %s'),
-                                   _('Your attachment was uploaded.'))
+                                   _('Your attachment was uploaded.'),
+                                   extra_context)
 
 
 @require_http_methods(["GET", "POST"])
 @permission_required('paperclip.change_attachment', raise_exception=True)
 def update_attachment(request, attachment_pk,
                       template_name='paperclip/attachment_form.html',
-                      extra_context={}):
+                      extra_context=None):
     attachment = get_object_or_404(Attachment, pk=attachment_pk)
     obj = attachment.content_object
     if request.method == 'POST':
@@ -47,10 +48,12 @@ def update_attachment(request, attachment_pk,
                               object=obj)
     return _handle_attachment_form(request, obj, form,
                                    _('Update attachment %s'),
-                                   _('Your attachment was updated.'))
+                                   _('Your attachment was updated.'),
+                                   extra_context)
 
 
-def _handle_attachment_form(request, obj, form, change_msg, success_msg):
+def _handle_attachment_form(request, obj, form, change_msg, success_msg,
+                            extra_context):
     if form.is_valid():
         attachment = form.save(request, obj)
         if app_settings['ACTION_HISTORY_ENABLED']:
@@ -67,10 +70,16 @@ def _handle_attachment_form(request, obj, form, change_msg, success_msg):
 
     template_string = """{% load attachments_tags %}
         {% attachment_form object attachment_form %}"""
+
     context = RequestContext(request)
     context['object'] = obj
     context['attachment_form'] = form
+
+    if extra_context is not None:
+        context.update(extra_context)
+
     t = Template(template_string)
+
     return HttpResponse(t.render(context))
 
 
