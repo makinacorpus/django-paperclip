@@ -21,7 +21,12 @@ def icon_name(value):
 @register.inclusion_tag('paperclip/_attachment_form.html', takes_context=True)
 def attachment_form(context, obj, form=None):
     """
-    Renders a "upload attachment" form.
+    Renders a "upload attachment" form. `obj` argument is required and
+    represents the instance to which you want to associate the file.
+    A bound form can be given optionnaly with the argument ``form``.
+    Important : a ``attachment_form_next`` variable is expected in context.
+    If you want to use a custom form class, you can add
+    ``attachment_form_class`` variable in context too
     """
     # Unbound form by default (this is why a template tag is used!)
     if form is None:

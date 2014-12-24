@@ -5,9 +5,13 @@ CHANGELOG
 0.3.0 (unreleased)
 ==================
 
-** Removed (backward incompatibility) **
+** Removed (WARNING: backward incompatibility) **
 
-* Totally remove crispy_forms and floppy_forms integration
+* Totally remove crispy_forms and floppy_forms integration (you can now override the form by a custom one instead)
+
+** New **
+
+* Allow usage of a custom form
 
 
 0.2.3 (2014-12-15)
