@@ -2,16 +2,20 @@
 CHANGELOG
 =========
 
-0.2.4 (unreleased)
+0.3.0 (unreleased)
 ==================
+
+** Removed (backward incompatibility) **
+
+* Totally remove crispy_forms and floppy_forms integration
 
 
 0.2.3 (2014-12-15)
 ==================
 
-- Handle swappable User model
-- Embed spinner, bootstrap-confirm and add a bootstrap-3-confirm
-- Remove crispy_forms dependency
+* Handle swappable User model
+* Embed spinner, bootstrap-confirm and add a bootstrap-3-confirm
+* Remove crispy_forms dependency
 
 
 0.2.2 (2014-11-14)

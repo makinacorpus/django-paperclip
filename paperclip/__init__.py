@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 
+__version__ = "0.3.0"
 
 app_settings = dict({
     'FILETYPE_MODEL': 'FileType',
