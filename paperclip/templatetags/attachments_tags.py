@@ -27,7 +27,8 @@ def attachment_form(context, obj, form=None):
     if form is None:
         request = context['request']
         next_url = context['attachment_form_next']
-        form = AttachmentForm(request, object=obj, next_url=next_url)
+        form_class = context.get('attachment_form_class', AttachmentForm)
+        form = form_class(request, object=obj, next_url=next_url)
 
     form_title = _("New file attachment")
     if form.instance.pk:

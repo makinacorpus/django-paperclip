@@ -20,11 +20,11 @@ import json
 @permission_required('paperclip.add_attachment', raise_exception=True)
 def add_attachment(request, app_label, module_name, pk,
                    template_name='paperclip/attachment_form.html',
+                   attachment_form=AttachmentForm,
                    extra_context=None):
     model = get_model(app_label, module_name)
     obj = get_object_or_404(model, pk=pk)
-    form = AttachmentForm(request, request.POST, request.FILES,
-                          object=obj)
+    form = attachment_form(request, request.POST, request.FILES, object=obj)
     return _handle_attachment_form(request, obj, form,
                                    _('Add attachment %s'),
                                    _('Your attachment was uploaded.'),
@@ -35,17 +35,20 @@ def add_attachment(request, app_label, module_name, pk,
 @permission_required('paperclip.change_attachment', raise_exception=True)
 def update_attachment(request, attachment_pk,
                       template_name='paperclip/attachment_form.html',
+                      attachment_form=AttachmentForm,
                       extra_context=None):
     attachment = get_object_or_404(Attachment, pk=attachment_pk)
     obj = attachment.content_object
     if request.method == 'POST':
-        form = AttachmentForm(request, request.POST, request.FILES,
-                              instance=attachment,
-                              object=obj)
+        form = attachment_form(
+            request, request.POST, request.FILES,
+            instance=attachment,
+            object=obj)
     else:
-        form = AttachmentForm(request,
-                              instance=attachment,
-                              object=obj)
+        form = attachment_form(
+            request,
+            instance=attachment,
+            object=obj)
     return _handle_attachment_form(request, obj, form,
                                    _('Update attachment %s'),
                                    _('Your attachment was updated.'),
