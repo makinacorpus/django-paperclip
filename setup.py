@@ -34,6 +34,7 @@ setup(
     install_requires=[
         'Django',
         'easy-thumbnails',
+        'django-embed-video',
     ],
     packages=find_packages(),
     include_package_data=True,

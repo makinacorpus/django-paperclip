@@ -9,6 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.template.defaultfilters import slugify
 from django.conf import settings
 
+from embed_video.fields import EmbedVideoField
 from paperclip import app_settings
 
 
@@ -72,9 +73,10 @@ class Attachment(models.Model):
     object_id = models.PositiveIntegerField()
     content_object = generic.GenericForeignKey('content_type', 'object_id')
 
-    attachment_file = models.FileField(_('Attachment'),
+    attachment_file = models.FileField(_('File'), blank=True,
                                        upload_to=attachment_upload,
                                        max_length=512)
+    attachment_video = EmbedVideoField(_('Video/sound'), blank=True)
     filetype = models.ForeignKey(FILETYPE_MODEL, verbose_name=_('File type'))
 
     creator = models.ForeignKey(user_model_fk,

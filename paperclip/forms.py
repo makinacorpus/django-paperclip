@@ -1,6 +1,7 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
 
 from .models import Attachment
@@ -12,7 +13,8 @@ class AttachmentForm(forms.ModelForm):
 
     class Meta:
         model = Attachment
-        fields = ('attachment_file', 'filetype', 'author', 'title', 'legend')
+        fields = ('attachment_file', 'attachment_video', 'filetype', 'author',
+                  'title', 'legend')
 
     def __init__(self, request, *args, **kwargs):
         self._object = kwargs.pop('object', None)
@@ -40,7 +42,6 @@ class AttachmentForm(forms.ModelForm):
         if self.is_creation:
             # Mark file field as mandatory
             file_field = self.fields['attachment_file']
-            file_field.widget.attrs['required'] = 'required'
 
             self.form_url = reverse('add_attachment', kwargs={
                 'app_label': self._object._meta.app_label,
@@ -53,6 +54,15 @@ class AttachmentForm(forms.ModelForm):
             self.form_url = reverse('update_attachment', kwargs={
                 'attachment_pk': self.instance.pk
             })
+
+    def clean(self):
+        if (not self.cleaned_data['attachment_file'] and
+            not self.cleaned_data['attachment_video']):
+            raise ValidationError(_(u"One of file or video is required"))
+        if (self.cleaned_data['attachment_file'] and
+            self.cleaned_data['attachment_video']):
+            raise ValidationError(_(u"Only one of file or video is required"))
+        return self.cleaned_data
 
     def success_url(self):
         return self.cleaned_data.get('next')
