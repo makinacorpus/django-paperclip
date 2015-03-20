@@ -5,20 +5,20 @@
             $('#div_id_attachment_file').hide();
             $('#id_embed_2').prop("checked", true);
         } else {
-            $('#id_attachment_file').prop('required', true);
+            $('.create #id_attachment_file').prop('required', true);
             $('#div_id_attachment_video').hide();
             $('#id_embed_1').prop("checked", true);
         }
     }
     init_mode();
     $('.file-attachment-form').on('click', '#id_embed_1', function () {
-        $('#id_attachment_file').prop('required', true);
+        $('.create #id_attachment_file').prop('required', true);
         $('#id_attachment_video').removeAttr('required');
         $('#div_id_attachment_file').show();
         $('#div_id_attachment_video').hide();
     });
     $('.file-attachment-form').on('click', '#id_embed_2', function () {
-        $('#id_attachment_file').removeAttr('required');
+        $('.create #id_attachment_file').removeAttr('required');
         $('#id_attachment_video').prop('required', true);
         $('#div_id_attachment_file').hide();
         $('#div_id_attachment_video').show();

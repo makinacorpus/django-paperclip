@@ -43,6 +43,8 @@ class AttachmentForm(forms.ModelForm):
         self.fields['author'].widget.attrs['pattern'] = '^\S.*'
         self.fields['legend'].widget.attrs['pattern'] = '^\S.*'
 
+        self.fields['attachment_file'].widget = forms.FileInput()
+
         next_url = request.POST.get('next') or next_url
         next_url = next_url or request.GET.get('next', '/')
         self.fields['next'].initial = next_url
