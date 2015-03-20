@@ -76,7 +76,8 @@ class Attachment(models.Model):
     attachment_file = models.FileField(_('File'), blank=True,
                                        upload_to=attachment_upload,
                                        max_length=512)
-    attachment_video = EmbedVideoField(_('Video/sound'), blank=True)
+    if app_settings['ENABLE_VIDEO']:
+        attachment_video = EmbedVideoField(_('URL'), blank=True)
     filetype = models.ForeignKey(FILETYPE_MODEL, verbose_name=_('File type'))
 
     creator = models.ForeignKey(user_model_fk,

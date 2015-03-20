@@ -1,20 +1,29 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
-from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
 
+from paperclip import app_settings
 from .models import Attachment
 
 
 class AttachmentForm(forms.ModelForm):
 
+    if app_settings['ENABLE_VIDEO']:
+        embed = forms.ChoiceField(label=_(u"Mode"),
+                                choices=((False, _('File')),
+                                        (True, _('Youtube/Soundcloud URL'))),
+                                widget=forms.RadioSelect(), initial=False)
     next = forms.CharField(widget=forms.HiddenInput())
 
     class Meta:
         model = Attachment
-        fields = ('attachment_file', 'attachment_video', 'filetype', 'author',
-                  'title', 'legend')
+        if app_settings['ENABLE_VIDEO']:
+            fields = ('embed', 'attachment_file', 'attachment_video',
+                      'filetype', 'author', 'title', 'legend')
+        else:
+            fields = ('attachment_file', 'filetype', 'author', 'title',
+                      'legend')
 
     def __init__(self, request, *args, **kwargs):
         self._object = kwargs.pop('object', None)
@@ -40,9 +49,6 @@ class AttachmentForm(forms.ModelForm):
         self.is_creation = not self.instance.pk
 
         if self.is_creation:
-            # Mark file field as mandatory
-            file_field = self.fields['attachment_file']
-
             self.form_url = reverse('add_attachment', kwargs={
                 'app_label': self._object._meta.app_label,
                 'module_name': self._object._meta.module_name,
@@ -56,13 +62,13 @@ class AttachmentForm(forms.ModelForm):
             })
 
     def clean(self):
-        if (not self.cleaned_data['attachment_file'] and
-            not self.cleaned_data['attachment_video']):
-            raise ValidationError(_(u"One of file or video is required"))
-        if (self.cleaned_data['attachment_file'] and
-            self.cleaned_data['attachment_video']):
-            raise ValidationError(_(u"Only one of file or video is required"))
-        return self.cleaned_data
+        cleaned_data = super(AttachmentForm, self).clean()
+        if app_settings['ENABLE_VIDEO']:
+            if cleaned_data['embed'] == 'True':
+                cleaned_data['attachment_file'] = ''
+            else:
+                cleaned_data['attachment_video'] = ''
+        return cleaned_data
 
     def success_url(self):
         return self.cleaned_data.get('next')

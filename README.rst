@@ -20,6 +20,18 @@ Installing from github
 
     pip install -e git://github.com/makinacorpus/django-paperclip.git#egg=django-paperclip
 
+=======
+UPGRADE
+=======
+
+After upgrade to 0.4.0, if you want to enable links to Youtube/Soundcould media,
+you have to add an additional column to the database:
+
+::
+
+    ALTER TABLE paperclip_attachment ADD COLUMN attachment_video VARCHAR(200) NOT NULL DEFAULT '';
+
+
 ===========
 BASIC USAGE
 ===========
@@ -52,6 +64,22 @@ If you use bootstrap 3, please include ``paperclip/bootstrap-3-confirm.js`` inst
 ::
 
     {% include 'paperclip/attachment_list.html' with object=my_instance attachment_form_next=my_instance.get_detail_url %}
+
+
+=============
+CONFIGURATION
+=============
+
+You can define the following django setting:
+
+::
+
+    PAPERCLIP_CONFIG = {
+        'ENABLE_VIDEO': False,
+        'FILETYPE_MODEL': 'FileType',
+        'ATTACHMENT_TABLE_NAME': 'paperclip_attachment',
+        'ACTION_HISTORY_ENABLED': True,
+    }
 
 
 =========
