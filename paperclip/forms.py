@@ -10,10 +10,11 @@ from .models import Attachment
 class AttachmentForm(forms.ModelForm):
 
     if app_settings['ENABLE_VIDEO']:
-        embed = forms.ChoiceField(label=_(u"Mode"),
-                                choices=((False, _('File')),
-                                        (True, _('Youtube/Soundcloud URL'))),
-                                widget=forms.RadioSelect(), initial=False)
+        embed = forms.ChoiceField(
+            label=_(u"Mode"),
+            choices=((False, _('File')),
+                     (True, _('Youtube/Soundcloud URL'))),
+            widget=forms.RadioSelect(), initial=False)
     next = forms.CharField(widget=forms.HiddenInput())
 
     class Meta:
