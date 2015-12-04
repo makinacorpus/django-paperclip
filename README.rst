@@ -53,9 +53,9 @@ BASIC USAGE
 
 ::
 
-    <script src="{% static "paperclip/bootstrap-confirm.js" %}" type="text/javascript"></script> 
-    <script src="{% static "paperclip/spin.min.js" %}" type="text/javascript"></script> 
-    <script src="{% static "paperclip/paperclip.js" %}" type="text/javascript"></script> 
+    <script src="{% static "paperclip/bootstrap-confirm.js" %}" type="text/javascript"></script>
+    <script src="{% static "paperclip/spin.min.js" %}" type="text/javascript"></script>
+    <script src="{% static "paperclip/paperclip.js" %}" type="text/javascript"></script>
 
 If you use bootstrap 3, please include ``paperclip/bootstrap-3-confirm.js`` instead of ``paperclip/bootstrap-confirm.js``.
 
@@ -182,6 +182,18 @@ Note: To be sure to not break the form logic, we recommend to inherit from the n
 
 
 Note: Be sure to write these URLs after having included paperclip URLs.
+
+=======
+CLEANUP
+=======
+
+Deleting or changing an attachment does not remove the old attached file from disk.
+From time to time you can clean obsolete files by running:
+
+::
+
+    ./manage.py clean_attachments
+
 
 =======
 AUTHORS
