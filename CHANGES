@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+0.6.0
+==================
+
+** BREAKING CHANGES **
+
+* Remove support of Django <= 1.7
+* Rename parameter 'module_name' as 'model_name' in urls
+
+** New **
+
+* Support Django 1.8
+* Add initial migration (Caution! it depends on app settings)
+
+
 0.5.0 (2016-01-11)
 ==================
 

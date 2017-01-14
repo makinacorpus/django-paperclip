@@ -97,7 +97,7 @@ def get_attachments_for(parser, token):
     """
     def next_bit_for(bits, key, if_none=None):
         try:
-            return bits[bits.index(key)+1]
+            return bits[bits.index(key) + 1]
         except ValueError:
             return if_none
 

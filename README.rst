@@ -168,7 +168,7 @@ Note: To be sure to not break the form logic, we recommend to inherit from the n
         url(r'^paperclip/', include('paperclip.urls')),
         ...
         url(r'^add-for/(?P<app_label>[\w\-]+)/'
-            r'(?P<module_name>[\w\-]+)/(?P<pk>\d+)/$',
+            r'(?P<model_name>[\w\-]+)/(?P<pk>\d+)/$',
             'paperclip.views.add_attachment',
             kwargs={'attachment_form': MyAttachmentForm},
             name="add_attachment"),

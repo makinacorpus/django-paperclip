@@ -4,7 +4,7 @@ from paperclip import views
 urlpatterns = patterns(
     '',
     url(r'^add-for/(?P<app_label>[\w\-]+)/'
-        r'(?P<module_name>[\w\-]+)/(?P<pk>\d+)/$',
+        r'(?P<model_name>[\w\-]+)/(?P<pk>\d+)/$',
         views.add_attachment,
         name="add_attachment"),
     url(r'^update/(?P<attachment_pk>\d+)/$',
@@ -16,7 +16,7 @@ urlpatterns = patterns(
     url(r'^star/(?P<attachment_pk>\d+)/$',
         views.star_attachment,
         name="star_attachment"),
-    url(r'^get/(?P<app_label>[\w\-]+)/(?P<module_name>[\w\-]+)/(?P<pk>\d+)/$',
+    url(r'^get/(?P<app_label>[\w\-]+)/(?P<model_name>[\w\-]+)/(?P<pk>\d+)/$',
         views.get_attachments,
         name="get_attachments"),
 )

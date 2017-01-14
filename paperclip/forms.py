@@ -54,7 +54,7 @@ class AttachmentForm(forms.ModelForm):
         if self.is_creation:
             self.form_url = reverse('add_attachment', kwargs={
                 'app_label': self._object._meta.app_label,
-                'module_name': self._object._meta.module_name,
+                'model_name': self._object._meta.model_name,
                 'pk': self._object.pk
             })
         else:

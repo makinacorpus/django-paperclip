@@ -18,10 +18,10 @@ import json
 
 @require_POST
 @permission_required('paperclip.add_attachment', raise_exception=True)
-def add_attachment(request, app_label, module_name, pk,
+def add_attachment(request, app_label, model_name, pk,
                    attachment_form=AttachmentForm,
                    extra_context=None):
-    model = get_model(app_label, module_name)
+    model = get_model(app_label, model_name)
     obj = get_object_or_404(model, pk=pk)
     form = attachment_form(request, request.POST, request.FILES, object=obj)
     return _handle_attachment_form(request, obj, form,
@@ -135,10 +135,10 @@ def star_attachment(request, attachment_pk):
 
 
 @permission_required('paperclip.read_attachment', raise_exception=True)
-def get_attachments(request, app_label, module_name, pk):
+def get_attachments(request, app_label, model_name, pk):
 
     try:
-        ct = ContentType.objects.get_by_natural_key(app_label, module_name)
+        ct = ContentType.objects.get_by_natural_key(app_label, model_name)
     except ContentType.DoesNotExist:
         raise Http404
     attachments = Attachment.objects.filter(content_type=ct, object_id=pk)

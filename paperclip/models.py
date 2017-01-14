@@ -54,7 +54,7 @@ def attachment_upload(instance, filename):
     renamed = slugify(instance.title or name) + ext
     return 'paperclip/%s/%s/%s' % (
         '%s_%s' % (instance.content_object._meta.app_label,
-                   instance.content_object._meta.object_name.lower()),
+                   instance.content_object._meta.model_name),
         instance.content_object.pk,
         renamed)
 
