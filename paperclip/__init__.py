@@ -1,6 +1,6 @@
 from django.conf import settings
 
-__version__ = "1.0.0"
+__version__ = "1.0.1-dev"
 
 app_settings = dict({
     'ENABLE_VIDEO': False,
