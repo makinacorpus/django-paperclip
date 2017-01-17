@@ -3,13 +3,13 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
 
-from paperclip import app_settings
+from paperclip import settings
 from .models import Attachment
 
 
 class AttachmentForm(forms.ModelForm):
 
-    if app_settings['ENABLE_VIDEO']:
+    if settings.PAPERCLIP_ENABLE_VIDEO:
         embed = forms.ChoiceField(
             label=_(u"Mode"),
             choices=((False, _('File')),
@@ -19,7 +19,7 @@ class AttachmentForm(forms.ModelForm):
 
     class Meta:
         model = Attachment
-        if app_settings['ENABLE_VIDEO']:
+        if settings.PAPERCLIP_ENABLE_VIDEO:
             fields = ('embed', 'attachment_file', 'attachment_video',
                       'filetype', 'author', 'title', 'legend')
         else:
@@ -66,7 +66,7 @@ class AttachmentForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super(AttachmentForm, self).clean()
-        if app_settings['ENABLE_VIDEO']:
+        if settings.PAPERCLIP_ENABLE_VIDEO:
             if cleaned_data['embed'] == 'True':
                 cleaned_data['attachment_file'] = ''
             else:

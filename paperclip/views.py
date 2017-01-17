@@ -10,7 +10,7 @@ from django.contrib.auth.decorators import permission_required
 from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
 
-from paperclip import app_settings
+from paperclip import settings
 from .models import Attachment
 from .forms import AttachmentForm
 import json
@@ -57,7 +57,7 @@ def _handle_attachment_form(request, obj, form, change_msg, success_msg,
                             extra_context):
     if form.is_valid():
         attachment = form.save(request, obj)
-        if app_settings['ACTION_HISTORY_ENABLED']:
+        if settings.PAPERCLIP_ACTION_HISTORY_ENABLED:
             LogEntry.objects.log_action(
                 user_id=request.user.pk,
                 content_type_id=attachment.content_type.id,
@@ -92,7 +92,7 @@ def delete_attachment(request, attachment_pk):
         request.user == g.creator)
     if can_delete:
         g.delete()
-        if app_settings['ACTION_HISTORY_ENABLED']:
+        if settings.PAPERCLIP_ACTION_HISTORY_ENABLED:
             LogEntry.objects.log_action(
                 user_id=request.user.pk,
                 content_type_id=g.content_type.id,
@@ -118,7 +118,7 @@ def star_attachment(request, attachment_pk):
         change_message = _('Star attachment %s')
     else:
         change_message = _('Unstar attachment %s')
-    if app_settings['ACTION_HISTORY_ENABLED']:
+    if settings.PAPERCLIP_ACTION_HISTORY_ENABLED:
         LogEntry.objects.log_action(
             user_id=request.user.pk,
             content_type_id=g.content_type.id,

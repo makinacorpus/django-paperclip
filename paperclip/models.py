@@ -10,17 +10,14 @@ from django.template.defaultfilters import slugify
 from django.conf import settings
 
 from embed_video.fields import EmbedVideoField
-from paperclip import app_settings
-
-
-FILETYPE_MODEL = app_settings['FILETYPE_MODEL']
+from paperclip.settings import PAPERCLIP_FILETYPE_MODEL, PAPERCLIP_ATTACHMENT_MODEL, PAPERCLIP_ENABLE_VIDEO
 
 
 class FileType(models.Model):
     type = models.CharField(max_length=128, verbose_name=_("File type"))
 
     class Meta:
-        abstract = FILETYPE_MODEL != 'FileType'
+        abstract = PAPERCLIP_FILETYPE_MODEL != 'paperclip.FileType'
         verbose_name = _(u"File type")
         verbose_name_plural = _(u"File types")
         ordering = ['type']
@@ -59,12 +56,6 @@ def attachment_upload(instance, filename):
         renamed)
 
 
-if hasattr(settings, 'AUTH_USER_MODEL'):
-    user_model_fk = settings.AUTH_USER_MODEL
-else:
-    user_model_fk = 'auth.User'
-
-
 class Attachment(models.Model):
 
     objects = AttachmentManager()
@@ -76,11 +67,11 @@ class Attachment(models.Model):
     attachment_file = models.FileField(_('File'), blank=True,
                                        upload_to=attachment_upload,
                                        max_length=512)
-    if app_settings['ENABLE_VIDEO']:
+    if PAPERCLIP_ENABLE_VIDEO:
         attachment_video = EmbedVideoField(_('URL'), blank=True)
-    filetype = models.ForeignKey(FILETYPE_MODEL, verbose_name=_('File type'))
+    filetype = models.ForeignKey(PAPERCLIP_FILETYPE_MODEL, verbose_name=_('File type'))
 
-    creator = models.ForeignKey(user_model_fk,
+    creator = models.ForeignKey(settings.AUTH_USER_MODEL,
                                 related_name="created_attachments",
                                 verbose_name=_('Creator'),
                                 help_text=_("User that uploaded"))
@@ -103,7 +94,7 @@ class Attachment(models.Model):
                                        verbose_name=_(u"Update date"))
 
     class Meta:
-        db_table = app_settings['ATTACHMENT_TABLE_NAME']
+        abstract = PAPERCLIP_ATTACHMENT_MODEL != 'paperclip.Attachment'
         ordering = ['-date_insert']
         verbose_name = _(u"Attachment")
         verbose_name_plural = _(u"Attachments")
