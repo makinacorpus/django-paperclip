@@ -20,7 +20,7 @@ setup(
         'easy-thumbnails',
         'django-embed-video',
     ],
-    packages=find_packages(),
+    packages=find_packages(include=('paperclip', )),
     include_package_data=True,
     zip_safe=False,
     classifiers=['Topic :: Utilities',
