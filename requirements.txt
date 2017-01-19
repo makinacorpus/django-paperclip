@@ -1,0 +1,6 @@
+Django==1.8.17
+django-embed-video==1.1.0
+easy-thumbnails==2.3
+olefile==0.44
+Pillow==4.0.0
+requests==2.12.4
