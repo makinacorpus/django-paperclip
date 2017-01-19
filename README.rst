@@ -36,18 +36,17 @@ you have to add an additional column to the database:
 BASIC USAGE
 ===========
 
-* Add ``paperclip`` to ``INSTALLED_APPS``
+* Add ``easy_thumbnails``, ``embed_video`` and ``paperclip`` to ``INSTALLED_APPS``
 
 * Include urls
 
 ::
 
-    urlpatterns = patterns(
-        '',
+    urlpatterns = [
         ...
         url(r'^paperclip/', include('paperclip.urls')),
         ...
-    )
+    ]
 
 * Include scripts in template
 
@@ -74,12 +73,10 @@ You can define the following django setting:
 
 ::
 
-    PAPERCLIP_CONFIG = {
-        'ENABLE_VIDEO': False,
-        'FILETYPE_MODEL': 'FileType',
-        'ATTACHMENT_TABLE_NAME': 'paperclip_attachment',
-        'ACTION_HISTORY_ENABLED': True,
-    }
+PAPERCLIP_ENABLE_VIDEO = False,
+PAPERCLIP_FILETYPE_MODEL = 'paperclip.FileType'
+PAPERCLIP_ATTACHMENT_MODEL = 'paperclip.Attachment'
+PAPERCLIP_ACTION_HISTORY_ENABLED = True
 
 
 =========
@@ -163,8 +160,7 @@ Note: To be sure to not break the form logic, we recommend to inherit from the n
 
     from my_app.forms import MyAttachmentForm
 
-    urlpatterns = patterns(
-        '',
+    urlpatterns = [
         url(r'^paperclip/', include('paperclip.urls')),
         ...
         url(r'^add-for/(?P<app_label>[\w\-]+)/'
@@ -178,7 +174,7 @@ Note: To be sure to not break the form logic, we recommend to inherit from the n
             kwargs={'attachment_form': MyAttachmentForm},
             name="update_attachment"),
         ...
-    )
+    ]
 
 
 Note: Be sure to write these URLs after having included paperclip URLs.
