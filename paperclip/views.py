@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404
 from django.views.decorators.http import require_POST, require_http_methods
 from django.http import HttpResponseRedirect, HttpResponse, Http404
-from django.db.models.loading import get_model
+from django.apps import apps
 from django.utils.encoding import force_text
 from django.utils.translation import ugettext_lazy as _
 from django.template import RequestContext, Template
@@ -21,7 +21,7 @@ import json
 def add_attachment(request, app_label, model_name, pk,
                    attachment_form=AttachmentForm,
                    extra_context=None):
-    model = get_model(app_label, model_name)
+    model = apps.get_model(app_label, model_name)
     obj = get_object_or_404(model, pk=pk)
     form = attachment_form(request, request.POST, request.FILES, object=obj)
     return _handle_attachment_form(request, obj, form,
