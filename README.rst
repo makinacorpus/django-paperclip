@@ -64,19 +64,28 @@ If you use bootstrap 3, please include ``paperclip/bootstrap-3-confirm.js`` inst
 
     {% include 'paperclip/attachment_list.html' with object=my_instance attachment_form_next=my_instance.get_detail_url %}
 
+* Add paperclip models in one of your apps
 
-=============
-CONFIGURATION
-=============
+::
 
-You can define the following django setting:
+    class FileType(paperclip.FileType):
+        pass
+
+    class Attachment(paperclip.Attachment):
+        pass
+
+* Configure
+
+Define the following django setting:
 
 ::
 
 PAPERCLIP_ENABLE_VIDEO = False,
-PAPERCLIP_FILETYPE_MODEL = 'paperclip.FileType'
-PAPERCLIP_ATTACHMENT_MODEL = 'paperclip.Attachment'
+PAPERCLIP_FILETYPE_MODEL = 'myapp.FileType'
+PAPERCLIP_ATTACHMENT_MODEL = 'myapp.Attachment'
 PAPERCLIP_ACTION_HISTORY_ENABLED = True
+
+* Make migration and migrate
 
 
 =========
