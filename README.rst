@@ -68,10 +68,10 @@ If you use bootstrap 3, please include ``paperclip/bootstrap-3-confirm.js`` inst
 
 ::
 
-    class FileType(paperclip.FileType):
+    class FileType(paperclip.models.FileType):
         pass
 
-    class Attachment(paperclip.Attachment):
+    class Attachment(paperclip.models.Attachment):
         pass
 
 * Configure

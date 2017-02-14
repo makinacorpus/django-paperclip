@@ -17,7 +17,7 @@ class FileType(models.Model):
     type = models.CharField(max_length=128, verbose_name=_("File type"))
 
     class Meta:
-        abstract = PAPERCLIP_FILETYPE_MODEL != 'paperclip.FileType'
+        abstract = True
         verbose_name = _(u"File type")
         verbose_name_plural = _(u"File types")
         ordering = ['type']
@@ -94,7 +94,7 @@ class Attachment(models.Model):
                                        verbose_name=_(u"Update date"))
 
     class Meta:
-        abstract = PAPERCLIP_ATTACHMENT_MODEL != 'paperclip.Attachment'
+        abstract = True
         ordering = ['-date_insert']
         verbose_name = _(u"Attachment")
         verbose_name_plural = _(u"Attachments")
