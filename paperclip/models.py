@@ -10,7 +10,7 @@ from django.template.defaultfilters import slugify
 from django.conf import settings
 
 from embed_video.fields import EmbedVideoField
-from paperclip.settings import PAPERCLIP_FILETYPE_MODEL, PAPERCLIP_ATTACHMENT_MODEL, PAPERCLIP_ENABLE_VIDEO
+from paperclip.settings import PAPERCLIP_ENABLE_VIDEO, PAPERCLIP_FILETYPE_MODEL
 
 
 class FileType(models.Model):
@@ -98,7 +98,11 @@ class Attachment(models.Model):
         ordering = ['-date_insert']
         verbose_name = _(u"Attachment")
         verbose_name_plural = _(u"Attachments")
+        default_permissions = ()
         permissions = (
+            ('add_attachment', _('Can add attachments')),
+            ('change_attachment', _('Can change attachments')),
+            ('delete_attachment', _('Can delete attachments')),
             ('read_attachment', _('Can read attachments')),
             ('delete_attachment_others', _("Can delete others' attachments")),
         )

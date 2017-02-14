@@ -3,7 +3,7 @@
 <div class="file-attachment file-attachment-detail">
     <h3>{% trans "Attached files" %}</h3>
 
-    {% if 'paperclip.read_attachment' in perms %}
+    {% if perms|read_attachment %}
 
         {% get_attachments_for object as "attachments_list" %}
         {% if attachments_list %}
@@ -17,7 +17,7 @@
     {% endif %}
 </div>
 
-{% if 'paperclip.add_attachment' in perms %}
+{% if perms|add_attachment %}
 <div class="file-attachment-form">
     <div class="create">
     {% attachment_form object %}

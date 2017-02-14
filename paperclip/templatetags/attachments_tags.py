@@ -4,9 +4,21 @@ from django.template import Library, Node, Variable
 from django.utils.translation import ugettext_lazy as _
 
 from paperclip.forms import AttachmentForm
-from paperclip.models import Attachment
+from paperclip import settings
 
 register = Library()
+
+
+@register.filter
+def read_attachment(perms):
+    perm = settings.get_attachment_permission('read')
+    return perm in perms
+
+
+@register.filter
+def add_attachment(perms):
+    perm = settings.get_attachment_permission('add')
+    return perm in perms
 
 
 @register.filter
@@ -73,7 +85,7 @@ class AttachmentsForObjectNode(Node):
             method = 'attachments_for_object'
             args = [obj]
 
-        context[var_name] = getattr(Attachment.objects, method)(*args)
+        context[var_name] = getattr(settings.get_attachment_model().objects, method)(*args)
         return ''
 
 

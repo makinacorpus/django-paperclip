@@ -1,11 +1,11 @@
 from django.contrib import admin
+from paperclip import settings
 from paperclip.admin import AttachmentInlines
-from paperclip.models import FileType, Attachment
 from .models import TestObject
 
 
-admin.site.register(FileType)
-admin.site.register(Attachment)
+admin.site.register(settings.get_filetype_model())
+admin.site.register(settings.get_attachment_model())
 
 
 @admin.register(TestObject)

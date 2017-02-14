@@ -4,7 +4,6 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
 
 from paperclip import settings
-from .models import Attachment
 
 
 class AttachmentForm(forms.ModelForm):
@@ -18,7 +17,7 @@ class AttachmentForm(forms.ModelForm):
     next = forms.CharField(widget=forms.HiddenInput())
 
     class Meta:
-        model = Attachment
+        model = settings.get_attachment_model()
         if settings.PAPERCLIP_ENABLE_VIDEO:
             fields = ('embed', 'attachment_file', 'attachment_video',
                       'filetype', 'author', 'title', 'legend')

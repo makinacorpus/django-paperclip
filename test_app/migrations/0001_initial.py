@@ -2,30 +2,58 @@
 from __future__ import unicode_literals
 
 from django.db import migrations, models
+import embed_video.fields
+from django.conf import settings
+import paperclip.models
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('paperclip', '__first__'),
+        ('contenttypes', '0002_remove_content_type_name'),
+        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='TestAttachment',
+            name='Attachment',
             fields=[
-                ('attachment_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='paperclip.Attachment')),
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('object_id', models.PositiveIntegerField()),
+                ('attachment_file', models.FileField(upload_to=paperclip.models.attachment_upload, max_length=512, verbose_name='File', blank=True)),
+                ('attachment_video', embed_video.fields.EmbedVideoField(verbose_name='URL', blank=True)),
+                ('author', models.CharField(db_column=b'auteur', default=b'', max_length=128, blank=True, help_text='Original creator', verbose_name='Author')),
+                ('title', models.CharField(db_column=b'titre', default=b'', max_length=128, blank=True, help_text='Renames the file', verbose_name='Filename')),
+                ('legend', models.CharField(db_column=b'legende', default=b'', max_length=128, blank=True, help_text='Details displayed', verbose_name='Legend')),
+                ('starred', models.BooleanField(default=False, help_text='Mark as starred', verbose_name='Starred', db_column=b'marque')),
+                ('date_insert', models.DateTimeField(auto_now_add=True, verbose_name='Insertion date')),
+                ('date_update', models.DateTimeField(auto_now=True, verbose_name='Update date')),
                 ('foo', models.CharField(max_length=100)),
+                ('content_type', models.ForeignKey(to='contenttypes.ContentType')),
+                ('creator', models.ForeignKey(related_name='created_attachments', verbose_name='Creator', to=settings.AUTH_USER_MODEL, help_text='User that uploaded')),
             ],
-            bases=('paperclip.attachment',),
+            options={
+                'ordering': ['-date_insert'],
+                'abstract': False,
+                'verbose_name_plural': 'Attachments',
+                'default_permissions': (),
+                'verbose_name': 'Attachment',
+                'permissions': (('add_attachment', 'Can add attachments'), ('change_attachment', 'Can change attachments'), ('delete_attachment', 'Can delete attachments'), ('read_attachment', 'Can read attachments'), ('delete_attachment_others', "Can delete others' attachments")),
+            },
         ),
         migrations.CreateModel(
-            name='TestFiletype',
+            name='Filetype',
             fields=[
-                ('filetype_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='paperclip.FileType')),
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('type', models.CharField(max_length=128, verbose_name='File type')),
                 ('foo', models.CharField(max_length=100)),
             ],
-            bases=('paperclip.filetype',),
+            options={
+                'ordering': ['type'],
+                'abstract': False,
+                'verbose_name': 'File type',
+                'verbose_name_plural': 'File types',
+            },
         ),
         migrations.CreateModel(
             name='TestObject',
@@ -33,5 +61,10 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('name', models.CharField(max_length=100)),
             ],
+        ),
+        migrations.AddField(
+            model_name='attachment',
+            name='filetype',
+            field=models.ForeignKey(verbose_name='File type', to='test_app.Filetype'),
         ),
     ]

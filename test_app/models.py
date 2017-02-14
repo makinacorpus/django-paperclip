@@ -1,5 +1,5 @@
 from django.db import models
-from paperclip.models import FileType, Attachment
+from paperclip.models import FileType as BaseFileType, Attachment as BaseAttachment
 
 
 class TestObject(models.Model):
@@ -9,9 +9,9 @@ class TestObject(models.Model):
         return self.name
 
 
-class TestFiletype(FileType):
+class Filetype(BaseFileType):
     foo = models.CharField(max_length=100)
 
 
-class TestAttachment(Attachment):
+class Attachment(BaseAttachment):
     foo = models.CharField(max_length=100)

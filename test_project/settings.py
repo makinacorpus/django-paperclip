@@ -106,3 +106,5 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 PAPERCLIP_ENABLE_VIDEO = True
+PAPERCLIP_FILETYPE_MODEL = 'test_app.FileType'
+PAPERCLIP_ATTACHMENT_MODEL = 'test_app.Attachment'

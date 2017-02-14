@@ -4,7 +4,7 @@ from optparse import make_option
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 from django.utils.six.moves import input
-from paperclip.models import Attachment
+from paperclip.settings import get_attachment_model
 
 
 PAPERCLIP_ROOT = os.path.join(settings.MEDIA_ROOT, 'paperclip')
@@ -38,7 +38,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         interactive = options['interactive']
         verbosity = int(options.get('verbosity', 1))
-        files = Attachment.objects.order_by('attachment_file')
+        files = get_attachment_model().objects.order_by('attachment_file')
         files = files.values_list('attachment_file', flat=True)
         to_keep = [os.path.join(settings.MEDIA_ROOT, path)
                    for f in files for path in splits(f)]
