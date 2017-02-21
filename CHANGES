@@ -2,10 +2,13 @@
 CHANGELOG
 =========
 
-1.0.1-dev
+2.0.0 (2017-02-21)
 ==================
 
-*
+** BREAKING CHANGES **
+
+* Provide an abstract model. Users are required to define their own
+  Attachment model
 
 
 1.0.0 (2017-01-14)
