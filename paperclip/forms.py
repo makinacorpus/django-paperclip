@@ -24,14 +24,8 @@ class AttachmentForm(forms.ModelForm):
 
     class Meta:
         model = settings.get_attachment_model()
-        if settings.PAPERCLIP_ENABLE_VIDEO and not settings.PAPERCLIP_ENABLE_LINK:
+        if settings.PAPERCLIP_ENABLE_VIDEO or settings.PAPERCLIP_ENABLE_LINK:
             fields = ('embed', 'attachment_file', 'attachment_video',
-                      'filetype', 'author', 'title', 'legend')
-        elif settings.PAPERCLIP_ENABLE_VIDEO and settings.PAPERCLIP_ENABLE_LINK:
-            fields = ('embed', 'attachment_file', 'attachment_video', 'attachment_link',
-                      'filetype', 'author', 'title', 'legend')
-        elif settings.PAPERCLIP_ENABLE_LINK and not settings.PAPERCLIP_ENABLE_VIDEO:
-            fields = ('embed', 'attachment_file', 'attachment_link',
                       'filetype', 'author', 'title', 'legend')
         else:
             fields = ('attachment_file', 'filetype', 'author', 'title',
@@ -82,7 +76,6 @@ class AttachmentForm(forms.ModelForm):
                 cleaned_data['attachment_file'] = ''
             else:
                 cleaned_data['attachment_video'] = ''
-                cleaned_data['attachment_link'] = ''
         return cleaned_data
 
     def success_url(self):
