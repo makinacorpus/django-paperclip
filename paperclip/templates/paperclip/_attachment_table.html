@@ -28,7 +28,7 @@
                 </a>
                 {% endvideo %}
             {% elif att.attachment_link %}
-                {{ att.attachment_link }}
+                <img class="img-polaroid" src="{{ att.attachment_link }}" alt="{{ att.title|default:att.filename }}" title="{{ att.title|default:att.filename }}">
             {% else %}
 
             {% endif %}
