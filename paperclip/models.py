@@ -1,25 +1,28 @@
-import os
+from __future__ import unicode_literals
+
 import mimetypes
+import os
 
-from django.db import models
-
-from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes.fields import GenericForeignKey
-from django.utils.translation import ugettext_lazy as _
-from django.template.defaultfilters import slugify
 from django.conf import settings
-
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
+from django.db import models
+from django.template.defaultfilters import slugify
+from django.utils.encoding import python_2_unicode_compatible
+from django.utils.translation import ugettext_lazy as _
 from embed_video.fields import EmbedVideoField
-from paperclip.settings import PAPERCLIP_ENABLE_VIDEO, PAPERCLIP_FILETYPE_MODEL
+
+from paperclip.settings import PAPERCLIP_ENABLE_VIDEO, PAPERCLIP_FILETYPE_MODEL, PAPERCLIP_ENABLE_LINK
 
 
+@python_2_unicode_compatible
 class FileType(models.Model):
     type = models.CharField(max_length=128, verbose_name=_("File type"))
 
     class Meta:
         abstract = True
-        verbose_name = _(u"File type")
-        verbose_name_plural = _(u"File types")
+        verbose_name = _("File type")
+        verbose_name_plural = _("File types")
         ordering = ['type']
 
     @classmethod
@@ -27,12 +30,12 @@ class FileType(models.Model):
         # request ignored by default
         return cls.objects.all()
 
-    def __unicode__(self):
+    def __str__(self):
         return self.type
 
 
+@python_2_unicode_compatible
 class AttachmentManager(models.Manager):
-
     def attachments_for_object(self, obj):
         object_type = ContentType.objects.get_for_model(obj)
         return self.filter(content_type__pk=object_type.id,
@@ -56,8 +59,8 @@ def attachment_upload(instance, filename):
         renamed)
 
 
+@python_2_unicode_compatible
 class Attachment(models.Model):
-
     objects = AttachmentManager()
 
     content_type = models.ForeignKey(ContentType)
@@ -68,7 +71,9 @@ class Attachment(models.Model):
                                        upload_to=attachment_upload,
                                        max_length=512)
     if PAPERCLIP_ENABLE_VIDEO:
-        attachment_video = EmbedVideoField(_('URL'), blank=True)
+        attachment_video = EmbedVideoField(_('Video URL'), blank=True)
+    if PAPERCLIP_ENABLE_LINK:
+        attachment_link = models.URLField(_('Picture URL'), blank=True)
     filetype = models.ForeignKey(PAPERCLIP_FILETYPE_MODEL, verbose_name=_('File type'))
 
     creator = models.ForeignKey(settings.AUTH_USER_MODEL,
@@ -89,15 +94,15 @@ class Attachment(models.Model):
                                   help_text=_("Mark as starred"))
 
     date_insert = models.DateTimeField(editable=False, auto_now_add=True,
-                                       verbose_name=_(u"Insertion date"))
+                                       verbose_name=_("Insertion date"))
     date_update = models.DateTimeField(editable=False, auto_now=True,
-                                       verbose_name=_(u"Update date"))
+                                       verbose_name=_("Update date"))
 
     class Meta:
         abstract = True
         ordering = ['-date_insert']
-        verbose_name = _(u"Attachment")
-        verbose_name_plural = _(u"Attachments")
+        verbose_name = _("Attachment")
+        verbose_name_plural = _("Attachments")
         default_permissions = ()
         permissions = (
             ('add_attachment', _('Can add attachments')),
@@ -107,9 +112,11 @@ class Attachment(models.Model):
             ('delete_attachment_others', _("Can delete others' attachments")),
         )
 
-    def __unicode__(self):
-        return '%s attached %s' % (self.creator.username,
-                                   self.attachment_file.name)
+    def __str__(self):
+        return '{} attached {}'.format(
+            self.creator.username,
+            self.attachment_file.name
+        )
 
     @property
     def filename(self):
@@ -119,7 +126,7 @@ class Attachment(models.Model):
     def mimetype(self):
         mt = mimetypes.guess_type(self.attachment_file.name, strict=True)[0]
         if mt is None:
-            return ('application', 'octet-stream')
+            return 'application', 'octet-stream'
         return mt.split('/')
 
     @property
