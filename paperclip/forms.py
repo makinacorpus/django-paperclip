@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
@@ -78,7 +80,7 @@ class AttachmentForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super(AttachmentForm, self).clean()
         if settings.PAPERCLIP_ENABLE_VIDEO or settings.PAPERCLIP_ENABLE_LINK:
-            if cleaned_data['embed'] == 'True' or cleaned_data['embed'] is 'None':
+            if cleaned_data['embed'] == 'True' or cleaned_data['embed'] == 'None':
                 cleaned_data['attachment_file'] = ''
             else:
                 cleaned_data['attachment_video'] = ''
