@@ -5,21 +5,33 @@ from django.core.urlresolvers import reverse
 
 from paperclip import settings
 
+MODE_CHOICED = [(False, _('File')),]
+
 
 class AttachmentForm(forms.ModelForm):
-
     if settings.PAPERCLIP_ENABLE_VIDEO:
-        embed = forms.ChoiceField(
+        MODE_CHOICED.append((True, _('Youtube/Soundcloud URL')))
+
+    if settings.PAPERCLIP_ENABLE_LINK:
+        MODE_CHOICED.append((None, _('External picture link')))
+
+    if settings.PAPERCLIP_ENABLE_VIDEO or settings.PAPERCLIP_ENABLE_LINK:
+        embed = forms.TypedChoiceField(
             label=_(u"Mode"),
-            choices=((False, _('File')),
-                     (True, _('Youtube/Soundcloud URL'))),
+            choices=MODE_CHOICED,
             widget=forms.RadioSelect(), initial=False)
     next = forms.CharField(widget=forms.HiddenInput())
 
     class Meta:
         model = settings.get_attachment_model()
-        if settings.PAPERCLIP_ENABLE_VIDEO:
+        if settings.PAPERCLIP_ENABLE_VIDEO and not settings.PAPERCLIP_ENABLE_LINK:
             fields = ('embed', 'attachment_file', 'attachment_video',
+                      'filetype', 'author', 'title', 'legend')
+        elif settings.PAPERCLIP_ENABLE_VIDEO and settings.PAPERCLIP_ENABLE_LINK:
+            fields = ('embed', 'attachment_file', 'attachment_video', 'attachment_link',
+                      'filetype', 'author', 'title', 'legend')
+        elif settings.PAPERCLIP_ENABLE_LINK and not settings.PAPERCLIP_ENABLE_VIDEO:
+            fields = ('embed', 'attachment_file', 'attachment_link',
                       'filetype', 'author', 'title', 'legend')
         else:
             fields = ('attachment_file', 'filetype', 'author', 'title',
@@ -65,11 +77,12 @@ class AttachmentForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super(AttachmentForm, self).clean()
-        if settings.PAPERCLIP_ENABLE_VIDEO:
-            if cleaned_data['embed'] == 'True':
+        if settings.PAPERCLIP_ENABLE_VIDEO or settings.PAPERCLIP_ENABLE_LINK:
+            if cleaned_data['embed'] is True or cleaned_data['embed'] is None:
                 cleaned_data['attachment_file'] = ''
             else:
                 cleaned_data['attachment_video'] = ''
+                cleaned_data['attachment_link'] = ''
         return cleaned_data
 
     def success_url(self):

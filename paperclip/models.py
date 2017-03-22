@@ -34,7 +34,6 @@ class FileType(models.Model):
         return self.type
 
 
-@python_2_unicode_compatible
 class AttachmentManager(models.Manager):
     def attachments_for_object(self, obj):
         object_type = ContentType.objects.get_for_model(obj)
