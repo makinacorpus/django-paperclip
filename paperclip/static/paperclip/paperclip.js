@@ -3,10 +3,17 @@
         if ($('#id_attachment_video').length && $('#id_attachment_video').val().length) {
             $('#id_attachment_video').prop('required', true);
             $('#div_id_attachment_file').hide();
+            $('#div_id_attachment_link').hide();
             $('#id_embed_2').prop("checked", true);
+        } else if($('#id_attachment_link').length && $('#id_attachment_link').val().length) {
+            $('#id_attachment_link').prop('required', true);
+            $('#div_id_attachment_file').hide();
+            $('#div_id_attachment_video').hide();
+            $('#id_embed_3').prop("checked", true);
         } else {
             $('.create #id_attachment_file').prop('required', true);
             $('#div_id_attachment_video').hide();
+            $('#div_id_attachment_link').hide();
             $('#id_embed_1').prop("checked", true);
         }
     }
@@ -14,14 +21,26 @@
     $('.file-attachment-form').on('click', '#id_embed_1', function () {
         $('.create #id_attachment_file').prop('required', true);
         $('#id_attachment_video').removeAttr('required');
+        $('#id_attachment_link').removeAttr('required');
         $('#div_id_attachment_file').show();
         $('#div_id_attachment_video').hide();
+        $('#div_id_attachment_link').hide();
     });
     $('.file-attachment-form').on('click', '#id_embed_2', function () {
         $('.create #id_attachment_file').removeAttr('required');
+        $('.create #id_attachment_link').removeAttr('required');
         $('#id_attachment_video').prop('required', true);
         $('#div_id_attachment_file').hide();
+        $('#div_id_attachment_link').hide();
         $('#div_id_attachment_video').show();
+    });
+    $('.file-attachment-form').on('click', '#id_embed_3', function () {
+        $('.create #id_attachment_file').removeAttr('required');
+        $('.create #id_attachment_video').removeAttr('required');
+        $('#id_attachment_link').prop('required', true);
+        $('#div_id_attachment_file').hide();
+        $('#div_id_attachment_video').hide();
+        $('#div_id_attachment_link').show();
     });
 
     //
