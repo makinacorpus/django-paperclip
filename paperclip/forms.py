@@ -7,7 +7,7 @@ from django.core.urlresolvers import reverse
 
 from paperclip import settings
 
-MODE_CHOICED = [(False, _('File')),]
+MODE_CHOICED = [(False, _('File')), ]
 
 
 class AttachmentForm(forms.ModelForm):
