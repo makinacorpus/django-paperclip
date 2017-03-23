@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-20 12:07+0100\n"
+"POT-Creation-Date: 2017-03-23 13:46+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,11 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
 
-#: forms.py:13
-msgid "Mode"
-msgstr "Mode"
-
-#: forms.py:14 models.py:76
+#: forms.py:10 models.py:69
 msgid "File"
 msgstr "Fichier"
 
@@ -29,11 +25,19 @@ msgstr "Fichier"
 msgid "Youtube/Soundcloud URL"
 msgstr "URL Youtube/Soundcloud"
 
-#: forms.py:33
+#: forms.py:18
+msgid "External picture link"
+msgstr ""
+
+#: forms.py:22
+msgid "Mode"
+msgstr "Mode"
+
+#: forms.py:47
 msgid "Sunset on lake"
 msgstr "Coucher de soleil sur le lac"
 
-#: models.py:20 models.py:24 models.py:81
+#: models.py:20 models.py:24 models.py:76
 msgid "File type"
 msgstr "Type de fichier"
 
@@ -41,89 +45,171 @@ msgstr "Type de fichier"
 msgid "File types"
 msgstr "Types de fichier"
 
-#: models.py:80
-msgid "URL"
-msgstr "URL"
+#: models.py:73
+msgid "Video URL"
+msgstr "URL de la vidéo"
 
-#: models.py:85
+#: models.py:75
+msgid "Picture URL"
+msgstr "URL de l'image"
+
+#: models.py:80
 msgid "Creator"
 msgstr "Créateur"
 
-#: models.py:86
+#: models.py:81
 msgid "User that uploaded"
 msgstr "Utilisateur"
 
-#: models.py:88 templates/paperclip/_attachment_table.html:6
+#: models.py:83 templates/paperclip/_attachment_table.html:6
 msgid "Author"
 msgstr "Auteur"
 
-#: models.py:89
+#: models.py:84
 msgid "Original creator"
 msgstr "Créateur original"
 
-#: models.py:91 templates/paperclip/_attachment_table.html:4
+#: models.py:86 templates/paperclip/_attachment_table.html:4
 msgid "Filename"
 msgstr "Nom de fichier"
 
-#: models.py:92
+#: models.py:87
 msgid "Renames the file"
 msgstr "Renomme le fichier"
 
-#: models.py:94 templates/paperclip/_attachment_table.html:5
+#: models.py:89 templates/paperclip/_attachment_table.html:5
 msgid "Legend"
 msgstr "Légende"
 
-#: models.py:95
+#: models.py:90
 msgid "Details displayed"
 msgstr "Détails affichés"
 
-#: models.py:97
+#: models.py:92
 msgid "Starred"
 msgstr "Favorisé"
 
-#: models.py:98
+#: models.py:93
 msgid "Mark as starred"
 msgstr "Favoriser"
 
-#: models.py:101 templates/paperclip/_attachment_table.html:7
+#: models.py:96 templates/paperclip/_attachment_table.html:7
 msgid "Insertion date"
 msgstr "Date d'insertion"
 
-#: models.py:103 templates/paperclip/_attachment_table.html:8
+#: models.py:98 templates/paperclip/_attachment_table.html:8
 msgid "Update date"
 msgstr "Date de modification"
 
-#: models.py:108
+#: models.py:103
 msgid "Attachment"
 msgstr "Fichier attaché"
 
-#: models.py:109
+#: models.py:104
 msgid "Attachments"
 msgstr "Fichiers attachés"
 
-#: models.py:111
+#: models.py:107
+#, fuzzy
+#| msgid "Can read attachments"
+msgid "Can add attachments"
+msgstr "Lire les fichiers attachés"
+
+#: models.py:108
+#, fuzzy
+#| msgid "Can read attachments"
+msgid "Can change attachments"
+msgstr "Lire les fichiers attachés"
+
+#: models.py:109
+#, fuzzy
+#| msgid "Can delete others' attachments"
+msgid "Can delete attachments"
+msgstr "Supprimer les fichiers des autres"
+
+#: models.py:110
 msgid "Can read attachments"
 msgstr "Lire les fichiers attachés"
 
-#: models.py:112
+#: models.py:111
 msgid "Can delete others' attachments"
 msgstr "Supprimer les fichiers des autres"
 
-#: views.py:28
+#: templates/paperclip/_attachment_form.html:18
+msgid "Submit attachment"
+msgstr "Soumettre le fichier"
+
+#: templates/paperclip/_attachment_form.html:21
+#: templates/paperclip/attachment_list.html:32
+msgid "Cancel"
+msgstr "Annuler"
+
+#: templates/paperclip/_attachment_form.html:25
+msgid "Update attachment"
+msgstr "Modifier le fichier"
+
+#: templates/paperclip/_attachment_table.html:9
+msgid "Actions"
+msgstr "Actions"
+
+#: templates/paperclip/_attachment_table.html:45
+msgid "Remove star"
+msgstr "Défavoriser"
+
+#: templates/paperclip/_attachment_table.html:45
+msgid "Star item"
+msgstr "Favoriser"
+
+#: templates/paperclip/_attachment_table.html:57
+#: templatetags/attachments_tags.py:52
+msgid "Update"
+msgstr "Modifier"
+
+#: templates/paperclip/_attachment_table.html:66
+#: templates/paperclip/attachment_list.html:33
+msgid "Delete"
+msgstr "Supprimer"
+
+#: templates/paperclip/attachment_list.html:4
+msgid "Attached files"
+msgstr "Fichiers attachés"
+
+#: templates/paperclip/attachment_list.html:12
+msgid "No file attached"
+msgstr "Aucun fichier attaché"
+
+#: templates/paperclip/attachment_list.html:16
+msgid "You are not allowed to see attachments."
+msgstr "Vous n'êtes pas autorisé à voir les fichiers attachés."
+
+#: templates/paperclip/attachment_list.html:30
+msgid "Confirm file deletion"
+msgstr "Confirmer la suppression du fichier"
+
+#: templates/paperclip/attachment_list.html:31
+#, python-brace-format
+msgid "Are you sure to delete this file {file} ?"
+msgstr "Êtes vous sûr de vouloir supprimer ce fichier {file} ?"
+
+#: templatetags/attachments_tags.py:50
+msgid "New file attachment"
+msgstr "Nouveau fichier attaché"
+
+#: views.py:27
 #, python-format
 msgid "Add attachment %s"
 msgstr "Ajout du fichier %s"
 
-#: views.py:29
+#: views.py:28
 msgid "Your attachment was uploaded."
 msgstr "Votre fichier a été ajouté."
 
-#: views.py:51
+#: views.py:50
 #, python-format
 msgid "Update attachment %s"
 msgstr "Modifier le fichier attaché %s"
 
-#: views.py:52
+#: views.py:51
 msgid "Your attachment was updated."
 msgstr "Votre fichier a été modifié."
 
@@ -149,62 +235,3 @@ msgstr "Favoriser le fichier %s"
 #, python-format
 msgid "Unstar attachment %s"
 msgstr "Défavoriser le fichier %s"
-
-#: templates/paperclip/_attachment_form.html:18
-msgid "Submit attachment"
-msgstr "Soumettre le fichier"
-
-#: templates/paperclip/_attachment_form.html:21
-#: templates/paperclip/attachment_list.html:32
-msgid "Cancel"
-msgstr "Annuler"
-
-#: templates/paperclip/_attachment_form.html:25
-msgid "Update attachment"
-msgstr "Modifier le fichier"
-
-#: templates/paperclip/_attachment_table.html:9
-msgid "Actions"
-msgstr "Actions"
-
-#: templates/paperclip/_attachment_table.html:41
-msgid "Remove star"
-msgstr "Défavoriser"
-
-#: templates/paperclip/_attachment_table.html:41
-msgid "Star item"
-msgstr "Favoriser"
-
-#: templates/paperclip/_attachment_table.html:53
-#: templatetags/attachments_tags.py:40
-msgid "Update"
-msgstr "Modifier"
-
-#: templates/paperclip/_attachment_table.html:62
-#: templates/paperclip/attachment_list.html:33
-msgid "Delete"
-msgstr "Supprimer"
-
-#: templates/paperclip/attachment_list.html:4
-msgid "Attached files"
-msgstr "Fichiers attachés"
-
-#: templates/paperclip/attachment_list.html:12
-msgid "No file attached"
-msgstr "Aucun fichier attaché"
-
-#: templates/paperclip/attachment_list.html:16
-msgid "You are not allowed to see attachments."
-msgstr "Vous n'êtes pas autorisé à voir les fichiers attachés."
-
-#: templates/paperclip/attachment_list.html:30
-msgid "Confirm file deletion"
-msgstr "Confirmer la suppression du fichier"
-
-#: templates/paperclip/attachment_list.html:31
-msgid "Are you sure to delete this file {file} ?"
-msgstr "Êtes vous sûr de vouloir supprimer ce fichier {file} ?"
-
-#: templatetags/attachments_tags.py:38
-msgid "New file attachment"
-msgstr "Nouveau fichier attaché"
