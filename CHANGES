@@ -5,7 +5,10 @@ CHANGELOG
 2.0.1.dev0
 ==================
 
-*
+** New **
+
+* From now, Attachment model support external picture URLs
+
 
 2.0.0 (2017-02-21)
 ==================
