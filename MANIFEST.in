@@ -1,6 +1,7 @@
 include README.rst CHANGES COPYRIGHT LICENSE
 recursive-include paperclip/locale *.mo
 recursive-include paperclip/templates *.html
+recursive-include paperclip/templatetags *.py
 recursive-include paperclip/static *.png
 recursive-include paperclip/static *.svg
 recursive-include paperclip/static *.js
