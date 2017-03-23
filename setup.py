@@ -6,7 +6,7 @@ here = os.path.abspath(os.path.dirname(__file__))
 
 setup(
     name='paperclip',
-    version='2.0.1.dev0',
+    version='2.0.1',
     author='Makina Corpus',
     author_email='geobi@makina-corpus.com',
     url='https://github.com/makinacorpus/paperclip',
@@ -16,7 +16,7 @@ setup(
                      open(os.path.join(here, 'CHANGES')).read(),
     license='LPGL, see LICENSE file.',
     install_requires=[
-        'Django==1.8.17',
+        'Django',
         'easy-thumbnails',
         'django-embed-video',
     ],
