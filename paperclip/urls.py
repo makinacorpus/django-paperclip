@@ -1,8 +1,7 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 from paperclip import views
 
-urlpatterns = patterns(
-    '',
+urlpatterns = [
     url(r'^add-for/(?P<app_label>[\w\-]+)/'
         r'(?P<model_name>[\w\-]+)/(?P<pk>\d+)/$',
         views.add_attachment,
@@ -19,4 +18,4 @@ urlpatterns = patterns(
     url(r'^get/(?P<app_label>[\w\-]+)/(?P<model_name>[\w\-]+)/(?P<pk>\d+)/$',
         views.get_attachments,
         name="get_attachments"),
-)
+]
