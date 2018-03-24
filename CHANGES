@@ -6,6 +6,12 @@ CHANGELOG
 2.1.2.dev0
 ==================
 
+** New **
+
+* Support Django 1.9
+* Support Django 1.10
+* Support Django 1.11
+
 ** Fixes **
 
 *
