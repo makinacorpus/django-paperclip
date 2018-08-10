@@ -18,7 +18,7 @@
         }
     }
     init_mode();
-    $('.file-attachment-form').on('click', '#id_embed_1', function () {
+    $('.file-attachment-form').on('click', '#id_id_embed_0_1', function () {
         $('.create #id_attachment_file').prop('required', true);
         $('#id_attachment_video').removeAttr('required');
         $('#id_attachment_link').removeAttr('required');
@@ -26,7 +26,7 @@
         $('#div_id_attachment_video').hide();
         $('#div_id_attachment_link').hide();
     });
-    $('.file-attachment-form').on('click', '#id_embed_2', function () {
+    $('.file-attachment-form').on('click', '#id_embed_0_2', function () {
         $('.create #id_attachment_file').removeAttr('required');
         $('.create #id_attachment_link').removeAttr('required');
         $('#id_attachment_video').prop('required', true);
@@ -34,7 +34,7 @@
         $('#div_id_attachment_link').hide();
         $('#div_id_attachment_video').show();
     });
-    $('.file-attachment-form').on('click', '#id_embed_3', function () {
+    $('.file-attachment-form').on('click', '#id_embed_0_3', function () {
         $('.create #id_attachment_file').removeAttr('required');
         $('.create #id_attachment_video').removeAttr('required');
         $('#id_attachment_link').prop('required', true);
