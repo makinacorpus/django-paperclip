@@ -19,14 +19,6 @@ matrix:
   - python: 2.7
     env: DJANGO_VERSION=2.1.*
 
-env:
-  matrix:
-
-  - DJANGO_VERSION=1.8.18
-  - DJANGO_VERSION=1.9.13
-  - DJANGO_VERSION=1.10.7
-  - DJANGO_VERSION=1.11.11
-
 install:
  - pip install -r requirements.txt
  - pip install coverage
