@@ -1,9 +1,9 @@
 from __future__ import unicode_literals
 
 from django import forms
-from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
-from django.core.urlresolvers import reverse
+from django.urls import reverse
+from django.utils.translation import ugettext_lazy as _
 
 from paperclip import settings
 

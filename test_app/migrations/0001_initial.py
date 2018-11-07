@@ -5,6 +5,7 @@ from django.db import migrations, models
 import embed_video.fields
 from django.conf import settings
 import paperclip.models
+import django
 
 
 class Migration(migrations.Migration):
@@ -29,8 +30,8 @@ class Migration(migrations.Migration):
                 ('date_insert', models.DateTimeField(auto_now_add=True, verbose_name='Insertion date')),
                 ('date_update', models.DateTimeField(auto_now=True, verbose_name='Update date')),
                 ('foo', models.CharField(max_length=100)),
-                ('content_type', models.ForeignKey(to='contenttypes.ContentType')),
-                ('creator', models.ForeignKey(related_name='created_attachments', verbose_name='Creator', to=settings.AUTH_USER_MODEL, help_text='User that uploaded')),
+                ('content_type', models.ForeignKey(to='contenttypes.ContentType', on_delete=django.db.models.deletion.CASCADE,)),
+                ('creator', models.ForeignKey(related_name='created_attachments', verbose_name='Creator', to=settings.AUTH_USER_MODEL, help_text='User that uploaded', on_delete=django.db.models.deletion.CASCADE,)),
             ],
             options={
                 'ordering': ['-date_insert'],
@@ -65,6 +66,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='attachment',
             name='filetype',
-            field=models.ForeignKey(verbose_name='File type', to='test_app.Filetype'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, verbose_name='File type', to='test_app.Filetype'),
         ),
     ]
