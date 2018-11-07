@@ -1,7 +1,6 @@
 from __future__ import unicode_literals
 
 from django import forms
-from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 
@@ -93,6 +92,5 @@ class AttachmentForm(forms.ModelForm):
     def save(self, request, *args, **kwargs):
         obj = self._object
         self.instance.creator = request.user
-        self.instance.content_type = ContentType.objects.get_for_model(obj)
-        self.instance.object_id = obj.id
+        self.instance.content_object = obj
         return super(AttachmentForm, self).save(*args, **kwargs)

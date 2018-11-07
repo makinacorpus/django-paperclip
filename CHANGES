@@ -10,6 +10,10 @@ CHANGELOG
 * Support Python3, Django 2.0 and 2.1
 * Drop Django 1.8, 1.9 and 1.10 support
 
+** Fixes **
+
+* Fix content type with proxy models
+
 2.1.2 (2018-03-25)
 ==================
 
