@@ -62,7 +62,7 @@ def attachment_upload(instance, filename):
 class Attachment(models.Model):
     objects = AttachmentManager()
 
-    content_type = models.ForeignKey(ContentType)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
 
@@ -73,12 +73,12 @@ class Attachment(models.Model):
         attachment_video = EmbedVideoField(_('Video URL'), blank=True)
     if PAPERCLIP_ENABLE_LINK:
         attachment_link = models.URLField(_('Picture URL'), blank=True)
-    filetype = models.ForeignKey(PAPERCLIP_FILETYPE_MODEL, verbose_name=_('File type'))
+    filetype = models.ForeignKey(PAPERCLIP_FILETYPE_MODEL, verbose_name=_('File type'), on_delete=models.CASCADE)
 
     creator = models.ForeignKey(settings.AUTH_USER_MODEL,
                                 related_name="created_attachments",
                                 verbose_name=_('Creator'),
-                                help_text=_("User that uploaded"))
+                                help_text=_("User that uploaded"), on_delete=models.CASCADE)
     author = models.CharField(blank=True, default='', max_length=128,
                               db_column='auteur', verbose_name=_('Author'),
                               help_text=_("Original creator"))

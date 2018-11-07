@@ -1,9 +1,11 @@
 import os
 from itertools import chain
-from optparse import make_option
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
-from django.utils.six.moves import input
+try:
+    from django.utils.six.moves import input
+except ImportError:
+    import input
 from paperclip.settings import get_attachment_model
 
 
@@ -22,18 +24,15 @@ def path_cmp(a, b):
         return 1
     if a.startswith(b):
         return -1
-    return cmp(a, b)
+    return (a > b) - (a < b)
 
 
 class Command(BaseCommand):
     help = 'Remove obsolete attached files from disk'
-    option_list = BaseCommand.option_list + (
-        make_option(
-            '--noinput', action='store_false',
-            dest='interactive', default=True,
-            help="Do NOT prompt the user for input of any kind."
-        ),
-    )
+
+    def add_arguments(self, parser):
+        parser.add_argument('--noinput', action='store_false', dest='interactive', default=True,
+                            help="Do NOT prompt the user for input of any kind.", type=bool)
 
     def handle(self, *args, **options):
         interactive = options['interactive']

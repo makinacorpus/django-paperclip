@@ -1,6 +1,8 @@
+from __future__ import unicode_literals
+
 from django.shortcuts import get_object_or_404
 from django.views.decorators.http import require_POST, require_http_methods
-from django.http import HttpResponseRedirect, HttpResponse, Http404
+from django.http import HttpResponseRedirect, HttpResponse, Http404, JsonResponse
 from django.apps import apps
 from django.utils.encoding import force_text
 from django.utils.translation import ugettext_lazy as _
@@ -12,7 +14,6 @@ from django.contrib import messages
 
 from paperclip import settings
 from .forms import AttachmentForm
-import json
 
 
 @require_POST
@@ -130,7 +131,7 @@ def star_attachment(request, attachment_pk):
         'status': 'ok',
         'starred': g.starred
     }
-    return HttpResponse(json.dumps(reply), content_type='application/json')
+    return JsonResponse(reply)
 
 
 @permission_required(settings.get_attachment_permission('read'), raise_exception=True)
@@ -156,4 +157,4 @@ def get_attachments(request, app_label, model_name, pk):
         }
         for attachment in attachments
     ]
-    return HttpResponse(json.dumps(reply), content_type='application/json')
+    return JsonResponse(reply)

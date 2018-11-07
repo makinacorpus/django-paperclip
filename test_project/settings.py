@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 """
 Django settings for test_project project.
 
@@ -20,7 +22,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'rga2v%3hb%co7v(loq-eaqet$_c9yz0g295aly_#b#6td#-gah'
+SECRET_KEY = 'dev-dev-dev-dev-dev-dev'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -43,16 +45,15 @@ INSTALLED_APPS = (
     'test_app',
 )
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django.middleware.security.SecurityMiddleware',
-)
+]
 
 ROOT_URLCONF = 'test_project.urls'
 

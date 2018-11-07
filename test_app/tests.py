@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 from django.contrib.auth.models import User, Permission
 from django.test import TestCase
 from paperclip.settings import get_filetype_model, get_attachment_model
