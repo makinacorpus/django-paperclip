@@ -29,13 +29,10 @@ def path_cmp(a, b):
 
 class Command(BaseCommand):
     help = 'Remove obsolete attached files from disk'
-    option_list = BaseCommand.option_list + (
-        make_option(
-            '--noinput', action='store_false',
-            dest='interactive', default=True,
-            help="Do NOT prompt the user for input of any kind."
-        ),
-    )
+
+    def add_arguments(self, parser):
+        parser.add_argument('--noinput', action='store_false', dest='interactive', default=True,
+                            help="Do NOT prompt the user for input of any kind.", type=bool)
 
     def handle(self, *args, **options):
         interactive = options['interactive']
