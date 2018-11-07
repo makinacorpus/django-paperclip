@@ -16,7 +16,7 @@ setup(
                      open(os.path.join(here, 'CHANGES')).read(),
     license='LPGL, see LICENSE file.',
     install_requires=[
-        'Django<2',
+        'Django',
         'easy-thumbnails',
         'django-embed-video',
     ],
@@ -30,5 +30,8 @@ setup(
                  'Environment :: Web Environment',
                  'Framework :: Django',
                  'Development Status :: 5 - Production/Stable',
-                 'Programming Language :: Python :: 2.7'],
+                 'Programming Language :: Python :: 2.7',
+                 'Programming Language :: Python :: 3.5',
+                 'Programming Language :: Python :: 3.6',
+                 'Programming Language :: Python :: 3.7'],
 )
