@@ -53,8 +53,8 @@ class AttachmentForm(forms.ModelForm):
 
         # Detect fields errors without uploading (using HTML5)
         self.fields['filetype'].widget.attrs['required'] = 'required'
-        self.fields['author'].widget.attrs['pattern'] = '^\S.*'
-        self.fields['legend'].widget.attrs['pattern'] = '^\S.*'
+        self.fields['author'].widget.attrs['pattern'] = r'^\S.*'
+        self.fields['legend'].widget.attrs['pattern'] = r'^\S.*'
 
         self.fields['attachment_file'].widget = forms.FileInput()
 
