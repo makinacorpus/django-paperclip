@@ -11,13 +11,31 @@ register = Library()
 
 @register.filter
 def read_attachment(perms):
-    perm = settings.get_attachment_permission('read')
+    perm = settings.get_attachment_permission('read_attachment')
     return perm in perms
 
 
 @register.filter
 def add_attachment(perms):
-    perm = settings.get_attachment_permission('add')
+    perm = settings.get_attachment_permission('add_attachment')
+    return perm in perms
+
+
+@register.filter
+def delete_attachment(perms):
+    perm = settings.get_attachment_permission('delete_attachment')
+    return perm in perms
+
+
+@register.filter
+def change_attachment(perms):
+    perm = settings.get_attachment_permission('change_attachment')
+    return perm in perms
+
+
+@register.filter
+def delete_attachment_others(perms):
+    perm = settings.get_attachment_permission('delete_attachment_others')
     return perm in perms
 
 

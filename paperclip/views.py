@@ -17,7 +17,7 @@ from .forms import AttachmentForm
 
 
 @require_POST
-@permission_required(settings.get_attachment_permission('add'), raise_exception=True)
+@permission_required(settings.get_attachment_permission('add_attachment'), raise_exception=True)
 def add_attachment(request, app_label, model_name, pk,
                    attachment_form=AttachmentForm,
                    extra_context=None):
@@ -31,7 +31,7 @@ def add_attachment(request, app_label, model_name, pk,
 
 
 @require_http_methods(["GET", "POST"])
-@permission_required(settings.get_attachment_permission('change'), raise_exception=True)
+@permission_required(settings.get_attachment_permission('change_attachment'), raise_exception=True)
 def update_attachment(request, attachment_pk,
                       attachment_form=AttachmentForm,
                       extra_context=None):
@@ -84,11 +84,11 @@ def _handle_attachment_form(request, obj, form, change_msg, success_msg,
     return HttpResponse(t.render(context))
 
 
-@permission_required(settings.get_attachment_permission('delete'), raise_exception=True)
+@permission_required(settings.get_attachment_permission('delete_attachment'), raise_exception=True)
 def delete_attachment(request, attachment_pk):
     g = get_object_or_404(settings.get_attachment_model(), pk=attachment_pk)
     can_delete = (
-        request.user.has_perm('paperclip.delete_attachment_others') or
+        request.user.has_perm(settings.get_attachment_permission('delete_attachment_others')) or
         request.user == g.creator)
     if can_delete:
         g.delete()
@@ -109,7 +109,7 @@ def delete_attachment(request, attachment_pk):
     return HttpResponseRedirect(next_url)
 
 
-@permission_required(settings.get_attachment_permission('change'), raise_exception=True)
+@permission_required(settings.get_attachment_permission('change_attachment'), raise_exception=True)
 def star_attachment(request, attachment_pk):
     g = get_object_or_404(settings.get_attachment_model(), pk=attachment_pk)
     g.starred = request.GET.get('unstar') is None
@@ -134,7 +134,7 @@ def star_attachment(request, attachment_pk):
     return JsonResponse(reply)
 
 
-@permission_required(settings.get_attachment_permission('read'), raise_exception=True)
+@permission_required(settings.get_attachment_permission('read_attachment'), raise_exception=True)
 def get_attachments(request, app_label, model_name, pk):
 
     try:
