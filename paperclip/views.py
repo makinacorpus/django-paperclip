@@ -88,7 +88,7 @@ def _handle_attachment_form(request, obj, form, change_msg, success_msg,
 def delete_attachment(request, attachment_pk):
     g = get_object_or_404(settings.get_attachment_model(), pk=attachment_pk)
     can_delete = (
-        request.user.has_perm('paperclip.delete_attachment_others') or
+        request.user.has_perm(settings.get_attachment_permission('delete_attachment_others')) or
         request.user == g.creator)
     if can_delete:
         g.delete()
