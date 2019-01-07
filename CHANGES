@@ -2,12 +2,21 @@
 CHANGELOG
 =========
 
+2.2.2.dev0
+==================
+
+** Fixes **
+
+*
+
+
 2.2.1 (2019-01-07)
 ==================
 
 ** Fixes **
 
 * Fix permissions change, delete and delete_others
+
 
 2.2.0 (2018-11-07)
 ==================
