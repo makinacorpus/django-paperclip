@@ -18,4 +18,4 @@ def get_attachment_model():
 
 def get_attachment_permission(action):
     model = get_attachment_model()
-    return '{app}.{action}_attachment'.format(app=model._meta.app_label, action=action)
+    return '{app}.{action}'.format(app=model._meta.app_label, action=action)

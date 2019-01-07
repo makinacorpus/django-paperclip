@@ -38,7 +38,7 @@
         <td>{{ att.date_insert }}</td>
         <td>{{ att.date_update }}</td>
         <td>
-        {% if 'paperclip.change_attachment' in perms %}
+        {% if perms|change_attachment %}
         <a href="#"
            class="{{ att.starred|yesno:"unstar,star" }}"
            data-star-url="{% url 'star_attachment' att.pk %}"
@@ -49,7 +49,7 @@
             <img src="{% get_static_prefix %}paperclip/star-{{ att.starred|yesno:"on,off" }}.svg"/>
         {% endif %}
 
-        {% if 'paperclip.change_attachment' in perms %}
+        {% if perms|change_attachment %}
             &nbsp;
             <a href="#"
                class="update-action"
@@ -58,7 +58,7 @@
             </a>
         {% endif %}
 
-        {% if 'paperclip.delete_attachment' in perms or 'paperclip.delete_attachment_others' in perms %}
+        {% if perms|delete_attachment or perms|delete_attachment_others %}
             &nbsp;
             <a href="#"
                class="delete-action"
