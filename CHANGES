@@ -2,12 +2,13 @@
 CHANGELOG
 =========
 
-2.2.2.dev0
+2.2.2 (2019-10-08)
 ==================
 
 ** Fixes **
 
 * Do not set author to current username by default
+* Fix mode preselection
 
 
 2.2.1 (2019-01-07)
