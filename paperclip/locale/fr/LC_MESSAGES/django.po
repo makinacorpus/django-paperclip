@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
 
-#: forms.py:10 models.py:69
+#: forms.py:10
 msgid "File"
 msgstr "Fichier"
 
@@ -38,12 +38,16 @@ msgid "Sunset on lake"
 msgstr "Coucher de soleil sur le lac"
 
 #: models.py:20 models.py:24 models.py:76
-msgid "File type"
-msgstr "Type de fichier"
+msgid "File type *"
+msgstr "Type de fichier *"
 
 #: models.py:25
 msgid "File types"
 msgstr "Types de fichier"
+
+#: models.py:69
+msgid "File *"
+msgstr "Fichier *"
 
 #: models.py:73
 msgid "Video URL"

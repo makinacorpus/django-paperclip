@@ -17,11 +17,11 @@ from paperclip.settings import PAPERCLIP_ENABLE_VIDEO, PAPERCLIP_FILETYPE_MODEL,
 
 @python_2_unicode_compatible
 class FileType(models.Model):
-    type = models.CharField(max_length=128, verbose_name=_("File type"))
+    type = models.CharField(max_length=128, verbose_name=_("File type *"))
 
     class Meta:
         abstract = True
-        verbose_name = _("File type")
+        verbose_name = _("File type *")
         verbose_name_plural = _("File types")
         ordering = ['type']
 
@@ -66,14 +66,14 @@ class Attachment(models.Model):
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
 
-    attachment_file = models.FileField(_('File'), blank=True,
+    attachment_file = models.FileField(_('File *'), blank=True,
                                        upload_to=attachment_upload,
                                        max_length=512)
     if PAPERCLIP_ENABLE_VIDEO:
         attachment_video = EmbedVideoField(_('Video URL'), blank=True)
     if PAPERCLIP_ENABLE_LINK:
         attachment_link = models.URLField(_('Picture URL'), blank=True)
-    filetype = models.ForeignKey(PAPERCLIP_FILETYPE_MODEL, verbose_name=_('File type'), on_delete=models.CASCADE)
+    filetype = models.ForeignKey(PAPERCLIP_FILETYPE_MODEL, verbose_name=_('File type *'), on_delete=models.CASCADE)
 
     creator = models.ForeignKey(settings.AUTH_USER_MODEL,
                                 related_name="created_attachments",
