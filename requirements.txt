@@ -1,4 +1,4 @@
-Django==1.11.*
+Django==2.0.*
 django-embed-video==1.1.2
 easy-thumbnails==2.5.0
 olefile==0.44
