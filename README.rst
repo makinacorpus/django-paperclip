@@ -20,6 +20,13 @@ Installing from github
 
     pip install -e git://github.com/makinacorpus/django-paperclip.git#egg=django-paperclip
 
+============
+REQUIREMENTS
+============
+
+Django-paperclip is supported only in Python3 (tested with Python 3.4 to 3.6).
+It requires at least Django in the 1.11 version and has been with versions between 1.11 and 2.1.
+
 =======
 UPGRADE
 =======
