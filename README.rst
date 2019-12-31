@@ -87,10 +87,10 @@ Define the following django setting:
 
 ::
 
-PAPERCLIP_ENABLE_VIDEO = False,
-PAPERCLIP_FILETYPE_MODEL = 'myapp.FileType'
-PAPERCLIP_ATTACHMENT_MODEL = 'myapp.Attachment'
-PAPERCLIP_ACTION_HISTORY_ENABLED = True
+    PAPERCLIP_ENABLE_VIDEO = False,
+    PAPERCLIP_FILETYPE_MODEL = 'myapp.FileType'
+    PAPERCLIP_ATTACHMENT_MODEL = 'myapp.Attachment'
+    PAPERCLIP_ACTION_HISTORY_ENABLED = True
 
 * Make migration and migrate
 
