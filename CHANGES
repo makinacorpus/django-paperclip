@@ -2,12 +2,12 @@
 CHANGELOG
 =========
 
-2.2.3.dev0
+2.2.3 (2019-12-31)
 ==================
 
 ** Fixes **
 
-*
+* Fix requirements for Django 2
 
 
 2.2.2 (2019-10-08)
