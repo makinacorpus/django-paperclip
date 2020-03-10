@@ -1,4 +1,10 @@
 (function () {
+    $('#div_id_attachment_file label').addClass('requiredField');
+    $('#div_id_attachment_file label').append('<span class="asteriskField">*</span>');
+    $('#div_id_attachment_video label').addClass('requiredField');
+    $('#div_id_attachment_video label').append('<span class="asteriskField">*</span>');
+    $('#div_id_attachment_link label').addClass('requiredField');
+    $('#div_id_attachment_link label').append('<span class="asteriskField">*</span>');
     function init_mode() {
         if ($('#id_attachment_video').length && $('#id_attachment_video').val().length) {
             $('#id_attachment_video').prop('required', true);
