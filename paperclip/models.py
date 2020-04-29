@@ -92,7 +92,7 @@ class Attachment(models.Model):
                                   verbose_name=_(u"Starred"),
                                   help_text=_("Mark as starred"))
     is_image = models.BooleanField(editable=False, default=False, verbose_name=_(u"Is image"),
-                                   help_text=_("Is an image file"))
+                                   help_text=_("Is an image file"), db_index=True)
     date_insert = models.DateTimeField(editable=False, auto_now_add=True,
                                        verbose_name=_("Insertion date"))
     date_update = models.DateTimeField(editable=False, auto_now=True,
