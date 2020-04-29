@@ -1,0 +1,183 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-04-29 09:22+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+msgid "File"
+msgstr ""
+
+msgid "Youtube/Soundcloud URL"
+msgstr ""
+
+msgid "External picture link"
+msgstr ""
+
+msgid "Mode"
+msgstr ""
+
+msgid "Sunset on lake"
+msgstr ""
+
+msgid "File type"
+msgstr ""
+
+msgid "File types"
+msgstr ""
+
+msgid "Video URL"
+msgstr ""
+
+msgid "Picture URL"
+msgstr ""
+
+msgid "Creator"
+msgstr ""
+
+msgid "User that uploaded"
+msgstr ""
+
+msgid "Author"
+msgstr ""
+
+msgid "Original creator"
+msgstr ""
+
+msgid "Filename"
+msgstr ""
+
+msgid "Renames the file"
+msgstr ""
+
+msgid "Legend"
+msgstr ""
+
+msgid "Details displayed"
+msgstr ""
+
+msgid "Starred"
+msgstr ""
+
+msgid "Mark as starred"
+msgstr ""
+
+msgid "Is image"
+msgstr ""
+
+msgid "Is an image file"
+msgstr ""
+
+msgid "Insertion date"
+msgstr ""
+
+msgid "Update date"
+msgstr ""
+
+msgid "Attachment"
+msgstr ""
+
+msgid "Attachments"
+msgstr ""
+
+msgid "Can add attachments"
+msgstr ""
+
+msgid "Can change attachments"
+msgstr ""
+
+msgid "Can delete attachments"
+msgstr ""
+
+msgid "Can read attachments"
+msgstr ""
+
+msgid "Can delete others' attachments"
+msgstr ""
+
+msgid "Submit attachment"
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
+msgid "Update attachment"
+msgstr ""
+
+msgid "Actions"
+msgstr ""
+
+msgid "Remove star"
+msgstr ""
+
+msgid "Star item"
+msgstr ""
+
+msgid "Update"
+msgstr ""
+
+msgid "Delete"
+msgstr ""
+
+msgid "Attached files"
+msgstr ""
+
+msgid "No file attached"
+msgstr ""
+
+msgid "You are not allowed to see attachments."
+msgstr ""
+
+msgid "Confirm file deletion"
+msgstr ""
+
+#, python-brace-format
+msgid "Are you sure to delete this file {file} ?"
+msgstr ""
+
+msgid "New file attachment"
+msgstr ""
+
+#, python-format
+msgid "Add attachment %s"
+msgstr ""
+
+msgid "Your attachment was uploaded."
+msgstr ""
+
+#, python-format
+msgid "Update attachment %s"
+msgstr ""
+
+msgid "Your attachment was updated."
+msgstr ""
+
+#, python-format
+msgid "Remove attachment %s"
+msgstr ""
+
+msgid "Your attachment was deleted."
+msgstr ""
+
+msgid "You are not allowed to delete this attachment."
+msgstr ""
+
+#, python-format
+msgid "Star attachment %s"
+msgstr ""
+
+#, python-format
+msgid "Unstar attachment %s"
+msgstr ""
