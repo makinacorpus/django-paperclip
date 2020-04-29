@@ -1,8 +1,6 @@
-from __future__ import unicode_literals
-
 from django import forms
 from django.urls import reverse
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from paperclip import settings
 
@@ -42,7 +40,7 @@ class AttachmentForm(forms.ModelForm):
         self._object = kwargs.pop('object', None)
         next_url = kwargs.pop('next_url', None)
 
-        super(AttachmentForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.fields['legend'].widget.attrs['placeholder'] = _('Sunset on lake')
 
         # Allow to override filetype choices
@@ -76,7 +74,7 @@ class AttachmentForm(forms.ModelForm):
             })
 
     def clean(self):
-        cleaned_data = super(AttachmentForm, self).clean()
+        cleaned_data = super().clean()
         if settings.PAPERCLIP_ENABLE_VIDEO or settings.PAPERCLIP_ENABLE_LINK:
             if cleaned_data['embed'] == 'True' or cleaned_data['embed'] == 'None':
                 cleaned_data['attachment_file'] = ''
@@ -92,4 +90,4 @@ class AttachmentForm(forms.ModelForm):
         obj = self._object
         self.instance.creator = request.user
         self.instance.content_object = obj
-        return super(AttachmentForm, self).save(*args, **kwargs)
+        return super().save(*args, **kwargs)

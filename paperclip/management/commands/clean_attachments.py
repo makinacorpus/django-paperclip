@@ -2,12 +2,7 @@ import os
 from itertools import chain
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
-try:
-    from django.utils.six.moves import input
-except ImportError:
-    import input
 from paperclip.settings import get_attachment_model
-
 
 PAPERCLIP_ROOT = os.path.join(settings.MEDIA_ROOT, 'paperclip')
 
