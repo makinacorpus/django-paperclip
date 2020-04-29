@@ -100,7 +100,7 @@ class Attachment(models.Model):
 
     def save(self, **kwargs):
         self.is_image = self.is_an_image()
-        super().save(**kwargs)
+        super(Attachment, self).save(**kwargs)
 
     class Meta:
         abstract = True
