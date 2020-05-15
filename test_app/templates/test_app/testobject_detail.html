@@ -2,7 +2,7 @@
 <html>
 <body>
 
-{% load staticfiles %}
+{% load static %}
 {% include 'paperclip/attachment_list.html' with object=object attachment_form_next=object.get_detail_url %}
 
 <script src="{% static "paperclip/bootstrap3-confirm.js" %}" type="text/javascript"></script>

@@ -3,6 +3,7 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
@@ -15,169 +16,168 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1)\n"
-
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 msgid "File"
-msgstr "Fichier"
+msgstr ""
 
 msgid "Youtube/Soundcloud URL"
-msgstr "URL Youtube/Soundcloud"
+msgstr ""
 
 msgid "External picture link"
-msgstr "Lien d'image externe"
+msgstr ""
 
 msgid "Mode"
-msgstr "Mode"
+msgstr ""
 
 msgid "Sunset on lake"
-msgstr "Coucher de soleil sur le lac"
+msgstr ""
 
 msgid "File type"
-msgstr "Type de fichier"
+msgstr ""
 
 msgid "File types"
-msgstr "Types de fichier"
+msgstr ""
 
 msgid "Video URL"
-msgstr "URL de la vidéo"
+msgstr ""
 
 msgid "Picture URL"
-msgstr "URL de l'image"
+msgstr ""
 
 msgid "Creator"
-msgstr "Créateur"
+msgstr ""
 
 msgid "User that uploaded"
-msgstr "Utilisateur"
+msgstr ""
 
 msgid "Author"
-msgstr "Auteur"
+msgstr ""
 
 msgid "Original creator"
-msgstr "Créateur original"
+msgstr ""
 
 msgid "Filename"
-msgstr "Nom de fichier"
+msgstr ""
 
 msgid "Renames the file"
-msgstr "Renomme le fichier"
+msgstr ""
 
 msgid "Legend"
-msgstr "Légende"
+msgstr ""
 
 msgid "Details displayed"
-msgstr "Détails affichés"
+msgstr ""
 
 msgid "Starred"
-msgstr "Favorisé"
+msgstr ""
 
 msgid "Mark as starred"
-msgstr "Favoriser"
+msgstr ""
 
 msgid "Is image"
-msgstr "Est une image"
+msgstr ""
 
 msgid "Is an image file"
-msgstr "Est un fichier image"
+msgstr ""
 
 msgid "Insertion date"
-msgstr "Date d'insertion"
+msgstr ""
 
 msgid "Update date"
-msgstr "Date de modification"
+msgstr ""
 
 msgid "Attachment"
-msgstr "Fichier attaché"
+msgstr ""
 
 msgid "Attachments"
-msgstr "Fichiers attachés"
+msgstr ""
 
 msgid "Can add attachments"
-msgstr "Peut ajouter des fichiers attachés"
+msgstr ""
 
 msgid "Can change attachments"
-msgstr "Peut modifier les fichiers attachés"
+msgstr ""
 
 msgid "Can delete attachments"
-msgstr "Peut supprimer les fichiers attachés"
+msgstr ""
 
 msgid "Can read attachments"
-msgstr "Lire les fichiers attachés"
+msgstr ""
 
 msgid "Can delete others' attachments"
-msgstr "Supprimer les fichiers des autres"
+msgstr ""
 
 msgid "Submit attachment"
-msgstr "Soumettre le fichier"
+msgstr ""
 
 msgid "Cancel"
-msgstr "Annuler"
+msgstr ""
 
 msgid "Update attachment"
-msgstr "Modifier le fichier"
+msgstr ""
 
 msgid "Actions"
-msgstr "Actions"
+msgstr ""
 
 msgid "Remove star"
-msgstr "Défavoriser"
+msgstr ""
 
 msgid "Star item"
-msgstr "Favoriser"
+msgstr ""
 
 msgid "Update"
-msgstr "Modifier"
+msgstr ""
 
 msgid "Delete"
-msgstr "Supprimer"
+msgstr ""
 
 msgid "Attached files"
-msgstr "Fichiers attachés"
+msgstr ""
 
 msgid "No file attached"
-msgstr "Aucun fichier attaché"
+msgstr ""
 
 msgid "You are not allowed to see attachments."
-msgstr "Vous n'êtes pas autorisé à voir les fichiers attachés."
+msgstr ""
 
 msgid "Confirm file deletion"
-msgstr "Confirmer la suppression du fichier"
+msgstr ""
 
 #, python-brace-format
 msgid "Are you sure to delete this file {file} ?"
-msgstr "Êtes vous sûr de vouloir supprimer ce fichier {file} ?"
+msgstr ""
 
 msgid "New file attachment"
-msgstr "Nouveau fichier attaché"
+msgstr ""
 
 #, python-format
 msgid "Add attachment %s"
-msgstr "Ajout du fichier %s"
+msgstr ""
 
 msgid "Your attachment was uploaded."
-msgstr "Votre fichier a été ajouté."
+msgstr ""
 
 #, python-format
 msgid "Update attachment %s"
-msgstr "Modifier le fichier attaché %s"
+msgstr ""
 
 msgid "Your attachment was updated."
-msgstr "Votre fichier a été modifié."
+msgstr ""
 
 #, python-format
 msgid "Remove attachment %s"
-msgstr "Suppression du fichier %s"
+msgstr ""
 
 msgid "Your attachment was deleted."
-msgstr "Votre fichier a été supprimé."
+msgstr ""
 
 msgid "You are not allowed to delete this attachment."
-msgstr "Vous n'êtes pas autorisé à supprimer ce fichier attaché."
+msgstr ""
 
 #, python-format
 msgid "Star attachment %s"
-msgstr "Favoriser le fichier %s"
+msgstr ""
 
 #, python-format
 msgid "Unstar attachment %s"
-msgstr "Défavoriser le fichier %s"
+msgstr ""

@@ -1,11 +1,9 @@
-from __future__ import unicode_literals
-
 from django.shortcuts import get_object_or_404
 from django.views.decorators.http import require_POST, require_http_methods
 from django.http import HttpResponseRedirect, HttpResponse, Http404, JsonResponse
 from django.apps import apps
 from django.utils.encoding import force_text
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.template import RequestContext, Template
 from django.contrib.admin.models import LogEntry, CHANGE
 from django.contrib.auth.decorators import permission_required

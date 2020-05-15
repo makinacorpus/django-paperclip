@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 import mimetypes
 import os
 
@@ -8,14 +6,12 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.template.defaultfilters import slugify
-from django.utils.encoding import python_2_unicode_compatible
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from embed_video.fields import EmbedVideoField
 
 from paperclip.settings import PAPERCLIP_ENABLE_VIDEO, PAPERCLIP_FILETYPE_MODEL, PAPERCLIP_ENABLE_LINK
 
 
-@python_2_unicode_compatible
 class FileType(models.Model):
     type = models.CharField(max_length=128, verbose_name=_("File type"))
 
@@ -58,7 +54,6 @@ def attachment_upload(instance, filename):
         renamed)
 
 
-@python_2_unicode_compatible
 class Attachment(models.Model):
     objects = AttachmentManager()
 
@@ -91,11 +86,16 @@ class Attachment(models.Model):
     starred = models.BooleanField(default=False, db_column='marque',
                                   verbose_name=_(u"Starred"),
                                   help_text=_("Mark as starred"))
-
+    is_image = models.BooleanField(editable=False, default=False, verbose_name=_(u"Is image"),
+                                   help_text=_("Is an image file"), db_index=True)
     date_insert = models.DateTimeField(editable=False, auto_now_add=True,
                                        verbose_name=_("Insertion date"))
     date_update = models.DateTimeField(editable=False, auto_now=True,
                                        verbose_name=_("Update date"))
+
+    def save(self, **kwargs):
+        self.is_image = self.is_an_image()
+        super().save(**kwargs)
 
     class Meta:
         abstract = True
@@ -128,6 +128,5 @@ class Attachment(models.Model):
             return 'application', 'octet-stream'
         return mt.split('/')
 
-    @property
-    def is_image(self):
+    def is_an_image(self):
         return self.mimetype[0].startswith('image')
