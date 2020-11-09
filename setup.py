@@ -9,7 +9,7 @@ setup(
     version='2.2.6.dev0',
     author='Makina Corpus',
     author_email='geobi@makina-corpus.com',
-    url='https://github.com/makinacorpus/paperclip',
+    url='https://github.com/makinacorpus/django-paperclip',
     download_url="http://pypi.python.org/pypi/paperclip/",
     description="Attach files to Django models",
     long_description=open(os.path.join(here, 'README.rst')).read() + '\n\n' +
