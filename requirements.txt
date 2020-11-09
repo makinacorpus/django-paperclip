@@ -1,7 +1,7 @@
 certifi==2020.4.5.1       # via requests
 chardet==3.0.4            # via requests
 django-embed-video==1.3.2  # via paperclip (setup.py)
-django==2.2.12            # via django-embed-video, easy-thumbnails, paperclip (setup.py)
+django==2.2.13            # via django-embed-video, easy-thumbnails, paperclip (setup.py)
 easy-thumbnails==2.7      # via paperclip (setup.py)
 idna==2.9                 # via requests
 pillow==7.1.2             # via easy-thumbnails
