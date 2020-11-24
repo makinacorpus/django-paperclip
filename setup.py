@@ -6,7 +6,7 @@ here = os.path.abspath(os.path.dirname(__file__))
 
 setup(
     name='paperclip',
-    version='2.2.6.dev0',
+    version='2.2.6',
     author='Makina Corpus',
     author_email='geobi@makina-corpus.com',
     url='https://github.com/makinacorpus/django-paperclip',
