@@ -40,7 +40,7 @@ INSTALLED_APPS = (
     'easy_thumbnails',
     'embed_video',
     'paperclip',
-    'test_app',
+    'test_project.test_app',
 )
 
 MIDDLEWARE = [
