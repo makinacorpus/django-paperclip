@@ -40,7 +40,7 @@ INSTALLED_APPS = (
     'easy_thumbnails',
     'embed_video',
     'paperclip',
-    'test_app',
+    'test_project.test_app',
 )
 
 MIDDLEWARE = [
@@ -107,3 +107,6 @@ STATIC_URL = '/static/'
 PAPERCLIP_ENABLE_VIDEO = True
 PAPERCLIP_FILETYPE_MODEL = 'test_app.FileType'
 PAPERCLIP_ATTACHMENT_MODEL = 'test_app.Attachment'
+
+# fix for project created django < 3.2
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'

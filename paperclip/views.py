@@ -85,9 +85,8 @@ def _handle_attachment_form(request, obj, form, change_msg, success_msg,
 @permission_required(settings.get_attachment_permission('delete_attachment'), raise_exception=True)
 def delete_attachment(request, attachment_pk):
     g = get_object_or_404(settings.get_attachment_model(), pk=attachment_pk)
-    can_delete = (
-        request.user.has_perm(settings.get_attachment_permission('delete_attachment_others')) or
-        request.user == g.creator)
+    can_delete = (request.user.has_perm(
+        settings.get_attachment_permission('delete_attachment_others')) or request.user == g.creator)
     if can_delete:
         g.delete()
         if settings.PAPERCLIP_ACTION_HISTORY_ENABLED:
