@@ -3,6 +3,9 @@ from setuptools import setup, find_packages
 
 here = os.path.abspath(os.path.dirname(__file__))
 
+tests_require = [
+    'coverage',
+]
 
 setup(
     name='paperclip',
@@ -22,6 +25,12 @@ setup(
         'easy-thumbnails',
         'django-embed-video',
     ],
+    tests_require=tests_require,
+    extras_require={
+        'dev': tests_require + [
+            'flake8',
+        ]
+    },
     packages=find_packages(include=('paperclip', )),
     include_package_data=True,
     zip_safe=False,
