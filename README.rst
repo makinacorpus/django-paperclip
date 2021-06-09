@@ -63,7 +63,7 @@ BASIC USAGE
     <script src="{% static "paperclip/spin.min.js" %}" type="text/javascript"></script>
     <script src="{% static "paperclip/paperclip.js" %}" type="text/javascript"></script>
 
-If you use bootstrap 3, please include ``paperclip/bootstrap-3-confirm.js`` instead of ``paperclip/bootstrap-confirm.js``.
+If you use bootstrap 3 or bootstrap 4, please include ``paperclip/bootstrap-3-confirm.js`` or ``paperclip/bootstrap-4-confirm.js`` instead of ``paperclip/bootstrap-confirm.js``.
 
 * Include list and form in template
 
