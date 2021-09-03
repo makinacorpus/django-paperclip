@@ -6,6 +6,7 @@
         <th>{% trans "Author" %}</th>
         <th>{% trans "Insertion date" %}</th>
         <th>{% trans "Update date" %}</th>
+        {% block extra_column_header %}{% endblock %}
         <th>{% trans "Actions" %}</th>
     </thead>
     <tbody>
@@ -37,6 +38,7 @@
         <td>{{ att.author }}</td>
         <td>{{ att.date_insert }}</td>
         <td>{{ att.date_update }}</td>
+        {% block extra_column_data %}{% endblock %}
         <td>
         {% if perms|change_attachment %}
         <a href="#"
