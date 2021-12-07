@@ -5,7 +5,9 @@ CHANGELOG
 2.3.3+dev0 (XXXX-XX-XX)
 =======================
 
-*
+** New **
+
+* Support Django 4.0
 
 
 2.3.3      (2021-09-03)

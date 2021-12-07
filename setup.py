@@ -23,7 +23,8 @@ setup(
         'Django',
         'pillow',
         'easy-thumbnails',
-        'django-embed-video',
+        #'django-embed-video',  # wait for release > 1.4.0
+        'django-embed-video@https://github.com/jazzband/django-embed-video.git@master#egg=django-embed-video',
     ],
     tests_require=tests_require,
     extras_require={
@@ -52,5 +53,6 @@ setup(
         'Framework :: Django :: 3.0',
         'Framework :: Django :: 3.1',
         'Framework :: Django :: 3.2',
+        'Framework :: Django :: 4.0',
     ]
 )
