@@ -102,10 +102,10 @@ class Attachment(models.Model):
 
     def save(self, **kwargs):
         self.is_image = self.is_an_image()
-        if settings.PAPERCLIP_RESIZE_ATTACHMENTS_ON_UPLOAD and (self.pk is None) and self.attachment_file:
+        if PAPERCLIP_RESIZE_ATTACHMENTS_ON_UPLOAD and (self.pk is None) and self.attachment_file:
             # Resize image
             image = Image.open(self.attachment_file).convert('RGB')
-            image.thumbnail((settings.PAPERCLIP_MAX_ATTACHMENT_WIDTH, settings.PAPERCLIP_MAX_ATTACHMENT_HEIGHT))
+            image.thumbnail((PAPERCLIP_MAX_ATTACHMENT_WIDTH, PAPERCLIP_MAX_ATTACHMENT_HEIGHT))
             # Write resized image
             output = BytesIO()
             ext = PurePosixPath(self.attachment_file.name).suffix.split('.')[-1]  # JPEG, PNG..
