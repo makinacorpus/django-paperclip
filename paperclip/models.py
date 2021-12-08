@@ -3,7 +3,7 @@ import os
 from io import BytesIO
 from pathlib import PurePosixPath
 
-from django.conf import settings
+from paperclip import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.core.files import File
