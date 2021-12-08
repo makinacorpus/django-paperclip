@@ -4,7 +4,6 @@ from django.contrib.auth.models import Permission, User
 from django.core.files.images import get_image_dimensions
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
-from django.test.utils import override_settings
 from PIL import Image
 from unittest.mock import patch
 
