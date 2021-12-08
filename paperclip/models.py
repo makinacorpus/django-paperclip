@@ -100,7 +100,7 @@ class Attachment(models.Model):
     date_update = models.DateTimeField(editable=False, auto_now=True,
                                        verbose_name=_("Update date"))
 
-    def save(self, **kwargs):
+    def save(self, *args, **kwargs):
         self.is_image = self.is_an_image()
         if PAPERCLIP_RESIZE_ATTACHMENTS_ON_UPLOAD and (self.pk is None) and self.attachment_file:
             # Resize image
@@ -116,7 +116,7 @@ class Attachment(models.Model):
             file = File(content_file)
             name = self.attachment_file.name
             self.attachment_file.save(name, file, save=False)
-        super().save(**kwargs)
+        super().save(*args, **kwargs)
 
     class Meta:
         abstract = True

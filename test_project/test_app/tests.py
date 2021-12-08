@@ -6,10 +6,11 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 from django.test.utils import override_settings
 from PIL import Image
+from unittest.mock import patch
 
 from paperclip.settings import get_attachment_model, get_filetype_model
 
-from .models import TestObject, Attachment
+from .models import TestObject
 
 
 class ViewTestCase(TestCase):
@@ -58,6 +59,13 @@ class ViewTestCase(TestCase):
 
 class TestResizeAttachmentsOnUpload(TestCase):
 
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = User.objects.create_user("foo_user", password="foo_password", last_name="foo lastname",
+                                            first_name="foo firstname")
+        cls.object = TestObject.objects.create(name="foo object")
+        cls.filetype = get_filetype_model().objects.create(type="foo filetype")
+
     def get_big_dummy_uploaded_image(self, name='dummy_img.svg'):
         file = BytesIO()
         image = Image.new('RGBA', size=(2000, 4000), color=(155, 0, 0))
@@ -66,26 +74,34 @@ class TestResizeAttachmentsOnUpload(TestCase):
         file.seek(0)
         return SimpleUploadedFile(file.name, file.read(), content_type='image/png')
 
-    @override_settings(PAPERCLIP_RESIZE_ATTACHMENTS_ON_UPLOAD=True)
+    @patch("paperclip.models.PAPERCLIP_RESIZE_ATTACHMENTS_ON_UPLOAD", True)
     def test_attachment_is_resized(self):
-        attachment = Attachment.objects.create(attachment_file=self.get_big_dummy_uploaded_image())
+        attachment = get_attachment_model().objects.create(content_object=self.object, filetype=self.filetype,
+                                                           attachment_file=self.get_big_dummy_uploaded_image(), creator=self.user, author="foo author",
+                                                           title="foo title", legend="foo legend", starred=True)
         self.assertEqual((640, 1280), get_image_dimensions(attachment.attachment_file))
 
-    @override_settings(PAPERCLIP_RESIZE_ATTACHMENTS_ON_UPLOAD=False)
-    def test_attachment_is_not_resized(self):
-        attachment = Attachment.objects.create(attachment_file=self.get_big_dummy_uploaded_image())
+    def test_attachment_is_not_resized_by_default(self):
+        attachment = get_attachment_model().objects.create(content_object=self.object, filetype=self.filetype,
+                                                           attachment_file=self.get_big_dummy_uploaded_image(), creator=self.user, author="foo author",
+                                                           title="foo title", legend="foo legend", starred=True)
         self.assertEqual((2000, 4000), get_image_dimensions(attachment.attachment_file))
 
-    @override_settings(PAPERCLIP_RESIZE_ATTACHMENTS_ON_UPLOAD=True)
-    @override_settings(PAPERCLIP_MAX_ATTACHMENT_WIDTH=2100)
-    @override_settings(PAPERCLIP_MAX_ATTACHMENT_HEIGHT=100)
+    @patch("paperclip.models.PAPERCLIP_RESIZE_ATTACHMENTS_ON_UPLOAD", True)
+    @patch("paperclip.models.PAPERCLIP_MAX_ATTACHMENT_WIDTH", 2100)
+    @patch("paperclip.models.PAPERCLIP_MAX_ATTACHMENT_HEIGHT", 100)
     def test_attachment_is_resized_per_height(self):
-        attachment = Attachment.create(attachment_file=self.get_big_dummy_uploaded_image())
+        attachment = get_attachment_model().objects.create(content_object=self.object, filetype=self.filetype,
+                                                           attachment_file=self.get_big_dummy_uploaded_image(), creator=self.user, author="foo author",
+                                                           title="foo title", legend="foo legend", starred=True)
+        attachment = get_attachment_model().objects.get(title="foo title")
         self.assertEqual((50, 100), get_image_dimensions(attachment.attachment_file))
 
-    @override_settings(PAPERCLIP_RESIZE_ATTACHMENTS_ON_UPLOAD=True)
-    @override_settings(PAPERCLIP_MAX_ATTACHMENT_WIDTH=100)
-    @override_settings(PAPERCLIP_MAX_ATTACHMENT_HEIGHT=2100)
+    @patch("paperclip.models.PAPERCLIP_RESIZE_ATTACHMENTS_ON_UPLOAD", True)
+    @patch("paperclip.models.PAPERCLIP_MAX_ATTACHMENT_WIDTH", 100)
+    @patch("paperclip.models.PAPERCLIP_MAX_ATTACHMENT_HEIGHT", 2100)
     def test_attachment_is_resized_per_width(self):
-        attachment = Attachment.objects.create(attachment_file=self.get_big_dummy_uploaded_image())
+        attachment = get_attachment_model().objects.create(content_object=self.object, filetype=self.filetype,
+                                                           attachment_file=self.get_big_dummy_uploaded_image(), creator=self.user, author="foo author",
+                                                           title="foo title", legend="foo legend", starred=True)
         self.assertEqual((100, 200), get_image_dimensions(attachment.attachment_file))
