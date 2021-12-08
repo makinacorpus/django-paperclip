@@ -3,7 +3,7 @@ import os
 from io import BytesIO
 from pathlib import PurePosixPath
 
-from paperclip import settings
+from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.core.files import File
@@ -15,7 +15,8 @@ from embed_video.fields import EmbedVideoField
 from PIL import Image
 
 from paperclip.settings import (PAPERCLIP_ENABLE_LINK, PAPERCLIP_ENABLE_VIDEO,
-                                PAPERCLIP_FILETYPE_MODEL)
+                                PAPERCLIP_FILETYPE_MODEL, PAPERCLIP_MAX_ATTACHMENT_HEIGHT,
+                                PAPERCLIP_MAX_ATTACHMENT_WIDTH, PAPERCLIP_RESIZE_ATTACHMENTS_ON_UPLOAD)
 
 
 class FileType(models.Model):
