@@ -24,7 +24,7 @@ setup(
         'pillow',
         'easy-thumbnails',
         #'django-embed-video',  # wait for release > 1.4.0
-        'django-embed-video@https://github.com/jazzband/django-embed-video.git@master#egg=django-embed-video',
+        'django-embed-video@git+https://github.com/jazzband/django-embed-video.git@master#egg=django-embed-video',
     ],
     tests_require=tests_require,
     extras_require={
