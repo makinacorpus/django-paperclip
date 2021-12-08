@@ -1,15 +1,21 @@
 import mimetypes
 import os
+from io import BytesIO
+from pathlib import PurePosixPath
 
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from django.core.files import File
+from django.core.files.base import ContentFile
 from django.db import models
 from django.template.defaultfilters import slugify
 from django.utils.translation import gettext_lazy as _
 from embed_video.fields import EmbedVideoField
+from PIL import Image
 
-from paperclip.settings import PAPERCLIP_ENABLE_VIDEO, PAPERCLIP_FILETYPE_MODEL, PAPERCLIP_ENABLE_LINK
+from paperclip.settings import (PAPERCLIP_ENABLE_LINK, PAPERCLIP_ENABLE_VIDEO,
+                                PAPERCLIP_FILETYPE_MODEL)
 
 
 class FileType(models.Model):
@@ -95,6 +101,20 @@ class Attachment(models.Model):
 
     def save(self, **kwargs):
         self.is_image = self.is_an_image()
+        if settings.RESIZE_ATTACHMENTS_ON_UPLOAD and (self.pk is None) and self.attachment_file:
+            # Resize image
+            image = Image.open(self.attachment_file).convert('RGB')
+            image.thumbnail((settings.MAX_ATTACHMENT_WIDTH, settings.MAX_ATTACHMENT_HEIGHT))
+            # Write resized image
+            output = BytesIO()
+            ext = PurePosixPath(self.attachment_file.name).suffix.split('.')[-1]  # JPEG, PNG..
+            image.save(output, format=ext)
+            output.seek(0)
+            # Replace attachment
+            content_file = ContentFile(output.read())
+            file = File(content_file)
+            name = self.attachment_file.name
+            self.attachment_file.save(name, file, save=False)
         super().save(**kwargs)
 
     class Meta:
