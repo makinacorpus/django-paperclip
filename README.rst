@@ -9,7 +9,7 @@ Add attachments to Django models, used in `MapEntity <https://github.com/makinac
 |python-versions| |django-versions|
 
 
-.. |release-status| image:: https://img.shields.io/pypi/v/django-paperclip.svg
+.. |release-status| image:: https://img.shields.io/pypi/v/paperclip.svg
     :target: https://pypi.python.org/pypi/django-paperclip
 
 .. |master-status| image:: https://github.com/makinacorpus/django-paperclip/actions/workflows/python-package.yml/badge.svg
