@@ -1,6 +1,6 @@
-from django.conf.urls import url
+from django.urls import path
 from .views import TestView
 
 urlpatterns = [
-    url(r'^test_object/(?P<pk>\d+)/', TestView.as_view()),
+    path(r'^test_object/<int:pk>/', TestView.as_view()),
 ]
