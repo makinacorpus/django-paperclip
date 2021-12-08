@@ -83,9 +83,9 @@ class TestResizeAttachmentsOnUpload(TestCase):
         attachment = Attachment.create(attachment_file=self.get_big_dummy_uploaded_image())
         self.assertEqual((50, 100), get_image_dimensions(attachment.attachment_file))
 
-    @override_settings(RESIZE_ATTACHMENTS_ON_UPLOAD=True)
-    @override_settings(MAX_ATTACHMENT_WIDTH=100)
-    @override_settings(MAX_ATTACHMENT_HEIGHT=2100)
+    @override_settings(PAPERCLIP_RESIZE_ATTACHMENTS_ON_UPLOAD=True)
+    @override_settings(PAPERCLIP_MAX_ATTACHMENT_WIDTH=100)
+    @override_settings(PAPERCLIP_MAX_ATTACHMENT_HEIGHT=2100)
     def test_attachment_is_resized_per_width(self):
         attachment = Attachment.create(attachment_file=self.get_big_dummy_uploaded_image())
         self.assertEqual((100, 200), get_image_dimensions(attachment.attachment_file))
