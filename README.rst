@@ -3,6 +3,25 @@ Paperclip
 
 Add attachments to Django models, used in `MapEntity <https://github.com/makinacorpus/django-mapentity>`_.
 
+
+|release-status| |master-status| |master-coverage|
+
+|python-versions| |django-versions|
+
+
+.. |release-status| image:: https://img.shields.io/pypi/v/django-paperclip.svg
+    :target: https://pypi.python.org/pypi/django-paperclip
+
+.. |master-status| image:: https://github.com/makinacorpus/django-paperclip/actions/workflows/python-package.yml/badge.svg
+
+.. |master-coverage| image:: https://codecov.io/gh/makinacorpus/django-paperclip/branch/master/graph/badge.svg?token=OB6f944vAt
+    :target: https://codecov.io/gh/makinacorpus/django-paperclip
+
+.. |python-versions| image:: https://img.shields.io/badge/python-%3E%3D%203.6-blue.svg
+
+.. |django-versions| image:: https://img.shields.io/badge/django-%3E%3D%202.2-blue.svg
+
+
 =======
 INSTALL
 =======
@@ -20,21 +39,16 @@ Installing from github
 
     pip install -e git://github.com/makinacorpus/django-paperclip.git#egg=django-paperclip
 
-============
-REQUIREMENTS
-============
-
-Django-paperclip is supported only in Python3 (tested with Python 3.5 and 3.6).
-It requires at least Django in the 1.11 version and has been tested with versions between 1.11 and 2.1.
 
 =======
 UPGRADE
 =======
 
-After upgrade to 0.4.0, if you want to enable links to Youtube/Soundcould media,
+After upgrade to 0.4.0, if you want to enable links to Youtube/Soundcloud media,
 you have to add an additional column to the database:
 
-::
+
+.. code-block:: postgresql
 
     ALTER TABLE paperclip_attachment ADD COLUMN attachment_video VARCHAR(200) NOT NULL DEFAULT '';
 
@@ -174,20 +188,19 @@ Note: To be sure to not break the form logic, we recommend to inherit from the n
 
 * Override ``'add_attachment'`` and ``'update_attachment'`` URLs to provide your custom form class in arguments
 
-::
+.. code-block:: python
 
     from my_app.forms import MyAttachmentForm
 
     urlpatterns = [
-        url(r'^paperclip/', include('paperclip.urls')),
+        path('paperclip/', include('paperclip.urls')),
         ...
-        url(r'^add-for/(?P<app_label>[\w\-]+)/'
-            r'(?P<model_name>[\w\-]+)/(?P<pk>\d+)/$',
+        path('add-for/<str:app_label>/<str:model_name>/<int:pk>/',
             'paperclip.views.add_attachment',
             kwargs={'attachment_form': MyAttachmentForm},
             name="add_attachment"),
 
-        url(r'^update/(?P<attachment_pk>\d+)/$',
+        path('update/<int:attachment_pk>/',
             'paperclip.views.update_attachment',
             kwargs={'attachment_form': MyAttachmentForm},
             name="update_attachment"),
