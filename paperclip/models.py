@@ -1,7 +1,7 @@
 import mimetypes
 import os
 from io import BytesIO
-from pathlib import PurePosixPath
+from pathlib import Path
 
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
@@ -108,7 +108,7 @@ class Attachment(models.Model):
             image.thumbnail((PAPERCLIP_MAX_ATTACHMENT_WIDTH, PAPERCLIP_MAX_ATTACHMENT_HEIGHT))
             # Write resized image
             output = BytesIO()
-            ext = PurePosixPath(self.attachment_file.name).suffix.split('.')[-1]  # JPEG, PNG..
+            ext = Path(self.attachment_file.name).suffix.split('.')[-1]  # JPEG, PNG..
             image.save(output, format=ext)
             output.seek(0)
             # Replace attachment
