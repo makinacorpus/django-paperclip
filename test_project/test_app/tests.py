@@ -126,7 +126,7 @@ class TestResizeAttachmentsOnUpload(TestCase):
                                                            title="foo title", legend="foo legend", starred=True)
         self.assertEqual((100, 200), get_image_dimensions(attachment.attachment_file))
         # Update attachment with small image and assert picture changed
-        permission = Permission.objects.get(codename=f"change_attachment")
+        permission = Permission.objects.get(codename="change_attachment")
         self.user.user_permissions.add(permission)
         self.client.force_login(self.user)
         small_image = self.get_small_dummy_uploaded_image()
@@ -146,7 +146,7 @@ class TestResizeAttachmentsOnUpload(TestCase):
         # Refresh object
         attachment = get_attachment_model().objects.get(pk=attachment.pk)
         self.assertEqual(attachment.author, "newauthor")
-        #Todo fix....
+        # Todo fix....
         self.assertEqual((20, 40), get_image_dimensions(attachment.attachment_file))
 
     def tearDown(self):
