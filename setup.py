@@ -9,7 +9,7 @@ tests_require = [
 
 setup(
     name='paperclip',
-    version='2.3.3+dev0',
+    version='2.3.4',
     author='Makina Corpus',
     author_email='geobi@makina-corpus.com',
     url='https://github.com/makinacorpus/django-paperclip',
