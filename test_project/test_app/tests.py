@@ -1,4 +1,5 @@
 from io import BytesIO
+from tempfile import TemporaryDirectory
 from unittest.mock import patch
 
 from django.contrib.auth.models import Permission, User
@@ -57,7 +58,7 @@ class ViewTestCase(TestCase):
                                  ('<Attachment: foo_user attached >', '<Attachment: foo_user attached foo_file.txt>'))
 
 
-@override_settings(MEDIA_ROOT='/tmp/pqperclip-media')
+@override_settings(MEDIA_ROOT=TemporaryDirectory().name)
 class TestResizeAttachmentsOnUpload(TestCase):
 
     @classmethod
