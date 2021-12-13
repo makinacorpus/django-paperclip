@@ -5,8 +5,11 @@ CHANGELOG
 2.3.3+dev0 (XXXX-XX-XX)
 =======================
 
-*
+**New features**
 
+- Add PAPERCLIP_RESIZE_ATTACHMENTS_ON_UPLOAD setting to enable resize attachments on upload
+- Add PAPERCLIP_MAX_ATTACHMENT_WIDTH and PAPERCLIP_MAX_ATTACHMENT_HEIGHT to configure attachment resizing (defaults 1280px)
+ 
 
 2.3.3      (2021-09-03)
 =======================
