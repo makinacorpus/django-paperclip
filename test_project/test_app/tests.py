@@ -77,9 +77,9 @@ class TestResizeAttachmentsOnUpload(TestCase):
 
     def get_small_dummy_uploaded_image(self):
         file = BytesIO()
-        image = Image.new('RGBA', size=(20, 40), color=(155, 0, 0))
-        image.save(file, 'png')
-        file.name = 'small.png'
+        image = Image.new('RGB', size=(20, 40), color=(155, 0, 0))
+        image.save(file, 'jpeg')
+        file.name = 'small.jpg'
         file.seek(0)
         return SimpleUploadedFile(file.name, file.read(), content_type='image/png')
 
@@ -116,26 +116,28 @@ class TestResizeAttachmentsOnUpload(TestCase):
         self.assertEqual((100, 200), get_image_dimensions(attachment.attachment_file))
 
     @patch("paperclip.models.PAPERCLIP_RESIZE_ATTACHMENTS_ON_UPLOAD", True)
+    @patch("paperclip.models.PAPERCLIP_RESIZE_ATTACHMENTS_ON_UPLOAD", True)
     @patch("paperclip.models.PAPERCLIP_MAX_ATTACHMENT_WIDTH", 100)
     @patch("paperclip.models.PAPERCLIP_MAX_ATTACHMENT_HEIGHT", 2100)
     def test_attachment_is_resized_when_updated(self):
-        # Create attachment with big image and assert resized
-        big_image = self.get_big_dummy_uploaded_image()
+        # Create attachment with small image
+        small_image = self.get_small_dummy_uploaded_image()
         attachment = get_attachment_model().objects.create(content_object=self.object, filetype=self.filetype,
-                                                           attachment_file=big_image, creator=self.user, author="foo author",
+                                                           attachment_file=small_image, creator=self.user, author="foo author",
                                                            title="foo title", legend="foo legend", starred=True)
-        self.assertEqual((100, 200), get_image_dimensions(attachment.attachment_file))
-        # Update attachment with small image and assert picture changed
-        permission = Permission.objects.get(codename=f"change_attachment")
+        self.assertEqual((20, 40), get_image_dimensions(attachment.attachment_file))
+        self.extra_file_to_delete = attachment.attachment_file.path
+        # Update attachment with big image and assert picture resized
+        permission = Permission.objects.get(codename="change_attachment")
         self.user.user_permissions.add(permission)
         self.client.force_login(self.user)
-        small_image = self.get_small_dummy_uploaded_image()
+        big_image = self.get_big_dummy_uploaded_image()
         response = self.client.post(
             reverse(
                 'update_attachment',
                 kwargs={'attachment_pk': attachment.pk}),
-            files={'attachment_file': small_image},
             data={
+                'attachment_file': big_image,
                 'filetype': self.filetype.pk,
                 'author': "newauthor",
                 'next': f"/test_object/{self.object.pk}",
@@ -146,12 +148,13 @@ class TestResizeAttachmentsOnUpload(TestCase):
         # Refresh object
         attachment = get_attachment_model().objects.get(pk=attachment.pk)
         self.assertEqual(attachment.author, "newauthor")
-        #Todo fix....
-        self.assertEqual((20, 40), get_image_dimensions(attachment.attachment_file))
+        self.assertEqual((100, 200), get_image_dimensions(attachment.attachment_file))
 
     def tearDown(self):
         # Delete all dummy images created by tests
         for atta in get_attachment_model().objects.all():
             file_path = atta.attachment_file.path
             os.remove(file_path)
+        if hasattr(self, 'extra_file_to_delete'):
+            os.remove(self.extra_file_to_delete)
         super().tearDown()

@@ -102,13 +102,15 @@ class Attachment(models.Model):
 
     def save(self, *args, **kwargs):
         self.is_image = self.is_an_image()
-        if PAPERCLIP_RESIZE_ATTACHMENTS_ON_UPLOAD and (self.pk is None) and self.attachment_file:
+        if PAPERCLIP_RESIZE_ATTACHMENTS_ON_UPLOAD and self.attachment_file:
             # Resize image
             image = Image.open(self.attachment_file).convert('RGB')
             image.thumbnail((PAPERCLIP_MAX_ATTACHMENT_WIDTH, PAPERCLIP_MAX_ATTACHMENT_HEIGHT))
             # Write resized image
             output = BytesIO()
             ext = Path(self.attachment_file.name).suffix.split('.')[-1]  # JPEG, PNG..
+            if ext == 'jpg' or ext == 'JPG':  # PIL does not know JPGs are JPEGs
+                ext = 'jpeg'
             image.save(output, format=ext)
             output.seek(0)
             # Replace attachment
