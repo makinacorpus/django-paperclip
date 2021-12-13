@@ -5,7 +5,7 @@ from unittest.mock import patch
 from django.contrib.auth.models import Permission, User
 from django.core.files.images import get_image_dimensions
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.urls import reverse
 from PIL import Image
 
@@ -58,6 +58,7 @@ class ViewTestCase(TestCase):
                                  ('<Attachment: foo_user attached >', '<Attachment: foo_user attached foo_file.txt>'))
 
 
+@override_settings(MEDIA_ROOT='/tmp/pqperclip-media')
 class TestResizeAttachmentsOnUpload(TestCase):
 
     @classmethod
@@ -126,7 +127,6 @@ class TestResizeAttachmentsOnUpload(TestCase):
                                                            attachment_file=small_image, creator=self.user, author="foo author",
                                                            title="foo title", legend="foo legend", starred=True)
         self.assertEqual((20, 40), get_image_dimensions(attachment.attachment_file))
-        self.extra_file_to_delete = attachment.attachment_file.path
         # Update attachment with big image and assert picture resized
         permission = Permission.objects.get(codename="change_attachment")
         self.user.user_permissions.add(permission)
@@ -150,11 +150,3 @@ class TestResizeAttachmentsOnUpload(TestCase):
         self.assertEqual(attachment.author, "newauthor")
         self.assertEqual((100, 200), get_image_dimensions(attachment.attachment_file))
 
-    def tearDown(self):
-        # Delete all dummy images created by tests
-        for atta in get_attachment_model().objects.all():
-            file_path = atta.attachment_file.path
-            os.remove(file_path)
-        if hasattr(self, 'extra_file_to_delete'):
-            os.remove(self.extra_file_to_delete)
-        super().tearDown()

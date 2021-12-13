@@ -102,7 +102,7 @@ class Attachment(models.Model):
 
     def save(self, *args, **kwargs):
         self.is_image = self.is_an_image()
-        if PAPERCLIP_RESIZE_ATTACHMENTS_ON_UPLOAD and self.attachment_file:
+        if PAPERCLIP_RESIZE_ATTACHMENTS_ON_UPLOAD and self.is_image and self.attachment_file:
             # Resize image
             image = Image.open(self.attachment_file).convert('RGB')
             image.thumbnail((PAPERCLIP_MAX_ATTACHMENT_WIDTH, PAPERCLIP_MAX_ATTACHMENT_HEIGHT))
