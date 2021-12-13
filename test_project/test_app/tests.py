@@ -1,4 +1,3 @@
-import os
 from io import BytesIO
 from unittest.mock import patch
 
@@ -149,4 +148,3 @@ class TestResizeAttachmentsOnUpload(TestCase):
         attachment = get_attachment_model().objects.get(pk=attachment.pk)
         self.assertEqual(attachment.author, "newauthor")
         self.assertEqual((100, 200), get_image_dimensions(attachment.attachment_file))
-
