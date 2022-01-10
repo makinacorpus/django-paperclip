@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404
 from django.views.decorators.http import require_POST, require_http_methods
 from django.http import HttpResponseRedirect, HttpResponse, Http404, JsonResponse
 from django.apps import apps
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 from django.utils.translation import gettext_lazy as _
 from django.template import RequestContext, Template
 from django.contrib.admin.models import LogEntry, CHANGE
@@ -60,7 +60,7 @@ def _handle_attachment_form(request, obj, form, change_msg, success_msg,
                 user_id=request.user.pk,
                 content_type_id=attachment.content_type.id,
                 object_id=obj.pk,
-                object_repr=force_text(obj),
+                object_repr=force_str(obj),
                 action_flag=CHANGE,
                 change_message=change_msg % attachment.title,
             )
@@ -94,7 +94,7 @@ def delete_attachment(request, attachment_pk):
                 user_id=request.user.pk,
                 content_type_id=g.content_type.id,
                 object_id=g.object_id,
-                object_repr=force_text(g.content_object),
+                object_repr=force_str(g.content_object),
                 action_flag=CHANGE,
                 change_message=_('Remove attachment %s') % g.title,
             )
@@ -120,7 +120,7 @@ def star_attachment(request, attachment_pk):
             user_id=request.user.pk,
             content_type_id=g.content_type.id,
             object_id=g.object_id,
-            object_repr=force_text(g.content_object),
+            object_repr=force_str(g.content_object),
             action_flag=CHANGE,
             change_message=change_message % g.title,
         )

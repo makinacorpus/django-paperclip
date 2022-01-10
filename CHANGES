@@ -5,7 +5,9 @@ CHANGELOG
 2.3.4+dev0 (XXXX-XX-XX)
 =======================
 
-**New features**
+** New **
+
+* Support Django 4.0
 
 
 2.3.4 (2021-12-13)
