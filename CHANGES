@@ -2,13 +2,22 @@
 CHANGELOG
 =========
 
-2.3.3+dev0 (XXXX-XX-XX)
+2.3.4+dev0 (XXXX-XX-XX)
 =======================
 
 ** New **
 
 * Support Django 4.0
 
+
+2.3.4 (2021-12-13)
+=======================
+
+**New features**
+
+- Add PAPERCLIP_RESIZE_ATTACHMENTS_ON_UPLOAD setting to enable resize attachments on upload
+- Add PAPERCLIP_MAX_ATTACHMENT_WIDTH and PAPERCLIP_MAX_ATTACHMENT_HEIGHT to configure attachment resizing (defaults 1280px)
+ 
 
 2.3.3      (2021-09-03)
 =======================
