@@ -2,10 +2,14 @@
 CHANGELOG
 =========
 
+2.4.0+dev  (XXXX-XX-XX)
+=======================
+
+
 2.4.0      (2022-01-10)
 =======================
 
-** New **
+**New**
 
 * Support Django 4.0
 * Support Python 3.10
