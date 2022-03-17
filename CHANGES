@@ -2,13 +2,20 @@
 CHANGELOG
 =========
 
-2.3.4+dev0 (XXXX-XX-XX)
+2.4.0+dev0      (2022-01-10)
+=======================
+
+** Fixes **
+
+* Fix form enable_link javascript
+
+
+2.4.0      (2022-01-10)
 =======================
 
 ** New **
 
 * Support Django 4.0
-* Fix form enable_link javascript
 
 
 2.3.4 (2021-12-13)
