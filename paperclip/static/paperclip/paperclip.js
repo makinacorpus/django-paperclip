@@ -10,21 +10,21 @@
             $('#id_attachment_video').prop('required', true);
             $('#div_id_attachment_file').hide();
             $('#div_id_attachment_link').hide();
-            $('input[name="embed"][value="True"]').prop("checked", true);
+            $('input[name="embed"][value="File"]').prop("checked", true);
         } else if($('#id_attachment_link').length && $('#id_attachment_link').val().length) {
             $('#id_attachment_link').prop('required', true);
             $('#div_id_attachment_file').hide();
             $('#div_id_attachment_video').hide();
-            $('input[name="embed"][value="None"]').prop("checked", true);
+            $('input[name="embed"][value="Link"]').prop("checked", true);
         } else {
             $('.create #id_attachment_file').prop('required', true);
             $('#div_id_attachment_video').hide();
             $('#div_id_attachment_link').hide();
-            $('input[name="embed"][value="False"]').prop("checked", true);
+            $('input[name="embed"][value="Youtube"]').prop("checked", true);
         }
     }
     init_mode();
-    $('.file-attachment-form').on('click', 'input[name="embed"][value="False"]', function () {
+    $('.file-attachment-form').on('click', 'input[name="embed"][value="File"]', function () {
         $('.create #id_attachment_file').prop('required', true);
         $('#id_attachment_video').removeAttr('required');
         $('#id_attachment_link').removeAttr('required');
@@ -32,7 +32,7 @@
         $('#div_id_attachment_video').hide();
         $('#div_id_attachment_link').hide();
     });
-    $('.file-attachment-form').on('click', 'input[name="embed"][value="True"]', function () {
+    $('.file-attachment-form').on('click', 'input[name="embed"][value="Youtube"]', function () {
         $('.create #id_attachment_file').removeAttr('required');
         $('.create #id_attachment_link').removeAttr('required');
         $('#id_attachment_video').prop('required', true);
@@ -40,7 +40,7 @@
         $('#div_id_attachment_link').hide();
         $('#div_id_attachment_video').show();
     });
-    $('.file-attachment-form').on('click', 'input[name="embed"][value="None"]', function () {
+    $('.file-attachment-form').on('click', 'input[name="embed"][value="Link"]', function () {
         $('.create #id_attachment_file').removeAttr('required');
         $('.create #id_attachment_video').removeAttr('required');
         $('#id_attachment_link').prop('required', true);

@@ -52,7 +52,7 @@ class ViewTestCase(TestCase):
         self.user.user_permissions.add(perm)
         self.client.login(username="foo_user", password="foo_password")
         response = self.client.post('/paperclip/add-for/test_app/testobject/{pk}/'.format(pk=self.pk),
-                                    {'embed': False, 'filetype': self.filetype.pk, 'next': '/foo-url/'})
+                                    {'embed': 'File', 'filetype': self.filetype.pk, 'next': '/foo-url/'})
         self.assertRedirects(response, "/foo-url/", fetch_redirect_response=False)
         self.assertQuerysetEqual(get_attachment_model().objects.all(),
                                  ('<Attachment: foo_user attached >', '<Attachment: foo_user attached foo_file.txt>'))
@@ -141,7 +141,7 @@ class TestResizeAttachmentsOnUpload(TestCase):
                 'filetype': self.filetype.pk,
                 'author': "newauthor",
                 'next': f"/test_object/{self.object.pk}",
-                'embed': False
+                'embed': 'File'
             }
         )
         self.assertEqual(response.status_code, 302)

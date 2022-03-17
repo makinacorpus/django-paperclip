@@ -4,15 +4,15 @@ from django.utils.translation import gettext_lazy as _
 
 from paperclip import settings
 
-MODE_CHOICED = [(False, _('File')), ]
+MODE_CHOICED = [('File', _('File')), ]
 
 
 class AttachmentForm(forms.ModelForm):
     if settings.PAPERCLIP_ENABLE_VIDEO:
-        MODE_CHOICED.append((True, _('Youtube/Soundcloud URL')))
+        MODE_CHOICED.append(('Youtube', _('Youtube/Soundcloud URL')))
 
     if settings.PAPERCLIP_ENABLE_LINK:
-        MODE_CHOICED.append((None, _('External picture link')))
+        MODE_CHOICED.append(('Link', _('External picture link')))
 
     if settings.PAPERCLIP_ENABLE_VIDEO or settings.PAPERCLIP_ENABLE_LINK:
         embed = forms.TypedChoiceField(
@@ -76,7 +76,7 @@ class AttachmentForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         if settings.PAPERCLIP_ENABLE_VIDEO or settings.PAPERCLIP_ENABLE_LINK:
-            if cleaned_data['embed'] == 'True' or cleaned_data['embed'] == 'None':
+            if cleaned_data['embed'] == 'Youtube' or cleaned_data['embed'] == 'Link':
                 cleaned_data['attachment_file'] = ''
             else:
                 cleaned_data['attachment_video'] = ''
