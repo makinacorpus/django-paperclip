@@ -154,4 +154,4 @@ def get_attachments(request, app_label, model_name, pk):
         }
         for attachment in attachments
     ]
-    return JsonResponse(reply)
+    return JsonResponse(reply, safe=False)

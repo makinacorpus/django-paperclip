@@ -3,6 +3,7 @@ from tempfile import TemporaryDirectory
 from unittest.mock import patch
 
 from django.contrib.auth.models import Permission, User
+from django.contrib.messages import get_messages
 from django.core.files.images import get_image_dimensions
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase, override_settings
@@ -14,6 +15,7 @@ from paperclip.settings import get_attachment_model, get_filetype_model
 from .models import TestObject
 
 
+@override_settings(MEDIA_ROOT=TemporaryDirectory().name)
 class ViewTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
@@ -21,9 +23,10 @@ class ViewTestCase(TestCase):
                                             first_name="foo firstname")
         object = TestObject.objects.create(name="foo object")
         cls.filetype = get_filetype_model().objects.create(type="foo filetype")
-        get_attachment_model().objects.create(content_object=object, filetype=cls.filetype,
-                                              attachment_file="foo_file.txt", creator=cls.user, author="foo author",
-                                              title="foo title", legend="foo legend", starred=True)
+        cls.attachment = get_attachment_model().objects.create(content_object=object, filetype=cls.filetype,
+                                                               attachment_file="foo_file.txt", creator=cls.user,
+                                                               author="foo author", title="foo title",
+                                                               legend="foo legend", starred=True)
         cls.pk = object.pk
 
     def test_detail_not_logged(self):
@@ -51,11 +54,105 @@ class ViewTestCase(TestCase):
         perm = Permission.objects.get(codename='add_attachment')
         self.user.user_permissions.add(perm)
         self.client.login(username="foo_user", password="foo_password")
+
+        f = SimpleUploadedFile("file.txt", b"file_content")
         response = self.client.post('/paperclip/add-for/test_app/testobject/{pk}/'.format(pk=self.pk),
-                                    {'embed': 'File', 'filetype': self.filetype.pk, 'next': '/foo-url/'})
+                                    {'embed': 'File', 'filetype': self.filetype.pk, 'next': '/foo-url/',
+                                     'attachment_file': f})
         self.assertRedirects(response, "/foo-url/", fetch_redirect_response=False)
         self.assertQuerysetEqual(get_attachment_model().objects.all(),
-                                 ('<Attachment: foo_user attached >', '<Attachment: foo_user attached foo_file.txt>'))
+                                 (f'<Attachment: foo_user attached paperclip/test_app_testobject/{self.pk}/file.txt>',
+                                  '<Attachment: foo_user attached foo_file.txt>'))
+
+    def test_update_view(self):
+        perm = Permission.objects.get(codename='change_attachment')
+        self.user.user_permissions.add(perm)
+        self.client.login(username="foo_user", password="foo_password")
+        response = self.client.post('/paperclip/update/{pk}/'.format(pk=self.attachment.pk),
+                                    {'embed': 'File',
+                                     'filetype': self.filetype.pk,
+                                     'next': '/foo-url/',
+                                     'title': 'test'})
+        self.assertRedirects(response, "/foo-url/", fetch_redirect_response=False)
+        self.assertQuerysetEqual(get_attachment_model().objects.all(),
+                                 ('<Attachment: foo_user attached foo_file.txt>', ))
+        response = self.client.get('/paperclip/update/{pk}/'.format(pk=self.attachment.pk))
+        self.assertContains(response, b'Update foo_file.txt')
+
+    def test_delete_view(self):
+        object_attachment = TestObject.objects.create(name="foo object")
+        attachment = get_attachment_model().objects.create(content_object=object_attachment, filetype=self.filetype,
+                                                           attachment_file="attach.txt", creator=self.user,
+                                                           author="bar author", title="bar title",
+                                                           legend="bar legend", starred=True)
+        perm = Permission.objects.get(codename='delete_attachment')
+        self.user.user_permissions.add(perm)
+        self.client.login(username="foo_user", password="foo_password")
+        self.assertQuerysetEqual(get_attachment_model().objects.all(),
+                                 ('<Attachment: foo_user attached attach.txt>',
+                                  '<Attachment: foo_user attached foo_file.txt>',))
+        response = self.client.post('/paperclip/delete/{pk}/'.format(pk=attachment.pk))
+        self.assertRedirects(response, "/", fetch_redirect_response=False)
+        self.assertQuerysetEqual(get_attachment_model().objects.all(),
+                                 ('<Attachment: foo_user attached foo_file.txt>', ))
+
+    def test_delete_view_no_permission_delete(self):
+        user_other = User.objects.create_user("other_user", password="other_password", last_name="other lastname",
+                                              first_name="other firstname")
+        object_attachment = TestObject.objects.create(name="foo object")
+        attachment = get_attachment_model().objects.create(content_object=object_attachment, filetype=self.filetype,
+                                                           attachment_file="attach.txt", creator=user_other,
+                                                           author="bar author", title="bar title",
+                                                           legend="bar legend", starred=True)
+        perm = Permission.objects.get(codename='delete_attachment')
+        self.user.user_permissions.add(perm)
+        self.client.login(username="foo_user", password="foo_password")
+        self.assertQuerysetEqual(get_attachment_model().objects.all(),
+                                 ('<Attachment: other_user attached attach.txt>',
+                                  '<Attachment: foo_user attached foo_file.txt>',))
+        response = self.client.post('/paperclip/delete/{pk}/'.format(pk=attachment.pk))
+        self.assertRedirects(response, "/", fetch_redirect_response=False)
+
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual(str(messages[0]), 'You are not allowed to delete this attachment.')
+        self.assertQuerysetEqual(get_attachment_model().objects.all(),
+                                 ('<Attachment: other_user attached attach.txt>',
+                                  '<Attachment: foo_user attached foo_file.txt>', ))
+
+    def test_star_view(self):
+        object_attachment = TestObject.objects.create(name="foo object")
+        attachment = get_attachment_model().objects.create(content_object=object_attachment, filetype=self.filetype,
+                                                           attachment_file="attach.txt", creator=self.user,
+                                                           author="bar author", title="bar title",
+                                                           legend="bar legend")
+        perm = Permission.objects.get(codename='change_attachment')
+        self.user.user_permissions.add(perm)
+        self.client.login(username="foo_user", password="foo_password")
+        self.assertFalse(attachment.starred)
+        response = self.client.post('/paperclip/star/{pk}/'.format(pk=attachment.pk))
+        self.assertEqual(response.json(), {'status': 'ok', 'starred': True})
+        attachment.refresh_from_db()
+        self.assertTrue(attachment.starred)
+        response = self.client.get('/paperclip/star/{pk}/'.format(pk=attachment.pk), {'unstar': True})
+        self.assertEqual(response.json(), {'status': 'ok', 'starred': False})
+        attachment.refresh_from_db()
+        self.assertFalse(attachment.starred)
+
+    def test_get_view(self):
+        perm = Permission.objects.get(codename='read_attachment')
+        self.user.user_permissions.add(perm)
+        self.client.login(username="foo_user", password="foo_password")
+        response = self.client.get('/paperclip/get/test_app/testobject/{pk}/'.format(pk=self.pk), safe=False)
+        self.assertEqual(response.json(), [{"id": 1,
+                                            "title": "foo title",
+                                            "legend": "foo legend",
+                                            "url": "/foo_file.txt",
+                                            "type": "foo filetype",
+                                            "author": "foo author",
+                                            "filename": "foo_file.txt",
+                                            "mimetype": ["text", "plain"],
+                                            "is_image": False,
+                                            "starred": True}])
 
 
 @override_settings(MEDIA_ROOT=TemporaryDirectory().name)
