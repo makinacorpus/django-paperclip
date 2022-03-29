@@ -10,7 +10,7 @@
             $('#id_attachment_video').prop('required', true);
             $('#div_id_attachment_file').hide();
             $('#div_id_attachment_link').hide();
-            $('input[name="embed"][value="File"]').prop("checked", true);
+            $('input[name="embed"][value="Youtube"]').prop("checked", true);
         } else if($('#id_attachment_link').length && $('#id_attachment_link').val().length) {
             $('#id_attachment_link').prop('required', true);
             $('#div_id_attachment_file').hide();
@@ -20,7 +20,7 @@
             $('.create #id_attachment_file').prop('required', true);
             $('#div_id_attachment_video').hide();
             $('#div_id_attachment_link').hide();
-            $('input[name="embed"][value="Youtube"]').prop("checked", true);
+            $('input[name="embed"][value="File"]').prop("checked", true);
         }
     }
     init_mode();
