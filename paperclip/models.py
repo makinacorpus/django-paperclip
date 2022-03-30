@@ -82,15 +82,15 @@ class Attachment(models.Model):
                                 verbose_name=_('Creator'),
                                 help_text=_("User that uploaded"), on_delete=models.CASCADE)
     author = models.CharField(blank=True, default='', max_length=128,
-                              db_column='auteur', verbose_name=_('Author'),
+                              db_column='author', verbose_name=_('Author'),
                               help_text=_("Original creator"))
     title = models.CharField(blank=True, default='', max_length=128,
-                             db_column='titre', verbose_name=_(u"Filename"),
+                             db_column='title', verbose_name=_(u"Filename"),
                              help_text=_("Renames the file"))
     legend = models.CharField(blank=True, default='', max_length=128,
-                              db_column='legende', verbose_name=_(u"Legend"),
+                              db_column='legend', verbose_name=_(u"Legend"),
                               help_text=_("Details displayed"))
-    starred = models.BooleanField(default=False, db_column='marque',
+    starred = models.BooleanField(default=False, db_column='starred',
                                   verbose_name=_(u"Starred"),
                                   help_text=_("Mark as starred"))
     is_image = models.BooleanField(editable=False, default=False, verbose_name=_(u"Is image"),
