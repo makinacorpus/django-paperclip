@@ -16,7 +16,7 @@ class AttachmentForm(forms.ModelForm):
 
     if settings.PAPERCLIP_ENABLE_VIDEO or settings.PAPERCLIP_ENABLE_LINK:
         embed = forms.TypedChoiceField(
-            label=_(u"Mode"),
+            label=_("Mode"),
             choices=MODE_CHOICED,
             widget=forms.RadioSelect(), initial=False)
     next = forms.CharField(widget=forms.HiddenInput())
