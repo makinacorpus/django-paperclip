@@ -85,15 +85,15 @@ class Attachment(models.Model):
                               verbose_name=_('Author'),
                               help_text=_("Original creator"))
     title = models.CharField(blank=True, default='', max_length=128,
-                             verbose_name=_(u"Filename"),
+                             verbose_name=_("Filename"),
                              help_text=_("Renames the file"))
     legend = models.CharField(blank=True, default='', max_length=128,
-                              verbose_name=_(u"Legend"),
+                              verbose_name=_("Legend"),
                               help_text=_("Details displayed"))
     starred = models.BooleanField(default=False,
-                                  verbose_name=_(u"Starred"),
+                                  verbose_name=_("Starred"),
                                   help_text=_("Mark as starred"))
-    is_image = models.BooleanField(editable=False, default=False, verbose_name=_(u"Is image"),
+    is_image = models.BooleanField(editable=False, default=False, verbose_name=_("Is image"),
                                    help_text=_("Is an image file"), db_index=True)
     date_insert = models.DateTimeField(editable=False, auto_now_add=True,
                                        verbose_name=_("Insertion date"))

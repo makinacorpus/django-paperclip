@@ -67,7 +67,7 @@ def attachment_form(context, obj, form=None):
 
     form_title = _("New file attachment")
     if form.instance.pk:
-        form_title = u"%s %s" % (_("Update"), form.instance.filename)
+        form_title = "%s %s" % (_("Update"), form.instance.filename)
 
     return {
         'attachment_form': form,
