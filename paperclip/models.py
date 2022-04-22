@@ -37,6 +37,18 @@ class FileType(models.Model):
         return self.type
 
 
+class License(models.Model):
+
+    label = models.CharField(max_length=128, verbose_name=_("License Name"), null=False, blank=False, unique=True)  # FIXME : rename to label
+
+    def __str__(self):
+        return self.label
+
+    class Meta:
+        verbose_name = _("Attachment license")
+        verbose_name_plural = _("Attachment licenses")
+
+
 class AttachmentManager(models.Manager):
     def attachments_for_object(self, obj):
         object_type = ContentType.objects.get_for_model(obj)
@@ -81,6 +93,7 @@ class Attachment(models.Model):
                                 related_name="created_attachments",
                                 verbose_name=_('Creator'),
                                 help_text=_("User that uploaded"), on_delete=models.CASCADE)
+    license = models.ForeignKey(License, verbose_name=_("License"), null=True, blank=True, on_delete=models.SET_NULL)
     author = models.CharField(blank=True, default='', max_length=128,
                               verbose_name=_('Author'),
                               help_text=_("Original creator"))
