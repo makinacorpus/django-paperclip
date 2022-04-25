@@ -39,14 +39,16 @@ class FileType(models.Model):
 
 class License(models.Model):
 
-    label = models.CharField(max_length=128, verbose_name=_("License Name"), null=False, blank=False, unique=True)  # FIXME : rename to label
+    label = models.CharField(max_length=128, verbose_name=_("License name"), null=False, blank=False, unique=True)
 
     def __str__(self):
         return self.label
 
     class Meta:
+        abstract = True
         verbose_name = _("Attachment license")
         verbose_name_plural = _("Attachment licenses")
+        ordering = ['label']
 
 
 class AttachmentManager(models.Manager):
