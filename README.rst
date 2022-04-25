@@ -103,6 +103,7 @@ Define the following django setting:
 
     PAPERCLIP_ENABLE_VIDEO = False,
     PAPERCLIP_FILETYPE_MODEL = 'myapp.FileType'
+    PAPERCLIP_LICENSE_MODEL = 'myapp.License'
     PAPERCLIP_ATTACHMENT_MODEL = 'myapp.Attachment'
     PAPERCLIP_ACTION_HISTORY_ENABLED = True
 
