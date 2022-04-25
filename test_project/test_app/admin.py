@@ -5,6 +5,7 @@ from .models import TestObject
 
 
 admin.site.register(settings.get_filetype_model())
+admin.site.register(settings.get_license_model())
 admin.site.register(settings.get_attachment_model())
 
 
