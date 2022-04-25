@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-29 09:22+0000\n"
+"POT-Creation-Date: 2022-04-25 09:58+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
 msgid "File"
 msgstr ""
 
@@ -38,6 +39,15 @@ msgstr ""
 msgid "File types"
 msgstr ""
 
+msgid "License name"
+msgstr ""
+
+msgid "Attachment license"
+msgstr ""
+
+msgid "Attachment licenses"
+msgstr ""
+
 msgid "Video URL"
 msgstr ""
 
@@ -48,6 +58,9 @@ msgid "Creator"
 msgstr ""
 
 msgid "User that uploaded"
+msgstr ""
+
+msgid "License"
 msgstr ""
 
 msgid "Author"
