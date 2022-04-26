@@ -35,7 +35,7 @@
             {% endif %}
         </td>
         <td>{{ att.legend }}</td>
-        <td>{{ att.author }}</td>
+        <td><p>{{ att.author }}</p><p><i style="font-size:10px;">{{ att.license.label }}</i></p></td>
         <td>{{ att.date_insert }}</td>
         <td>{{ att.date_update }}</td>
         {% block extra_column_data %}{% endblock %}

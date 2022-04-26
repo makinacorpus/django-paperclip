@@ -15,7 +15,7 @@ from embed_video.fields import EmbedVideoField
 from PIL import Image
 
 from paperclip.settings import (PAPERCLIP_ENABLE_LINK, PAPERCLIP_ENABLE_VIDEO,
-                                PAPERCLIP_FILETYPE_MODEL, PAPERCLIP_MAX_ATTACHMENT_HEIGHT,
+                                PAPERCLIP_LICENSE_MODEL, PAPERCLIP_FILETYPE_MODEL, PAPERCLIP_MAX_ATTACHMENT_HEIGHT,
                                 PAPERCLIP_MAX_ATTACHMENT_WIDTH, PAPERCLIP_RESIZE_ATTACHMENTS_ON_UPLOAD)
 
 
@@ -35,6 +35,20 @@ class FileType(models.Model):
 
     def __str__(self):
         return self.type
+
+
+class License(models.Model):
+
+    label = models.CharField(max_length=128, verbose_name=_("License name"), null=False, blank=False, unique=True)
+
+    def __str__(self):
+        return self.label
+
+    class Meta:
+        abstract = True
+        verbose_name = _("Attachment license")
+        verbose_name_plural = _("Attachment licenses")
+        ordering = ['label']
 
 
 class AttachmentManager(models.Manager):
@@ -81,6 +95,11 @@ class Attachment(models.Model):
                                 related_name="created_attachments",
                                 verbose_name=_('Creator'),
                                 help_text=_("User that uploaded"), on_delete=models.CASCADE)
+    license = models.ForeignKey(PAPERCLIP_LICENSE_MODEL,
+                                verbose_name=_("License"),
+                                null=True,
+                                blank=True,
+                                on_delete=models.SET_NULL)
     author = models.CharField(blank=True, default='', max_length=128,
                               verbose_name=_('Author'),
                               help_text=_("Original creator"))

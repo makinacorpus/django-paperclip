@@ -25,15 +25,15 @@ class AttachmentForm(forms.ModelForm):
         model = settings.get_attachment_model()
         if settings.PAPERCLIP_ENABLE_VIDEO and not settings.PAPERCLIP_ENABLE_LINK:
             fields = ('embed', 'attachment_file', 'attachment_video',
-                      'filetype', 'author', 'title', 'legend')
+                      'filetype', 'license', 'author', 'title', 'legend')
         elif settings.PAPERCLIP_ENABLE_VIDEO and settings.PAPERCLIP_ENABLE_LINK:
             fields = ('embed', 'attachment_file', 'attachment_video', 'attachment_link',
-                      'filetype', 'author', 'title', 'legend')
+                      'filetype', 'license', 'author', 'title', 'legend')
         elif settings.PAPERCLIP_ENABLE_LINK and not settings.PAPERCLIP_ENABLE_VIDEO:
             fields = ('embed', 'attachment_file', 'attachment_link',
-                      'filetype', 'author', 'title', 'legend')
+                      'filetype', 'license', 'author', 'title', 'legend')
         else:
-            fields = ('attachment_file', 'filetype', 'author', 'title',
+            fields = ('attachment_file', 'filetype', 'license', 'author', 'title',
                       'legend')
 
     def __init__(self, request, *args, **kwargs):
