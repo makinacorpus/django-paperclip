@@ -12,7 +12,7 @@ from PIL import Image
 
 from paperclip.settings import get_attachment_model, get_filetype_model
 
-from .models import TestObject
+from .models import TestObject, License
 
 
 @override_settings(MEDIA_ROOT=TemporaryDirectory().name)
@@ -246,3 +246,8 @@ class TestResizeAttachmentsOnUpload(TestCase):
         attachment = get_attachment_model().objects.get(pk=attachment.pk)
         self.assertEqual(attachment.author, "newauthor")
         self.assertEqual((100, 200), get_image_dimensions(attachment.attachment_file))
+
+
+class LicenseModelTestCase(TestCase):
+    def test_str(self):
+        self.assertEqual(str(License.objects.create(label="foo")), "foo")
