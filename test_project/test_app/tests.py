@@ -249,6 +249,12 @@ class TestResizeAttachmentsOnUpload(TestCase):
         self.assertEqual(attachment.author, "newauthor")
         self.assertEqual((100, 200), get_image_dimensions(attachment.attachment_file))
 
+    @patch("paperclip.models.PAPERCLIP_MAX_ATTACHMENT_UPLOAD_SIZE", 5)
+    def test_attachment_is_rejected_if_overweight(self):
+        # Add and attachment with big image and assert picture resized
+        attachment = get_attachment_model().objects.create(content_object=self.object, filetype=self.filetype,
+                                                           attachment_file=get_big_dummy_uploaded_image(), creator=self.user, author="foo author",
+                                                           title="foo title", legend="foo legend", starred=True)
 
 class LicenseModelTestCase(TestCase):
     def test_str(self):

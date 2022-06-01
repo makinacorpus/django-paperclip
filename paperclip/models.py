@@ -6,6 +6,7 @@ from pathlib import Path
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import ValidationError
 from django.core.files import File
 from django.core.files.base import ContentFile
 from django.db import models
@@ -15,8 +16,9 @@ from embed_video.fields import EmbedVideoField
 from PIL import Image
 
 from paperclip.settings import (PAPERCLIP_ENABLE_LINK, PAPERCLIP_ENABLE_VIDEO,
-                                PAPERCLIP_LICENSE_MODEL, PAPERCLIP_FILETYPE_MODEL, PAPERCLIP_MAX_ATTACHMENT_HEIGHT,
-                                PAPERCLIP_MAX_ATTACHMENT_WIDTH, PAPERCLIP_RESIZE_ATTACHMENTS_ON_UPLOAD)
+                                PAPERCLIP_LICENSE_MODEL, PAPERCLIP_FILETYPE_MODEL,
+                                PAPERCLIP_MAX_ATTACHMENT_HEIGHT, PAPERCLIP_MAX_ATTACHMENT_WIDTH,
+                                PAPERCLIP_MAX_ATTACHMENT_UPLOAD_SIZE, PAPERCLIP_RESIZE_ATTACHMENTS_ON_UPLOAD)
 
 
 class FileType(models.Model):
@@ -75,6 +77,16 @@ def attachment_upload(instance, filename):
         renamed)
 
 
+def validate_image(attachment_file):
+    """Validator to check if file size is under max_upload_size"""
+    if PAPERCLIP_MAX_ATTACHMENT_UPLOAD_SIZE is not None:
+        breakpoint()
+        file_size = attachment_file.file.size
+        limit_kb = PAPERCLIP_MAX_ATTACHMENT_UPLOAD_SIZE
+        if file_size > limit_kb * 1024:
+            raise ValidationError("Max size of file is %s KB" % limit_kb)
+
+
 class Attachment(models.Model):
     objects = AttachmentManager()
 
@@ -84,7 +96,8 @@ class Attachment(models.Model):
 
     attachment_file = models.FileField(_('File'), blank=True,
                                        upload_to=attachment_upload,
-                                       max_length=512)
+                                       max_length=512,
+                                       validators=[validate_image])
     if PAPERCLIP_ENABLE_VIDEO:
         attachment_video = EmbedVideoField(_('Video URL'), blank=True)
     if PAPERCLIP_ENABLE_LINK:
