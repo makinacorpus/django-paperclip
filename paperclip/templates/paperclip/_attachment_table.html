@@ -7,7 +7,9 @@
         <th>{% trans "Insertion date" %}</th>
         <th>{% trans "Update date" %}</th>
         {% block extra_column_header %}{% endblock %}
-        <th>{% trans "Actions" %}</th>
+        {% block actions_attachment_data %}
+            <th>{% trans "Actions" %}</th>
+        {% endblock actions_attachment_data %}
     </thead>
     <tbody>
     {% for att in attachments_list %}
@@ -39,36 +41,42 @@
         <td>{{ att.date_insert }}</td>
         <td>{{ att.date_update }}</td>
         {% block extra_column_data %}{% endblock %}
-        <td>
-        {% if perms|change_attachment %}
-        <a href="#"
-           class="{{ att.starred|yesno:"unstar,star" }}"
-           data-star-url="{% url 'star_attachment' att.pk %}"
-           title="{% if att.starred %}{% trans "Remove star" %}{% else %}{% trans "Star item" %}{% endif %}">
-           <img src="{% get_static_prefix %}paperclip/star-{{ att.starred|yesno:"on,off" }}.svg"/>
-        </a>
-        {% else %}
-            <img src="{% get_static_prefix %}paperclip/star-{{ att.starred|yesno:"on,off" }}.svg"/>
-        {% endif %}
-
-        {% if perms|change_attachment %}
-            &nbsp;
-            <a href="#"
-               class="update-action"
-               data-update-url="{% url 'update_attachment' att.pk %}?next={{ attachment_form_next|urlencode }}">
-                {% trans "Update" %}
-            </a>
-        {% endif %}
-
-        {% if perms|delete_attachment %}
-            &nbsp;
-            <a href="#"
-               class="delete-action"
-               data-delete-url="{% url 'delete_attachment' att.pk %}?next={{ attachment_form_next|urlencode }}">
-               {% trans "Delete" %}
-            </a>
-        {% endif %}
-        </td>
+        {% block actions_attachment_data %}
+            <td>
+            {% block change_attachment %}
+                {% if perms|change_attachment %}
+                <a href="#"
+                   class="{{ att.starred|yesno:"unstar,star" }}"
+                   data-star-url="{% url 'star_attachment' att.pk %}"
+                   title="{% if att.starred %}{% trans "Remove star" %}{% else %}{% trans "Star item" %}{% endif %}">
+                   <img src="{% get_static_prefix %}paperclip/star-{{ att.starred|yesno:"on,off" }}.svg"/>
+                </a>
+                {% else %}
+                    <img src="{% get_static_prefix %}paperclip/star-{{ att.starred|yesno:"on,off" }}.svg"/>
+                {% endif %}
+            {% endblock change_attachment %}
+            {% block change_attachment %}
+                {% if perms|change_attachment %}
+                    &nbsp;
+                    <a href="#"
+                       class="update-action"
+                       data-update-url="{% url 'update_attachment' att.pk %}?next={{ attachment_form_next|urlencode }}">
+                        {% trans "Update" %}
+                    </a>
+                {% endif %}
+            {% endblock change_attachment %}
+            {% block delete_attachment %}
+                {% if perms|delete_attachment %}
+                    &nbsp;
+                    <a href="#"
+                       class="delete-action"
+                       data-delete-url="{% url 'delete_attachment' att.pk %}?next={{ attachment_form_next|urlencode }}">
+                       {% trans "Delete" %}
+                    </a>
+                {% endif %}
+            {% endblock delete_attachment %}
+            </td>
+        {% endblock actions_attachment_data %}
     </tr>
     {% endfor %}
 </table>
