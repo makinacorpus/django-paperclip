@@ -7,9 +7,9 @@
         <th>{% trans "Insertion date" %}</th>
         <th>{% trans "Update date" %}</th>
         {% block extra_column_header %}{% endblock %}
-        {% block actions_attachment_data %}
+        {% block actions_attachment_header %}
             <th>{% trans "Actions" %}</th>
-        {% endblock actions_attachment_data %}
+        {% endblock actions_attachment_header %}
     </thead>
     <tbody>
     {% for att in attachments_list %}
@@ -43,7 +43,7 @@
         {% block extra_column_data %}{% endblock %}
         {% block actions_attachment_data %}
             <td>
-            {% block change_attachment %}
+            {% block star_attachment %}
                 {% if perms|change_attachment %}
                 <a href="#"
                    class="{{ att.starred|yesno:"unstar,star" }}"
@@ -54,7 +54,7 @@
                 {% else %}
                     <img src="{% get_static_prefix %}paperclip/star-{{ att.starred|yesno:"on,off" }}.svg"/>
                 {% endif %}
-            {% endblock change_attachment %}
+            {% endblock star_attachment %}
             {% block change_attachment %}
                 {% if perms|change_attachment %}
                     &nbsp;

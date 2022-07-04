@@ -8,7 +8,9 @@
 
         {% get_attachments_for object as "attachments_list" %}
         {% if attachments_list %}
-            {% include "paperclip/_attachment_table.html" %}
+            {% block inclusion_attachment_table %}
+                {% include "paperclip/_attachment_table.html" %}
+            {% endblock inclusion_attachment_table %}
         {% else %}
             {% trans "No file attached" %}
         {% endif %}
