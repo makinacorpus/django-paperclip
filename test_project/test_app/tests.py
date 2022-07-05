@@ -271,7 +271,7 @@ class TestResizeAttachmentsOnUpload(TestCase):
                 'filetype': self.filetype.pk,
                 'author': "newauthor",
                 'embed': 'File',
-                'next':  f"/test_object/{self.object.pk}",
+                'next': f"/test_object/{self.object.pk}",
             }
         )
         self.assertEqual(response.status_code, 302)
