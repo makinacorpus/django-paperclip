@@ -247,6 +247,55 @@ class TestResizeAttachmentsOnUpload(TestCase):
         self.assertEqual(attachment.author, "newauthor")
         self.assertEqual((100, 200), get_image_dimensions(attachment.attachment_file))
 
+    @patch("paperclip.forms.settings.PAPERCLIP_MAX_SIZE_IMAGE", 1093)
+    def test_attachment_is_larger_max_size(self):
+        # Create attachment with small image
+        permission = Permission.objects.get(codename="add_attachment")
+        self.user.user_permissions.add(permission)
+        self.client.force_login(self.user)
+
+        file = BytesIO()
+        image = Image.new('RGBA', size=(200, 400), color=(155, 0, 0))
+        image.save(file, 'png')
+        file.name = 'small.png'
+        file.seek(0)
+        response = self.client.post(
+            reverse('add_attachment', kwargs={
+                'app_label': self.object._meta.app_label,
+                'model_name': self.object._meta.model_name,
+                'pk': self.object.pk
+            }),
+            data={
+                'creator': self.user,
+                'attachment_file': SimpleUploadedFile(file.name, file.read(), content_type='image/png'),
+                'filetype': self.filetype.pk,
+                'author': "newauthor",
+                'embed': 'File',
+                'next':  f"/test_object/{self.object.pk}",
+            }
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(get_attachment_model().objects.count(), 1)
+
+        big_image = self.get_big_dummy_uploaded_image()
+        response = self.client.post(
+            reverse('add_attachment', kwargs={
+                'app_label': self.object._meta.app_label,
+                'model_name': self.object._meta.model_name,
+                'pk': self.object.pk
+            }),
+            data={
+                'creator': self.user,
+                'attachment_file': big_image,
+                'filetype': self.filetype.pk,
+                'author': "newauthor",
+                'embed': 'File',
+                'next': f"/test_object/{self.object.pk}",
+            }
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(get_attachment_model().objects.count(), 1)
+
 
 class LicenseModelTestCase(TestCase):
     def test_str(self):
