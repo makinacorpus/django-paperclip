@@ -105,11 +105,11 @@ class ViewTestCase(TestCase):
                                      'title': 'test'})
         self.assertRedirects(response, "/foo-url/", fetch_redirect_response=False)
         self.assertQuerysetEqual(get_attachment_model().objects.all(),
-                                 (
-                                  '<Attachment: foo_user attached foo_file.txt>',
+                                 ('<Attachment: foo_user attached foo_file.txt>',
                                   '<Attachment: foo_user attached '
-                                 f'paperclip/test_app_testobject/{self.pk}/foo-title.txt>'
-        ))
+                                  f'paperclip/test_app_testobject/{self.pk}/foo-title.txt>'
+                                  )
+                                 )
 
     def test_delete_view(self):
         object_attachment = TestObject.objects.create(name="foo object")
