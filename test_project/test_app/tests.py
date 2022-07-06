@@ -295,6 +295,115 @@ class TestResizeAttachmentsOnUpload(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(get_attachment_model().objects.count(), 1)
+        self.assertIn(b'The uploaded file is too large', response.content)
+
+    @patch("paperclip.forms.settings.PAPERCLIP_MIN_ATTACHMENT_WIDTH", 50)
+    def test_attachment_is_not_wide_enough(self):
+        # Create attachment with small image
+        permission = Permission.objects.get(codename="add_attachment")
+        self.user.user_permissions.add(permission)
+        self.client.force_login(self.user)
+
+        file = BytesIO()
+        image = Image.new('RGBA', size=(51, 400), color=(155, 0, 0))
+        image.save(file, 'png')
+        file.name = 'big.png'
+        file.seek(0)
+        response = self.client.post(
+            reverse('add_attachment', kwargs={
+                'app_label': self.object._meta.app_label,
+                'model_name': self.object._meta.model_name,
+                'pk': self.object.pk
+            }),
+            data={
+                'creator': self.user,
+                'attachment_file': SimpleUploadedFile(file.name, file.read(), content_type='image/png'),
+                'filetype': self.filetype.pk,
+                'author': "newauthor",
+                'embed': 'File',
+                'next': f"/test_object/{self.object.pk}",
+            }
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(get_attachment_model().objects.count(), 1)
+
+        small_file = BytesIO()
+        small_image = Image.new('RGBA', size=(49, 400), color=(155, 0, 0))
+        small_image.save(small_file, 'png')
+        small_file.name = 'small.png'
+        small_file.seek(0)
+        response = self.client.post(
+            reverse('add_attachment', kwargs={
+                'app_label': self.object._meta.app_label,
+                'model_name': self.object._meta.model_name,
+                'pk': self.object.pk
+            }),
+            data={
+                'creator': self.user,
+                'attachment_file': SimpleUploadedFile(small_file.name, small_file.read(), content_type='image/png'),
+                'filetype': self.filetype.pk,
+                'author': "newauthor",
+                'embed': 'File',
+                'next': f"/test_object/{self.object.pk}",
+            }
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(get_attachment_model().objects.count(), 1)
+        self.assertIn(b'The uploaded file is not wide enough', response.content)
+
+    @patch("paperclip.forms.settings.PAPERCLIP_MIN_ATTACHMENT_HEIGHT", 50)
+    def test_attachment_is_not_tall_enough(self):
+        # Create attachment with small image
+        permission = Permission.objects.get(codename="add_attachment")
+        self.user.user_permissions.add(permission)
+        self.client.force_login(self.user)
+
+        file = BytesIO()
+        image = Image.new('RGBA', size=(400, 51), color=(155, 0, 0))
+        image.save(file, 'png')
+        file.name = 'big.png'
+        file.seek(0)
+        response = self.client.post(
+            reverse('add_attachment', kwargs={
+                'app_label': self.object._meta.app_label,
+                'model_name': self.object._meta.model_name,
+                'pk': self.object.pk
+            }),
+            data={
+                'creator': self.user,
+                'attachment_file': SimpleUploadedFile(file.name, file.read(), content_type='image/png'),
+                'filetype': self.filetype.pk,
+                'author': "newauthor",
+                'embed': 'File',
+                'next': f"/test_object/{self.object.pk}",
+            }
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(get_attachment_model().objects.count(), 1)
+
+        small_file = BytesIO()
+        small_image = Image.new('RGBA', size=(400, 49), color=(155, 0, 0))
+        small_image.save(small_file, 'png')
+        small_file.name = 'small.png'
+        small_file.seek(0)
+        response = self.client.post(
+            reverse('add_attachment', kwargs={
+                'app_label': self.object._meta.app_label,
+                'model_name': self.object._meta.model_name,
+                'pk': self.object.pk
+            }),
+            data={
+                'creator': self.user,
+                'attachment_file': SimpleUploadedFile(small_file.name, small_file.read(), content_type='image/png'),
+                'filetype': self.filetype.pk,
+                'author': "newauthor",
+                'embed': 'File',
+                'next': f"/test_object/{self.object.pk}",
+            }
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(get_attachment_model().objects.count(), 1)
+        self.assertIn(b'The uploaded file is not tall enough', response.content)
 
 
 class LicenseModelTestCase(TestCase):
