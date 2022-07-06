@@ -247,7 +247,7 @@ class TestResizeAttachmentsOnUpload(TestCase):
         self.assertEqual(attachment.author, "newauthor")
         self.assertEqual((100, 200), get_image_dimensions(attachment.attachment_file))
 
-    @patch("paperclip.forms.settings.PAPERCLIP_MAX_SIZE_IMAGE", 1093)
+    @patch("paperclip.forms.settings.PAPERCLIP_MAX_BYTES_SIZE_IMAGE", 1093)
     def test_attachment_is_larger_max_size(self):
         # Create attachment with small image
         permission = Permission.objects.get(codename="add_attachment")

@@ -5,7 +5,7 @@ CHANGELOG
 2.5.1+dev  (XXXX-XX-XX)
 =======================
 
-* Add `PAPERCLIP_MAX_SIZE_IMAGE` max size image form
+* Add `PAPERCLIP_MAX_BYTES_SIZE_IMAGE` max size image form
 
 
 2.5.1      (2022-07-05)

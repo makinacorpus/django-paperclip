@@ -85,7 +85,7 @@ class AttachmentForm(forms.ModelForm):
 
     def clean_attachment_file(self):
         uploaded_image = self.cleaned_data.get("attachment_file", False)
-        if settings.PAPERCLIP_MAX_SIZE_IMAGE and settings.PAPERCLIP_MAX_SIZE_IMAGE < uploaded_image.size:
+        if settings.PAPERCLIP_MAX_BYTES_SIZE_IMAGE and settings.PAPERCLIP_MAX_BYTES_SIZE_IMAGE < uploaded_image.size:
             raise forms.ValidationError(_('The uploaded file is too large'))
         return uploaded_image
 
