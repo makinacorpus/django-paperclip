@@ -6,6 +6,8 @@ CHANGELOG
 =======================
 
 * Add `PAPERCLIP_MAX_BYTES_SIZE_IMAGE` max size image form
+* Add `PAPERCLIP_MIN_ATTACHMENT_HEIGHT` min height image form
+* Add `PAPERCLIP_MIN_ATTACHMENT_WIDTH` min width image form
 
 
 2.5.1      (2022-07-05)

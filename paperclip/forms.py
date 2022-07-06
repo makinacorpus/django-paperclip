@@ -1,4 +1,5 @@
 from django import forms
+from django.core.files.images import get_image_dimensions
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
@@ -85,8 +86,19 @@ class AttachmentForm(forms.ModelForm):
 
     def clean_attachment_file(self):
         uploaded_image = self.cleaned_data.get("attachment_file", False)
+        if not self.is_creation:
+            try:
+                uploaded_image.file.readline()
+            except FileNotFoundError:
+                return uploaded_image
         if settings.PAPERCLIP_MAX_BYTES_SIZE_IMAGE and settings.PAPERCLIP_MAX_BYTES_SIZE_IMAGE < uploaded_image.size:
             raise forms.ValidationError(_('The uploaded file is too large'))
+
+        width, height = get_image_dimensions(uploaded_image)
+        if settings.PAPERCLIP_MIN_ATTACHMENT_WIDTH and settings.PAPERCLIP_MIN_ATTACHMENT_WIDTH > width:
+            raise forms.ValidationError(_('The uploaded file is not wide enough'))
+        if settings.PAPERCLIP_MIN_ATTACHMENT_HEIGHT and settings.PAPERCLIP_MIN_ATTACHMENT_HEIGHT > height:
+            raise forms.ValidationError(_('The uploaded file is not tall enough'))
         return uploaded_image
 
     def success_url(self):

@@ -21,13 +21,20 @@ class ViewTestCase(TestCase):
     def setUpTestData(cls):
         cls.user = User.objects.create_user("foo_user", password="foo_password", last_name="foo lastname",
                                             first_name="foo firstname")
-        object = TestObject.objects.create(name="foo object")
+        cls.object = TestObject.objects.create(name="foo object")
         cls.filetype = get_filetype_model().objects.create(type="foo filetype")
-        cls.attachment = get_attachment_model().objects.create(content_object=object, filetype=cls.filetype,
-                                                               attachment_file="foo_file.txt", creator=cls.user,
+
+        file = BytesIO()
+        file.name = 'foo_file.txt'
+        file.seek(0)
+        cls.attachment = get_attachment_model().objects.create(content_object=cls.object, filetype=cls.filetype,
+                                                               attachment_file=SimpleUploadedFile(file.name,
+                                                                                                  file.read(),
+                                                                                                  content_type='text/txt'),
+                                                               creator=cls.user,
                                                                author="foo author", title="foo title",
                                                                legend="foo legend", starred=True)
-        cls.pk = object.pk
+        cls.pk = cls.object.pk
 
     def test_detail_not_logged(self):
         response = self.client.get('/test_object/{pk}/'.format(pk=self.pk))
@@ -45,7 +52,7 @@ class ViewTestCase(TestCase):
         response = self.client.get('/test_object/{pk}/'.format(pk=self.pk))
         self.assertContains(response, "Attached files")
         self.assertContains(response, "foo title")
-        self.assertContains(response, "foo_file.txt")
+        self.assertContains(response, "foo-title.txt")
         self.assertContains(response, "foo legend")
         self.assertContains(response, "foo author")
         self.assertContains(response, "star-on.svg")
@@ -62,7 +69,8 @@ class ViewTestCase(TestCase):
         self.assertRedirects(response, "/foo-url/", fetch_redirect_response=False)
         self.assertQuerysetEqual(get_attachment_model().objects.all(),
                                  (f'<Attachment: foo_user attached paperclip/test_app_testobject/{self.pk}/file.txt>',
-                                  '<Attachment: foo_user attached foo_file.txt>'))
+                                  '<Attachment: foo_user attached '
+                                  f'paperclip/test_app_testobject/{self.pk}/foo-title.txt>'))
 
     def test_update_view(self):
         perm = Permission.objects.get(codename='change_attachment')
@@ -75,9 +83,33 @@ class ViewTestCase(TestCase):
                                      'title': 'test'})
         self.assertRedirects(response, "/foo-url/", fetch_redirect_response=False)
         self.assertQuerysetEqual(get_attachment_model().objects.all(),
-                                 ('<Attachment: foo_user attached foo_file.txt>', ))
+                                 (f'<Attachment: foo_user attached '
+                                  f'paperclip/test_app_testobject/{self.pk}/foo-title.txt>',
+                                  ))
         response = self.client.get('/paperclip/update/{pk}/'.format(pk=self.attachment.pk))
-        self.assertContains(response, b'Update foo_file.txt')
+        self.assertContains(response, b'Update foo-title.txt')
+
+    def test_update_view_deleted_file(self):
+        perm = Permission.objects.get(codename='change_attachment')
+        self.user.user_permissions.add(perm)
+        self.client.login(username="foo_user", password="foo_password")
+        attachment = get_attachment_model().objects.create(content_object=self.object, filetype=self.filetype,
+                                                           attachment_file='foo_file.txt',
+                                                           creator=self.user,
+                                                           author="foo author", title="foo title",
+                                                           legend="foo legend", starred=True)
+        response = self.client.post('/paperclip/update/{pk}/'.format(pk=attachment.pk),
+                                    {'embed': 'File',
+                                     'filetype': self.filetype.pk,
+                                     'next': '/foo-url/',
+                                     'title': 'test'})
+        self.assertRedirects(response, "/foo-url/", fetch_redirect_response=False)
+        self.assertQuerysetEqual(get_attachment_model().objects.all(),
+                                 ('<Attachment: foo_user attached foo_file.txt>',
+                                  '<Attachment: foo_user attached '
+                                  f'paperclip/test_app_testobject/{self.pk}/foo-title.txt>'
+                                  )
+                                 )
 
     def test_delete_view(self):
         object_attachment = TestObject.objects.create(name="foo object")
@@ -90,11 +122,13 @@ class ViewTestCase(TestCase):
         self.client.login(username="foo_user", password="foo_password")
         self.assertQuerysetEqual(get_attachment_model().objects.all(),
                                  ('<Attachment: foo_user attached attach.txt>',
-                                  '<Attachment: foo_user attached foo_file.txt>',))
+                                  '<Attachment: foo_user attached '
+                                  f'paperclip/test_app_testobject/{self.pk}/foo-title.txt>', ))
         response = self.client.post('/paperclip/delete/{pk}/'.format(pk=attachment.pk))
         self.assertRedirects(response, "/", fetch_redirect_response=False)
         self.assertQuerysetEqual(get_attachment_model().objects.all(),
-                                 ('<Attachment: foo_user attached foo_file.txt>', ))
+                                 ('<Attachment: foo_user attached '
+                                  f'paperclip/test_app_testobject/{self.pk}/foo-title.txt>', ))
 
     def test_delete_view_no_permission_delete(self):
         user_other = User.objects.create_user("other_user", password="other_password", last_name="other lastname",
@@ -109,7 +143,8 @@ class ViewTestCase(TestCase):
         self.client.login(username="foo_user", password="foo_password")
         self.assertQuerysetEqual(get_attachment_model().objects.all(),
                                  ('<Attachment: other_user attached attach.txt>',
-                                  '<Attachment: foo_user attached foo_file.txt>',))
+                                  '<Attachment: foo_user attached '
+                                  f'paperclip/test_app_testobject/{self.pk}/foo-title.txt>',))
         response = self.client.post('/paperclip/delete/{pk}/'.format(pk=attachment.pk))
         self.assertRedirects(response, "/", fetch_redirect_response=False)
 
@@ -117,7 +152,8 @@ class ViewTestCase(TestCase):
         self.assertEqual(str(messages[0]), 'You are not allowed to delete this attachment.')
         self.assertQuerysetEqual(get_attachment_model().objects.all(),
                                  ('<Attachment: other_user attached attach.txt>',
-                                  '<Attachment: foo_user attached foo_file.txt>', ))
+                                  '<Attachment: foo_user attached '
+                                  f'paperclip/test_app_testobject/{self.pk}/foo-title.txt>', ))
 
     def test_star_view(self):
         object_attachment = TestObject.objects.create(name="foo object")
@@ -146,10 +182,10 @@ class ViewTestCase(TestCase):
         self.assertEqual(response.json(), [{"id": 1,
                                             "title": "foo title",
                                             "legend": "foo legend",
-                                            "url": "/foo_file.txt",
+                                            "url": f"/paperclip/test_app_testobject/{self.pk}/foo-title.txt",
                                             "type": "foo filetype",
                                             "author": "foo author",
-                                            "filename": "foo_file.txt",
+                                            "filename": "foo-title.txt",
                                             "mimetype": ["text", "plain"],
                                             "is_image": False,
                                             "starred": True}])
@@ -201,7 +237,7 @@ class TestResizeAttachmentsOnUpload(TestCase):
         attachment = get_attachment_model().objects.create(content_object=self.object, filetype=self.filetype,
                                                            attachment_file=self.get_big_dummy_uploaded_image(), creator=self.user, author="foo author",
                                                            title="foo title", legend="foo legend", starred=True)
-        attachment = get_attachment_model().objects.get(title="foo title")
+        attachment.refresh_from_db()
         self.assertEqual((50, 100), get_image_dimensions(attachment.attachment_file))
 
     @patch("paperclip.models.PAPERCLIP_RESIZE_ATTACHMENTS_ON_UPLOAD", True)
@@ -295,6 +331,115 @@ class TestResizeAttachmentsOnUpload(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(get_attachment_model().objects.count(), 1)
+        self.assertIn(b'The uploaded file is too large', response.content)
+
+    @patch("paperclip.forms.settings.PAPERCLIP_MIN_ATTACHMENT_WIDTH", 50)
+    def test_attachment_is_not_wide_enough(self):
+        # Create attachment with small image
+        permission = Permission.objects.get(codename="add_attachment")
+        self.user.user_permissions.add(permission)
+        self.client.force_login(self.user)
+
+        file = BytesIO()
+        image = Image.new('RGBA', size=(51, 400), color=(155, 0, 0))
+        image.save(file, 'png')
+        file.name = 'big.png'
+        file.seek(0)
+        response = self.client.post(
+            reverse('add_attachment', kwargs={
+                'app_label': self.object._meta.app_label,
+                'model_name': self.object._meta.model_name,
+                'pk': self.object.pk
+            }),
+            data={
+                'creator': self.user,
+                'attachment_file': SimpleUploadedFile(file.name, file.read(), content_type='image/png'),
+                'filetype': self.filetype.pk,
+                'author': "newauthor",
+                'embed': 'File',
+                'next': f"/test_object/{self.object.pk}",
+            }
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(get_attachment_model().objects.count(), 1)
+
+        small_file = BytesIO()
+        small_image = Image.new('RGBA', size=(49, 400), color=(155, 0, 0))
+        small_image.save(small_file, 'png')
+        small_file.name = 'small.png'
+        small_file.seek(0)
+        response = self.client.post(
+            reverse('add_attachment', kwargs={
+                'app_label': self.object._meta.app_label,
+                'model_name': self.object._meta.model_name,
+                'pk': self.object.pk
+            }),
+            data={
+                'creator': self.user,
+                'attachment_file': SimpleUploadedFile(small_file.name, small_file.read(), content_type='image/png'),
+                'filetype': self.filetype.pk,
+                'author': "newauthor",
+                'embed': 'File',
+                'next': f"/test_object/{self.object.pk}",
+            }
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(get_attachment_model().objects.count(), 1)
+        self.assertIn(b'The uploaded file is not wide enough', response.content)
+
+    @patch("paperclip.forms.settings.PAPERCLIP_MIN_ATTACHMENT_HEIGHT", 50)
+    def test_attachment_is_not_tall_enough(self):
+        # Create attachment with small image
+        permission = Permission.objects.get(codename="add_attachment")
+        self.user.user_permissions.add(permission)
+        self.client.force_login(self.user)
+
+        file = BytesIO()
+        image = Image.new('RGBA', size=(400, 51), color=(155, 0, 0))
+        image.save(file, 'png')
+        file.name = 'big.png'
+        file.seek(0)
+        response = self.client.post(
+            reverse('add_attachment', kwargs={
+                'app_label': self.object._meta.app_label,
+                'model_name': self.object._meta.model_name,
+                'pk': self.object.pk
+            }),
+            data={
+                'creator': self.user,
+                'attachment_file': SimpleUploadedFile(file.name, file.read(), content_type='image/png'),
+                'filetype': self.filetype.pk,
+                'author': "newauthor",
+                'embed': 'File',
+                'next': f"/test_object/{self.object.pk}",
+            }
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(get_attachment_model().objects.count(), 1)
+
+        small_file = BytesIO()
+        small_image = Image.new('RGBA', size=(400, 49), color=(155, 0, 0))
+        small_image.save(small_file, 'png')
+        small_file.name = 'small.png'
+        small_file.seek(0)
+        response = self.client.post(
+            reverse('add_attachment', kwargs={
+                'app_label': self.object._meta.app_label,
+                'model_name': self.object._meta.model_name,
+                'pk': self.object.pk
+            }),
+            data={
+                'creator': self.user,
+                'attachment_file': SimpleUploadedFile(small_file.name, small_file.read(), content_type='image/png'),
+                'filetype': self.filetype.pk,
+                'author': "newauthor",
+                'embed': 'File',
+                'next': f"/test_object/{self.object.pk}",
+            }
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(get_attachment_model().objects.count(), 1)
+        self.assertIn(b'The uploaded file is not tall enough', response.content)
 
 
 class LicenseModelTestCase(TestCase):
