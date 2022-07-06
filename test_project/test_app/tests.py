@@ -21,20 +21,20 @@ class ViewTestCase(TestCase):
     def setUpTestData(cls):
         cls.user = User.objects.create_user("foo_user", password="foo_password", last_name="foo lastname",
                                             first_name="foo firstname")
-        object = TestObject.objects.create(name="foo object")
+        cls.object = TestObject.objects.create(name="foo object")
         cls.filetype = get_filetype_model().objects.create(type="foo filetype")
 
         file = BytesIO()
         file.name = 'foo_file.txt'
         file.seek(0)
-        cls.attachment = get_attachment_model().objects.create(content_object=object, filetype=cls.filetype,
+        cls.attachment = get_attachment_model().objects.create(content_object=cls.object, filetype=cls.filetype,
                                                                attachment_file=SimpleUploadedFile(file.name,
                                                                                                   file.read(),
                                                                                                   content_type='text/txt'),
                                                                creator=cls.user,
                                                                author="foo author", title="foo title",
                                                                legend="foo legend", starred=True)
-        cls.pk = object.pk
+        cls.pk = cls.object.pk
 
     def test_detail_not_logged(self):
         response = self.client.get('/test_object/{pk}/'.format(pk=self.pk))
@@ -88,6 +88,28 @@ class ViewTestCase(TestCase):
                                   ))
         response = self.client.get('/paperclip/update/{pk}/'.format(pk=self.attachment.pk))
         self.assertContains(response, b'Update foo-title.txt')
+
+    def test_update_view_deleted_file(self):
+        perm = Permission.objects.get(codename='change_attachment')
+        self.user.user_permissions.add(perm)
+        self.client.login(username="foo_user", password="foo_password")
+        attachment = get_attachment_model().objects.create(content_object=self.object, filetype=self.filetype,
+                                                           attachment_file='foo_file.txt',
+                                                           creator=self.user,
+                                                           author="foo author", title="foo title",
+                                                           legend="foo legend", starred=True)
+        response = self.client.post('/paperclip/update/{pk}/'.format(pk=attachment.pk),
+                                    {'embed': 'File',
+                                     'filetype': self.filetype.pk,
+                                     'next': '/foo-url/',
+                                     'title': 'test'})
+        self.assertRedirects(response, "/foo-url/", fetch_redirect_response=False)
+        self.assertQuerysetEqual(get_attachment_model().objects.all(),
+                                 (
+                                  '<Attachment: foo_user attached foo_file.txt>',
+                                  '<Attachment: foo_user attached '
+                                 f'paperclip/test_app_testobject/{self.pk}/foo-title.txt>'
+        ))
 
     def test_delete_view(self):
         object_attachment = TestObject.objects.create(name="foo object")
@@ -215,7 +237,7 @@ class TestResizeAttachmentsOnUpload(TestCase):
         attachment = get_attachment_model().objects.create(content_object=self.object, filetype=self.filetype,
                                                            attachment_file=self.get_big_dummy_uploaded_image(), creator=self.user, author="foo author",
                                                            title="foo title", legend="foo legend", starred=True)
-        attachment = get_attachment_model().objects.get(title="foo title")
+        attachment.refresh_from_db()
         self.assertEqual((50, 100), get_image_dimensions(attachment.attachment_file))
 
     @patch("paperclip.models.PAPERCLIP_RESIZE_ATTACHMENTS_ON_UPLOAD", True)
