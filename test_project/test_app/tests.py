@@ -23,8 +23,15 @@ class ViewTestCase(TestCase):
                                             first_name="foo firstname")
         object = TestObject.objects.create(name="foo object")
         cls.filetype = get_filetype_model().objects.create(type="foo filetype")
+
+        file = BytesIO()
+        file.name = 'foo_file.txt'
+        file.seek(0)
         cls.attachment = get_attachment_model().objects.create(content_object=object, filetype=cls.filetype,
-                                                               attachment_file="foo_file.txt", creator=cls.user,
+                                                               attachment_file=SimpleUploadedFile(file.name,
+                                                                                                  file.read(),
+                                                                                                  content_type='text/txt'),
+                                                               creator=cls.user,
                                                                author="foo author", title="foo title",
                                                                legend="foo legend", starred=True)
         cls.pk = object.pk
@@ -45,7 +52,7 @@ class ViewTestCase(TestCase):
         response = self.client.get('/test_object/{pk}/'.format(pk=self.pk))
         self.assertContains(response, "Attached files")
         self.assertContains(response, "foo title")
-        self.assertContains(response, "foo_file.txt")
+        self.assertContains(response, "foo-title.txt")
         self.assertContains(response, "foo legend")
         self.assertContains(response, "foo author")
         self.assertContains(response, "star-on.svg")
@@ -62,7 +69,8 @@ class ViewTestCase(TestCase):
         self.assertRedirects(response, "/foo-url/", fetch_redirect_response=False)
         self.assertQuerysetEqual(get_attachment_model().objects.all(),
                                  (f'<Attachment: foo_user attached paperclip/test_app_testobject/{self.pk}/file.txt>',
-                                  '<Attachment: foo_user attached foo_file.txt>'))
+                                  '<Attachment: foo_user attached '
+                                  f'paperclip/test_app_testobject/{self.pk}/foo-title.txt>'))
 
     def test_update_view(self):
         perm = Permission.objects.get(codename='change_attachment')
@@ -75,9 +83,11 @@ class ViewTestCase(TestCase):
                                      'title': 'test'})
         self.assertRedirects(response, "/foo-url/", fetch_redirect_response=False)
         self.assertQuerysetEqual(get_attachment_model().objects.all(),
-                                 ('<Attachment: foo_user attached foo_file.txt>', ))
+                                 (f'<Attachment: foo_user attached '
+                                  f'paperclip/test_app_testobject/{self.pk}/foo-title.txt>',
+                                  ))
         response = self.client.get('/paperclip/update/{pk}/'.format(pk=self.attachment.pk))
-        self.assertContains(response, b'Update foo_file.txt')
+        self.assertContains(response, b'Update foo-title.txt')
 
     def test_delete_view(self):
         object_attachment = TestObject.objects.create(name="foo object")
@@ -90,11 +100,13 @@ class ViewTestCase(TestCase):
         self.client.login(username="foo_user", password="foo_password")
         self.assertQuerysetEqual(get_attachment_model().objects.all(),
                                  ('<Attachment: foo_user attached attach.txt>',
-                                  '<Attachment: foo_user attached foo_file.txt>',))
+                                  '<Attachment: foo_user attached '
+                                  f'paperclip/test_app_testobject/{self.pk}/foo-title.txt>', ))
         response = self.client.post('/paperclip/delete/{pk}/'.format(pk=attachment.pk))
         self.assertRedirects(response, "/", fetch_redirect_response=False)
         self.assertQuerysetEqual(get_attachment_model().objects.all(),
-                                 ('<Attachment: foo_user attached foo_file.txt>', ))
+                                 ('<Attachment: foo_user attached '
+                                  f'paperclip/test_app_testobject/{self.pk}/foo-title.txt>', ))
 
     def test_delete_view_no_permission_delete(self):
         user_other = User.objects.create_user("other_user", password="other_password", last_name="other lastname",
@@ -109,7 +121,8 @@ class ViewTestCase(TestCase):
         self.client.login(username="foo_user", password="foo_password")
         self.assertQuerysetEqual(get_attachment_model().objects.all(),
                                  ('<Attachment: other_user attached attach.txt>',
-                                  '<Attachment: foo_user attached foo_file.txt>',))
+                                  '<Attachment: foo_user attached '
+                                  f'paperclip/test_app_testobject/{self.pk}/foo-title.txt>',))
         response = self.client.post('/paperclip/delete/{pk}/'.format(pk=attachment.pk))
         self.assertRedirects(response, "/", fetch_redirect_response=False)
 
@@ -117,7 +130,8 @@ class ViewTestCase(TestCase):
         self.assertEqual(str(messages[0]), 'You are not allowed to delete this attachment.')
         self.assertQuerysetEqual(get_attachment_model().objects.all(),
                                  ('<Attachment: other_user attached attach.txt>',
-                                  '<Attachment: foo_user attached foo_file.txt>', ))
+                                  '<Attachment: foo_user attached '
+                                  f'paperclip/test_app_testobject/{self.pk}/foo-title.txt>', ))
 
     def test_star_view(self):
         object_attachment = TestObject.objects.create(name="foo object")
@@ -146,10 +160,10 @@ class ViewTestCase(TestCase):
         self.assertEqual(response.json(), [{"id": 1,
                                             "title": "foo title",
                                             "legend": "foo legend",
-                                            "url": "/foo_file.txt",
+                                            "url": f"/paperclip/test_app_testobject/{self.pk}/foo-title.txt",
                                             "type": "foo filetype",
                                             "author": "foo author",
-                                            "filename": "foo_file.txt",
+                                            "filename": "foo-title.txt",
                                             "mimetype": ["text", "plain"],
                                             "is_image": False,
                                             "starred": True}])
