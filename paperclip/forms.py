@@ -88,8 +88,6 @@ class AttachmentForm(forms.ModelForm):
     def clean_attachment_file(self):
         uploaded_image = self.cleaned_data.get("attachment_file", False)
         is_image = is_an_image(mimetype(uploaded_image))
-        if not is_image:
-            return uploaded_image
         if not self.is_creation:
             try:
                 uploaded_image.file.readline()
@@ -97,7 +95,8 @@ class AttachmentForm(forms.ModelForm):
                 return uploaded_image
         if settings.PAPERCLIP_MAX_BYTES_SIZE_IMAGE and settings.PAPERCLIP_MAX_BYTES_SIZE_IMAGE < uploaded_image.size:
             raise forms.ValidationError(_('The uploaded file is too large'))
-
+        if not is_image:
+            return uploaded_image
         width, height = get_image_dimensions(uploaded_image)
         if settings.PAPERCLIP_MIN_IMAGE_UPLOAD_WIDTH and settings.PAPERCLIP_MIN_IMAGE_UPLOAD_WIDTH > width:
             raise forms.ValidationError(_('The uploaded file is not wide enough'))
