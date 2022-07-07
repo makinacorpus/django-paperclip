@@ -333,7 +333,7 @@ class TestResizeAttachmentsOnUpload(TestCase):
         self.assertEqual(get_attachment_model().objects.count(), 1)
         self.assertIn(b'The uploaded file is too large', response.content)
 
-    @patch("paperclip.forms.settings.PAPERCLIP_MIN_ATTACHMENT_WIDTH", 50)
+    @patch("paperclip.forms.settings.PAPERCLIP_MIN_IMAGE_UPLOAD_WIDTH", 50)
     def test_attachment_is_not_wide_enough(self):
         # Create attachment with small image
         permission = Permission.objects.get(codename="add_attachment")
@@ -387,7 +387,7 @@ class TestResizeAttachmentsOnUpload(TestCase):
         self.assertEqual(get_attachment_model().objects.count(), 1)
         self.assertIn(b'The uploaded file is not wide enough', response.content)
 
-    @patch("paperclip.forms.settings.PAPERCLIP_MIN_ATTACHMENT_HEIGHT", 50)
+    @patch("paperclip.forms.settings.PAPERCLIP_MIN_IMAGE_UPLOAD_HEIGHT", 50)
     def test_attachment_is_not_tall_enough(self):
         # Create attachment with small image
         permission = Permission.objects.get(codename="add_attachment")
