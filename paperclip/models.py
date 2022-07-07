@@ -1,4 +1,3 @@
-import mimetypes
 import os
 from io import BytesIO
 from pathlib import Path
@@ -17,6 +16,7 @@ from PIL import Image
 from paperclip.settings import (PAPERCLIP_ENABLE_LINK, PAPERCLIP_ENABLE_VIDEO,
                                 PAPERCLIP_LICENSE_MODEL, PAPERCLIP_FILETYPE_MODEL, PAPERCLIP_MAX_ATTACHMENT_HEIGHT,
                                 PAPERCLIP_MAX_ATTACHMENT_WIDTH, PAPERCLIP_RESIZE_ATTACHMENTS_ON_UPLOAD)
+from paperclip.utils import mimetype, is_an_image
 
 
 class FileType(models.Model):
@@ -165,10 +165,8 @@ class Attachment(models.Model):
 
     @property
     def mimetype(self):
-        mt = mimetypes.guess_type(self.attachment_file.name, strict=True)[0]
-        if mt is None:
-            return 'application', 'octet-stream'
-        return mt.split('/')
+        return mimetype(self.attachment_file)
 
     def is_an_image(self):
-        return self.mimetype[0].startswith('image')
+
+        return is_an_image(mimetype(self.attachment_file))
