@@ -95,9 +95,9 @@ class AttachmentForm(forms.ModelForm):
             raise forms.ValidationError(_('The uploaded file is too large'))
 
         width, height = get_image_dimensions(uploaded_image)
-        if settings.PAPERCLIP_MIN_ATTACHMENT_WIDTH and settings.PAPERCLIP_MIN_ATTACHMENT_WIDTH > width:
+        if settings.PAPERCLIP_MIN_ATTACHMENT_WIDTH and width and settings.PAPERCLIP_MIN_ATTACHMENT_WIDTH > width:
             raise forms.ValidationError(_('The uploaded file is not wide enough'))
-        if settings.PAPERCLIP_MIN_ATTACHMENT_HEIGHT and settings.PAPERCLIP_MIN_ATTACHMENT_HEIGHT > height:
+        if settings.PAPERCLIP_MIN_ATTACHMENT_HEIGHT and height and settings.PAPERCLIP_MIN_ATTACHMENT_HEIGHT > height:
             raise forms.ValidationError(_('The uploaded file is not tall enough'))
         return uploaded_image
 
