@@ -5,7 +5,8 @@ CHANGELOG
 2.6.1+dev  (XXXX-XX-XX)
 =======================
 
-*
+* Fix link to the project on Pypi when clicking the pypi badge (another pypi project is named `django-paperclip`)
+* Fix typo in test-supporting HTML files (nothing was broken though)
 
 
 2.6.1      (2022-07-07)
