@@ -1,6 +1,25 @@
 from django.apps import apps
 from django.conf import settings
 
+DEFAULT_ALLOWED_EXTENSIONS = [
+    'jpeg',
+    'jpg',
+    'mp3',
+    'mp4',
+    'odt',
+    'pdf',
+    'png',
+    'svg',
+    'txt',
+    'gif',
+    'tif',
+    'docx',
+    'webp',
+    'bmp',
+    'flac',
+    'mpeg'
+]
+
 PAPERCLIP_ENABLE_VIDEO = getattr(settings, 'PAPERCLIP_ENABLE_VIDEO', False)
 PAPERCLIP_ENABLE_LINK = getattr(settings, 'PAPERCLIP_ENABLE_LINK', False)
 PAPERCLIP_ACTION_HISTORY_ENABLED = getattr(settings, 'PAPERCLIP_ACTION_HISTORY_ENABLED', True)
@@ -9,6 +28,7 @@ PAPERCLIP_ATTACHMENT_MODEL = settings.PAPERCLIP_ATTACHMENT_MODEL
 PAPERCLIP_LICENSE_MODEL = settings.PAPERCLIP_LICENSE_MODEL
 PAPERCLIP_MAX_ATTACHMENT_WIDTH = getattr(settings, 'PAPERCLIP_MAX_ATTACHMENT_WIDTH', 1280)
 PAPERCLIP_MAX_ATTACHMENT_HEIGHT = getattr(settings, 'PAPERCLIP_MAX_ATTACHMENT_HEIGHT', 1280)
+PAPERCLIP_ALLOWED_EXTENSIONS = getattr(settings, 'PAPERCLIP_ALLOWED_EXTENSIONS', DEFAULT_ALLOWED_EXTENSIONS)
 PAPERCLIP_MIN_IMAGE_UPLOAD_WIDTH = getattr(settings, 'PAPERCLIP_MIN_IMAGE_UPLOAD_WIDTH', None)
 PAPERCLIP_MIN_IMAGE_UPLOAD_HEIGHT = getattr(settings, 'PAPERCLIP_MIN_IMAGE_UPLOAD_HEIGHT', None)
 PAPERCLIP_MAX_BYTES_SIZE_IMAGE = getattr(settings, 'PAPERCLIP_MAX_BYTES_SIZE_IMAGE', None)

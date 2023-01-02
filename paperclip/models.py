@@ -7,6 +7,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.core.files import File
 from django.core.files.base import ContentFile
+from django.core.validators import FileExtensionValidator
 from django.db import models
 from django.template.defaultfilters import slugify
 from django.utils.translation import gettext_lazy as _
@@ -15,7 +16,7 @@ from PIL import Image
 
 from paperclip.settings import (PAPERCLIP_ENABLE_LINK, PAPERCLIP_ENABLE_VIDEO,
                                 PAPERCLIP_LICENSE_MODEL, PAPERCLIP_FILETYPE_MODEL, PAPERCLIP_MAX_ATTACHMENT_HEIGHT,
-                                PAPERCLIP_MAX_ATTACHMENT_WIDTH, PAPERCLIP_RESIZE_ATTACHMENTS_ON_UPLOAD)
+                                PAPERCLIP_MAX_ATTACHMENT_WIDTH, PAPERCLIP_RESIZE_ATTACHMENTS_ON_UPLOAD, PAPERCLIP_ALLOWED_EXTENSIONS)
 from paperclip.utils import mimetype, is_an_image
 
 
@@ -84,7 +85,8 @@ class Attachment(models.Model):
 
     attachment_file = models.FileField(_('File'), blank=True,
                                        upload_to=attachment_upload,
-                                       max_length=512)
+                                       max_length=512,
+                                       validators=[FileExtensionValidator(PAPERCLIP_ALLOWED_EXTENSIONS)])
     if PAPERCLIP_ENABLE_VIDEO:
         attachment_video = EmbedVideoField(_('Video URL'), blank=True)
     if PAPERCLIP_ENABLE_LINK:
