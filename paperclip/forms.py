@@ -10,6 +10,7 @@ MODE_CHOICED = [('File', _('File')), ]
 
 
 class AttachmentForm(forms.ModelForm):
+
     if settings.PAPERCLIP_ENABLE_VIDEO:
         MODE_CHOICED.append(('Youtube', _('Youtube/Soundcloud URL')))
 
@@ -45,6 +46,7 @@ class AttachmentForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['legend'].widget.attrs['placeholder'] = _('Sunset on lake')
 
+        self.redirect_on_error = False
         # Allow to override filetype choices
         filetype_model = self.fields['filetype'].queryset.model
         self.fields['filetype'].queryset = filetype_model.objects_for(request)
