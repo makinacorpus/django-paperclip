@@ -74,7 +74,7 @@ def _handle_attachment_form(request, obj, form, change_msg, success_msg,
     if request.POST and form.redirect_on_error:
         all_errors = json.loads(form.errors.as_json())
         errors_message = ""
-        for _, errors in all_errors.items():
+        for __, errors in all_errors.items():
             for error in errors:
                 errors_message += f"{error['message']}\n"
         messages.error(request, errors_message)
