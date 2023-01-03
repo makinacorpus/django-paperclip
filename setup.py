@@ -24,6 +24,7 @@ setup(
         'pillow',
         'easy-thumbnails',
         'django-embed-video',
+        'python-magic'
     ],
     tests_require=tests_require,
     extras_require={

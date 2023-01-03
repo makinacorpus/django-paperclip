@@ -1,3 +1,6 @@
+import mimetypes
+
+import magic
 from django import forms
 from django.core.files.images import get_image_dimensions
 from django.urls import reverse
@@ -89,6 +92,10 @@ class AttachmentForm(forms.ModelForm):
 
     def clean_attachment_file(self):
         uploaded_image = self.cleaned_data.get("attachment_file", False)
+        file_mimetype = magic.from_buffer(uploaded_image.read(), mime=True)
+        extension_mimetypes = mimetypes.guess_type(uploaded_image.name, strict=True)
+        if file_mimetype not in extension_mimetypes:
+            raise forms.ValidationError(_('File format does not match extension'))
         is_image = is_an_image(mimetype(uploaded_image))
         if not self.is_creation:
             try:
@@ -99,6 +106,7 @@ class AttachmentForm(forms.ModelForm):
             raise forms.ValidationError(_('The uploaded file is too large'))
         if not is_image:
             return uploaded_image
+
         width, height = get_image_dimensions(uploaded_image)
         if settings.PAPERCLIP_MIN_IMAGE_UPLOAD_WIDTH and settings.PAPERCLIP_MIN_IMAGE_UPLOAD_WIDTH > width:
             raise forms.ValidationError(_('The uploaded file is not wide enough'))
