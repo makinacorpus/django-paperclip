@@ -1,10 +1,9 @@
-import mimetypes
+import magic
 
 
 def mimetype(attachment_file):
-    mt = mimetypes.guess_type(attachment_file.name, strict=True)[0]
-    if mt is None:
-        return 'application', 'octet-stream'
+    attachment_file.file.seek(0)
+    mt = magic.from_buffer(attachment_file.file.read(2048), mime=True)
     return mt.split('/')
 
 

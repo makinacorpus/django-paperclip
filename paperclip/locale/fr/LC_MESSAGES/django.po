@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-01-03 13:20+0000\n"
+"POT-Creation-Date: 2023-01-09 15:27+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -31,9 +31,6 @@ msgstr "Mode"
 
 msgid "Sunset on lake"
 msgstr "Coucher de soleil sur le lac"
-
-msgid "File format does not match extension"
-msgstr "Le format du fichier ne correspond pas à son extension"
 
 msgid "The uploaded file is too large"
 msgstr "Le fichier téléchargé est trop large"
@@ -173,6 +170,14 @@ msgstr "Êtes vous sûr de vouloir supprimer ce fichier {file} ?"
 
 msgid "New file attachment"
 msgstr "Nouveau fichier attaché"
+
+#, python-format
+msgid ""
+"File type “%(extension)s” is not allowed. Allowed types are: "
+"%(allowed_extensions)s."
+msgstr ""
+"Le type de fichier “%(extension)s” n'est pas autorisé. Les types autorisés "
+"sont: %(allowed_extensions)s."
 
 #, python-format
 msgid "Add attachment %s"
