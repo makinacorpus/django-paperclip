@@ -1,4 +1,6 @@
 import os
+import random
+import string
 from io import BytesIO
 from pathlib import Path
 
@@ -72,7 +74,8 @@ class AttachmentManager(models.Manager):
 def attachment_upload(instance, filename):
     """Stores the attachment in a "per module/appname/primary key" folder"""
     name, ext = os.path.splitext(filename)
-    renamed = slugify(instance.title or name) + ext
+    randomized = ''.join(random.choices(string.ascii_uppercase + string.digits, k=12))
+    renamed = slugify(instance.title or name) + "-" + randomized + ext
     return 'paperclip/%s/%s/%s' % (
         '%s_%s' % (instance.content_object._meta.app_label,
                    instance.content_object._meta.model_name),
