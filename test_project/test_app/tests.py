@@ -1,5 +1,4 @@
 from io import BytesIO
-import json
 from tempfile import TemporaryDirectory
 from unittest.mock import patch
 
@@ -13,7 +12,7 @@ from PIL import Image
 
 from paperclip.settings import get_attachment_model, get_filetype_model
 
-from .models import TestObject, License
+from .models import License, TestObject
 
 
 @override_settings(MEDIA_ROOT=TemporaryDirectory().name)

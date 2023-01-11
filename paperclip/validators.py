@@ -7,6 +7,7 @@ from django.utils.translation import gettext_lazy as _
 
 from paperclip.settings import PAPERCLIP_ALLOWED_EXTENSIONS
 
+
 @deconstructible
 class FileValidator:
     def __eq__(self, other):
