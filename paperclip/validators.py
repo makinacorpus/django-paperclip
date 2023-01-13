@@ -1,4 +1,4 @@
-import mimetypes
+from pathlib import PurePath
 import magic
 
 from django.core.exceptions import ValidationError
@@ -26,7 +26,7 @@ class FileMimetypeValidator(FileValidator):
         if PAPERCLIP_ALLOWED_EXTENSIONS is not None:
             value.seek(0)
             file_mimetype = magic.from_buffer(value.read(2048), mime=True).split('/')[1]
-            extension = mimetypes.guess_type(value.name, strict=True)[0].split('/')[1].lower()
+            extension = PurePath(value.name).suffix.lower().strip('.')
             if extension not in PAPERCLIP_ALLOWED_EXTENSIONS or file_mimetype not in PAPERCLIP_ALLOWED_EXTENSIONS:
                 raise ValidationError(
                     self.message,

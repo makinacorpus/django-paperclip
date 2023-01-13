@@ -161,7 +161,7 @@ def get_attachments(request, app_label, model_name, pk):
             'type': attachment.filetype.type,
             'author': attachment.author,
             'filename': attachment.filename,
-            'mimetype': attachment.mimetype,
+            'mimetype': attachment.mimetype.split('/'),
             'is_image': attachment.is_image,
             'starred': attachment.starred,
         }
