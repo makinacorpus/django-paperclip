@@ -75,11 +75,14 @@ def attachment_upload(instance, filename):
     """Stores the attachment in a "per module/appname/primary key" folder"""
     name, ext = os.path.splitext(filename)
     randomized = ''.join(random.choices(string.ascii_uppercase + string.digits, k=12))
-    renamed = slugify(instance.title or name) + "-" + randomized + ext
-    return 'paperclip/%s/%s/%s' % (
+    subfolder = '%s/%s/' % (
         '%s_%s' % (instance.content_object._meta.app_label,
                    instance.content_object._meta.model_name),
-        instance.content_object.pk,
+        instance.content_object.pk)
+    max_filename_size = instance._meta.get_field('attachment_file').max_length - len('paperclip/') - len(randomized) - len(subfolder) - len(ext) - 1
+    renamed = slugify(instance.title or name)[:max_filename_size] + "-" + randomized + ext
+    return 'paperclip/%s/%s' % (
+        subfolder,
         renamed)
 
 
