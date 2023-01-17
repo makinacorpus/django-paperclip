@@ -95,14 +95,14 @@ class AttachmentForm(forms.ModelForm):
                 uploaded_image.file.readline()
             except FileNotFoundError:
                 return uploaded_image
-        if settings.PAPERCLIP_MAX_BYTES_SIZE_IMAGE and settings.PAPERCLIP_MAX_BYTES_SIZE_IMAGE < uploaded_image.size:
+        if settings.PAPERCLIP_MAX_BYTES_SIZE_IMAGE and uploaded_image.size and settings.PAPERCLIP_MAX_BYTES_SIZE_IMAGE < uploaded_image.size:
             raise forms.ValidationError(_('The uploaded file is too large'))
         if not is_image:
             return uploaded_image
         width, height = get_image_dimensions(uploaded_image)
-        if settings.PAPERCLIP_MIN_IMAGE_UPLOAD_WIDTH and settings.PAPERCLIP_MIN_IMAGE_UPLOAD_WIDTH > width:
+        if settings.PAPERCLIP_MIN_IMAGE_UPLOAD_WIDTH and width and settings.PAPERCLIP_MIN_IMAGE_UPLOAD_WIDTH > width:
             raise forms.ValidationError(_('The uploaded file is not wide enough'))
-        if settings.PAPERCLIP_MIN_IMAGE_UPLOAD_HEIGHT and settings.PAPERCLIP_MIN_IMAGE_UPLOAD_HEIGHT > height:
+        if settings.PAPERCLIP_MIN_IMAGE_UPLOAD_HEIGHT and height and settings.PAPERCLIP_MIN_IMAGE_UPLOAD_HEIGHT > height:
             raise forms.ValidationError(_('The uploaded file is not tall enough'))
         return uploaded_image
 
