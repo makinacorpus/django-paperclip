@@ -115,6 +115,9 @@ PAPERCLIP_MIN_IMAGE_UPLOAD_WIDTH = None
 PAPERCLIP_MIN_IMAGE_UPLOAD_HEIGHT = None
 PAPERCLIP_RESIZE_ATTACHMENTS_ON_UPLOAD = False
 PAPERCLIP_ALLOWED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'pdf', 'txt', 'plain']
-
+PAPERCLIP_EXTRA_ALLOWED_MIMETYPES = {
+    'bmp': ['image/bmp'],
+    'xlsx': ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
+}
 # fix for project created django < 3.2
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
