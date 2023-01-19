@@ -30,7 +30,7 @@ class ViewTestCase(TestCase):
         cls.attachment = get_attachment_model().objects.create(content_object=cls.object, filetype=cls.filetype,
                                                                attachment_file=SimpleUploadedFile(file.name,
                                                                                                   file.read(),
-                                                                                                  content_type='text/txt'),
+                                                                                                  content_type='text/plain'),
                                                                creator=cls.user,
                                                                author="foo author", title="foo title",
                                                                legend="foo legend", starred=True)
@@ -98,7 +98,7 @@ class ViewTestCase(TestCase):
         attachment = get_attachment_model().objects.create(content_object=self.object, filetype=self.filetype,
                                                            attachment_file=SimpleUploadedFile(file.name,
                                                                                               file.read(),
-                                                                                              content_type='text/txt'),
+                                                                                              content_type='text/plain'),
                                                            creator=self.user,
                                                            author="foo author", title="foo title",
                                                            legend="foo legend", starred=True)
@@ -119,7 +119,7 @@ class ViewTestCase(TestCase):
         attachment = get_attachment_model().objects.create(content_object=object_attachment, filetype=self.filetype,
                                                            attachment_file=SimpleUploadedFile(file.name,
                                                                                               file.read(),
-                                                                                              content_type='text/txt'),
+                                                                                              content_type='text/plain'),
                                                            creator=self.user,
                                                            author="bar author", title="bar title",
                                                            legend="bar legend", starred=True)
@@ -143,7 +143,7 @@ class ViewTestCase(TestCase):
         attachment = get_attachment_model().objects.create(content_object=object_attachment, filetype=self.filetype,
                                                            attachment_file=SimpleUploadedFile(file.name,
                                                                                               file.read(),
-                                                                                              content_type='text/txt'),
+                                                                                              content_type='text/plain'),
                                                            creator=user_other,
                                                            author="bar author", title="bar title",
                                                            legend="bar legend", starred=True)
@@ -168,7 +168,7 @@ class ViewTestCase(TestCase):
         attachment = get_attachment_model().objects.create(content_object=object_attachment, filetype=self.filetype,
                                                            attachment_file=SimpleUploadedFile(file.name,
                                                                                               file.read(),
-                                                                                              content_type='text/txt'),
+                                                                                              content_type='text/plain'),
                                                            creator=self.user,
                                                            author="bar author", title="bar title",
                                                            legend="bar legend")
