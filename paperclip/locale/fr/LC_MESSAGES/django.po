@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-01-09 15:27+0000\n"
+"POT-Creation-Date: 2023-01-19 09:38+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -178,6 +178,12 @@ msgid ""
 msgstr ""
 "Le type de fichier “%(extension)s” n'est pas autorisé. Les types autorisés "
 "sont: %(allowed_extensions)s."
+
+#, python-format
+msgid "File mime type “%(mimetype)s” is not allowed for “%(extension)s”."
+msgstr ""
+"Le type de fichier “%(mimetype)s” n'est pas autorisé pour l'extension "
+"“%(extension)s”."
 
 #, python-format
 msgid "Add attachment %s"
