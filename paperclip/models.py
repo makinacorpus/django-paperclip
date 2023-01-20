@@ -20,7 +20,8 @@ from paperclip.settings import (PAPERCLIP_ENABLE_LINK, PAPERCLIP_ENABLE_VIDEO,
                                 PAPERCLIP_LICENSE_MODEL,
                                 PAPERCLIP_MAX_ATTACHMENT_HEIGHT,
                                 PAPERCLIP_MAX_ATTACHMENT_WIDTH,
-                                PAPERCLIP_RESIZE_ATTACHMENTS_ON_UPLOAD)
+                                PAPERCLIP_RESIZE_ATTACHMENTS_ON_UPLOAD,
+                                PAPERCLIP_RANDOM_SUFFIX_SIZE)
 from paperclip.utils import is_an_image, mimetype
 
 from .validators import FileMimetypeValidator
@@ -71,16 +72,24 @@ class AttachmentManager(models.Manager):
                            filetype=filetype)
 
 
-def attachment_upload(instance, filename):
+def random_suffix_regexp():
+    return f"-[A-Z0-9]{{{PAPERCLIP_RANDOM_SUFFIX_SIZE}}}"
+
+
+def attachment_upload(instance, filename, randomized=True):
     """Stores the attachment in a "per module/appname/primary key" folder"""
     name, ext = os.path.splitext(filename)
-    randomized = ''.join(random.choices(string.ascii_uppercase + string.digits, k=12))
-    subfolder = '%s/%s/' % (
+    # If you change this line, make sure to update 'random_suffix_regexp' method above
+    random_suffix = ''.join(random.choices(string.ascii_uppercase + string.digits, k=PAPERCLIP_RANDOM_SUFFIX_SIZE))
+    subfolder = '%s/%s' % (
         '%s_%s' % (instance.content_object._meta.app_label,
                    instance.content_object._meta.model_name),
         instance.content_object.pk)
-    max_filename_size = instance._meta.get_field('attachment_file').max_length - len('paperclip/') - len(randomized) - len(subfolder) - len(ext) - 1
-    renamed = slugify(instance.title or name)[:max_filename_size] + "-" + randomized + ext
+    max_filename_size = instance._meta.get_field('attachment_file').max_length - len('paperclip/') - len(random_suffix) - len(subfolder) - len(ext) - 1
+    renamed = slugify(instance.title or name)[:max_filename_size]
+    if randomized:
+        renamed = renamed + "-" + random_suffix
+    renamed = renamed + ext
     return 'paperclip/%s/%s' % (
         subfolder,
         renamed)
