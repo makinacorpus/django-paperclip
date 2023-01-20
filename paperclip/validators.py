@@ -40,7 +40,7 @@ class FileMimetypeValidator(FileValidator):
                 )
             file_mimetype = magic.from_buffer(value.read(), mime=True)
             file_mimetype_allowed = f".{extension}" in mimetypes.guess_all_extensions(file_mimetype)
-            file_mimetype_allowed = file_mimetype_allowed or PAPERCLIP_EXTRA_ALLOWED_MIMETYPES.get(extension) and file_mimetype in PAPERCLIP_EXTRA_ALLOWED_MIMETYPES.get(extension)
+            file_mimetype_allowed = file_mimetype_allowed or PAPERCLIP_EXTRA_ALLOWED_MIMETYPES.get(extension, False) and file_mimetype in PAPERCLIP_EXTRA_ALLOWED_MIMETYPES.get(extension)
             if not file_mimetype_allowed:
                 raise ValidationError(
                     self.message_mimetype,
