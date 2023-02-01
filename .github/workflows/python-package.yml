@@ -11,18 +11,18 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     strategy:
       matrix:
-        python-version: [ '3.6', '3.8', '3.9', '3.10' ]
-        django-version: [ 2.2.*, 3.2.*, 4.0.* ]
+        python-version: [ '3.6', '3.8', '3.10' ]
+        django-version: [ '3.2.*', '4.1.*' ]
         exclude:
           - python-version: 3.6
-            django-version: 4.0.*
+            django-version: 4.1.*
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
 
@@ -38,6 +38,7 @@ jobs:
     - name: Test with coverage
       run: |
         coverage run ./manage.py test
+        coverage xml
 
     - name: Coverage upload
       run: |
