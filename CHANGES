@@ -7,6 +7,8 @@ CHANGELOG
 
 * Fix link to the project on Pypi when clicking the pypi badge (another pypi project is named `django-paperclip`)
 * Fix typo in test-supporting HTML files (nothing was broken though)
+* Add Django 4.1 support
+* Drop Django 2.2 support
 
 
 2.6.1      (2022-07-07)
