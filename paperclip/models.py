@@ -136,10 +136,8 @@ class Attachment(models.Model):
     def save(self, *args, **kwargs):
         if self.attachment_file:
             self.is_image = self.is_an_image()
-            name = self.attachment_file.name
-            if self.pk is None:
-                name = self.prepare_file_suffix()
-                self.attachment_file.name = name
+            name = self.prepare_file_suffix()
+            self.attachment_file.name = name
         if not kwargs.pop("skip_file_save", False) and PAPERCLIP_RESIZE_ATTACHMENTS_ON_UPLOAD and self.attachment_file and self.is_image and 'svg' not in mimetype(self.attachment_file).split('/')[-1]:
             # Resize image
             image = Image.open(self.attachment_file).convert('RGB')
@@ -191,22 +189,24 @@ class Attachment(models.Model):
     def prepare_file_suffix(self, basename=None):
         """ Add random file suffix and return new filename to use in attachment_file.save
         """
-        if not self.random_suffix:
-            # Create random suffix
-            # #### /!\ If you change this line, make sure to update 'random_suffix_regexp' method above
-            self.random_suffix = '-' + ''.join(random.choices(string.ascii_lowercase + string.digits, k=PAPERCLIP_RANDOM_SUFFIX_SIZE))
-            # #### /!\ If you change this line, make sure to update 'random_suffix_regexp' method above
-            if basename:
-                basename, ext = os.path.splitext(basename)
-            else:
-                name, ext = os.path.splitext(self.attachment_file.name)
-            subfolder = '%s/%s' % (
-                '%s_%s' % (self.content_object._meta.app_label,
-                           self.content_object._meta.model_name),
-                self.content_object.pk)
-            # Compute maximum size left for filename
-            max_filename_size = self._meta.get_field('attachment_file').max_length - len('paperclip/') - PAPERCLIP_RANDOM_SUFFIX_SIZE - len(subfolder) - len(ext) - 1
-            # Create new name with suffix and proper size
-            name = slugify(basename or self.title or name)[:max_filename_size]
-            return name + self.random_suffix + ext
-        return self.attachment_file.name
+        if self.attachment_file or basename:
+            if not self.random_suffix:
+                # Create random suffix
+                # #### /!\ If you change this line, make sure to update 'random_suffix_regexp' method above
+                self.random_suffix = '-' + ''.join(random.choices(string.ascii_lowercase + string.digits, k=PAPERCLIP_RANDOM_SUFFIX_SIZE))
+                # #### /!\ If you change this line, make sure to update 'random_suffix_regexp' method above
+                if basename:
+                    basename, ext = os.path.splitext(basename)
+                else:
+                    name, ext = os.path.splitext(self.attachment_file.name)
+                subfolder = '%s/%s' % (
+                    '%s_%s' % (self.content_object._meta.app_label,
+                            self.content_object._meta.model_name),
+                    self.content_object.pk)
+                # Compute maximum size left for filename
+                max_filename_size = self._meta.get_field('attachment_file').max_length - len('paperclip/') - PAPERCLIP_RANDOM_SUFFIX_SIZE - len(subfolder) - len(ext) - 1
+                # Create new name with suffix and proper size
+                name = slugify(basename or self.title or name)[:max_filename_size]
+                return name + self.random_suffix + ext
+            return self.attachment_file.name
+        return None

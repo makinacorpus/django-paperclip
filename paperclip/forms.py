@@ -113,4 +113,12 @@ class AttachmentForm(forms.ModelForm):
         obj = self._object
         self.instance.creator = request.user
         self.instance.content_object = obj
-        return super().save(*args, **kwargs)
+        if "attachment_file" in self.changed_data:
+            # New file : regenerate new random suffix for this attachment
+            self.instance.random_suffix = None
+            return super().save(*args, **kwargs)
+        else:
+            # Do not run attachement_file.save if no update needed or file will be duplicated
+            instance = super().save(commit=False)
+            instance.save(**{'skip_file_save': True})
+            return instance
