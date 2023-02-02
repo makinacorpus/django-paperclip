@@ -201,7 +201,7 @@ class Attachment(models.Model):
                     name, ext = os.path.splitext(self.attachment_file.name)
                 subfolder = '%s/%s' % (
                     '%s_%s' % (self.content_object._meta.app_label,
-                            self.content_object._meta.model_name),
+                               self.content_object._meta.model_name),
                     self.content_object.pk)
                 # Compute maximum size left for filename
                 max_filename_size = self._meta.get_field('attachment_file').max_length - len('paperclip/') - PAPERCLIP_RANDOM_SUFFIX_SIZE - len(subfolder) - len(ext) - 1
