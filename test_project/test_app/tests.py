@@ -193,7 +193,8 @@ class ViewTestCase(TestCase):
         self.assertEqual(response.json()[0]["id"], 1)
         self.assertEqual(response.json()[0]["title"], "foo title")
         self.assertEqual(response.json()[0]["legend"], "foo legend")
-        self.assertIn(f"/paperclip/test_app_testobject/{self.pk}/foo-title", response.json()[0]["url"])
+        regexp = f"/paperclip/test_app_testobject/{self.pk}/foo-title{random_suffix_regexp()}.txt"
+        self.assertRegex(response.json()[0]["url"], regexp)
         self.assertEqual(response.json()[0]["type"], "foo filetype")
         self.assertEqual(response.json()[0]["author"], "foo author")
         regexp = f"foo-title{random_suffix_regexp()}.txt"
