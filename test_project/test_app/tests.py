@@ -11,7 +11,7 @@ from django.urls import reverse
 from PIL import Image
 
 from paperclip.settings import get_attachment_model, get_filetype_model
-
+from paperclip.models import random_suffix_regexp
 from .models import License, TestObject
 
 
@@ -69,13 +69,14 @@ class ViewTestCase(TestCase):
                                      'attachment_file': f})
         self.assertRedirects(response, "/foo-url/", fetch_redirect_response=False)
         attachment = get_attachment_model().objects.first()
-        self.assertIn(f"foo_user attached paperclip/test_app_testobject/{self.pk}/file", str(attachment))
-        self.assertIn(".txt", str(attachment))
+        regexp = f"foo_user attached paperclip/test_app_testobject/{self.pk}/file{random_suffix_regexp()}.txt"
+        self.assertRegex(str(attachment), regexp)
 
     def test_update_view(self):
         perm = Permission.objects.get(codename='change_attachment')
         self.user.user_permissions.add(perm)
         self.client.login(username="foo_user", password="foo_password")
+        used_suffix = self.attachment.random_suffix
         response = self.client.post('/paperclip/update/{pk}/'.format(pk=self.attachment.pk),
                                     {'embed': 'File',
                                      'filetype': self.filetype.pk,
@@ -83,8 +84,7 @@ class ViewTestCase(TestCase):
                                      'title': 'test'})
         self.assertRedirects(response, "/foo-url/", fetch_redirect_response=False)
         attachment = get_attachment_model().objects.first()
-        self.assertIn(f'paperclip/test_app_testobject/{self.pk}/foo-title', str(attachment))
-        self.assertIn(".txt", str(attachment))
+        self.assertEqual(f"foo_user attached paperclip/test_app_testobject/{self.pk}/foo-title{used_suffix}.txt", str(attachment))
         response = self.client.get('/paperclip/update/{pk}/'.format(pk=self.attachment.pk))
         self.assertContains(response, b'Update foo-title')
 
@@ -196,11 +196,24 @@ class ViewTestCase(TestCase):
         self.assertIn(f"/paperclip/test_app_testobject/{self.pk}/foo-title", response.json()[0]["url"])
         self.assertEqual(response.json()[0]["type"], "foo filetype")
         self.assertEqual(response.json()[0]["author"], "foo author")
-        self.assertIn("foo-title", response.json()[0]["filename"])
-        self.assertIn(".txt", response.json()[0]["filename"])
+        regexp = f"foo-title{random_suffix_regexp()}.txt"
+        self.assertRegex(response.json()[0]["filename"], regexp)
         self.assertEqual(response.json()[0]["mimetype"], ["text", "plain"])
         self.assertEqual(response.json()[0]["is_image"], False)
         self.assertEqual(response.json()[0]["starred"], True)
+
+    def test_add_view_with_invalid_file(self):
+        perm = Permission.objects.get(codename='add_attachment')
+        self.user.user_permissions.add(perm)
+        self.client.login(username="foo_user", password="foo_password")
+
+        f = SimpleUploadedFile("file.extension", b"file_content")
+        response = self.client.post('/paperclip/add-with-redirect/test_app/testobject/{pk}/'.format(pk=self.pk),
+                                    {'embed': 'File', 'filetype': self.filetype.pk, 'next': '/foo-url/',
+                                     'attachment_file': f})
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual("File type “extension” is not allowed. Allowed types are: ['jpg', 'jpeg', 'png', 'pdf', 'txt', 'plain'].\n", str(messages[0]))
+        self.assertRedirects(response, "/foo-url/", fetch_redirect_response=False)
 
 
 @override_settings(MEDIA_ROOT=TemporaryDirectory().name)
@@ -457,3 +470,48 @@ class TestResizeAttachmentsOnUpload(TestCase):
 class LicenseModelTestCase(TestCase):
     def test_str(self):
         self.assertEqual(str(License.objects.create(label="foo")), "foo")
+
+
+class FileSuffixTestCase(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = User.objects.create_user("foo_user", password="foo_password", last_name="foo lastname",
+                                            first_name="foo firstname")
+        cls.object = TestObject.objects.create(name="foo object")
+        cls.filetype = get_filetype_model().objects.create(type="foo filetype")
+
+    def test_filename_generation(self):
+        # Prepare attachment
+        file = BytesIO(b"File content")
+        file.name = 'foo_file.txt'
+        file.seek(0)
+        attachment = get_attachment_model().objects.create(content_object=self.object, filetype=self.filetype,
+                                                           creator=self.user,
+                                                           author="foo author",
+                                                           legend="foo legend", starred=True)
+        # Assert filename and suffix are not computed if there is no file in attachment
+        self.assertIsNone(attachment.prepare_file_suffix())
+        # Assert filename is made of attachment file name plus random suffix
+        attachment.attachment_file = SimpleUploadedFile(
+            file.name,
+            file.read(),
+            content_type='text/plain'
+        )
+        name_1 = attachment.prepare_file_suffix()
+        regexp = random_suffix_regexp()
+        self.assertRegex(attachment.random_suffix, regexp)
+        new_name = f"foo_file{attachment.random_suffix}.txt"
+        self.assertEqual(name_1, new_name)
+        # Assert filename is made of attachment title plus random suffix
+        attachment.random_suffix = None
+        attachment.title = "foo_title"
+        name_2 = attachment.prepare_file_suffix()
+        self.assertRegex(attachment.random_suffix, regexp)
+        new_name = f"foo_title{attachment.random_suffix}.txt"
+        self.assertEqual(name_2, new_name)
+        # Assert filename is made of basename argument plus random suffix
+        attachment.random_suffix = None
+        name_3 = attachment.prepare_file_suffix("basename.txt")
+        self.assertRegex(attachment.random_suffix, regexp)
+        new_name = f"basename{attachment.random_suffix}.txt"
+        self.assertEqual(name_3, new_name)
