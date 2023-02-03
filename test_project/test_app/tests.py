@@ -305,8 +305,43 @@ class TestResizeAttachmentsOnUpload(TestCase):
         self.assertEqual(response.status_code, 302)
         # Refresh object
         attachment = get_attachment_model().objects.get(pk=attachment.pk)
+        old_name = attachment.attachment_file.name
         self.assertEqual(attachment.author, "newauthor")
         self.assertEqual((100, 200), get_image_dimensions(attachment.attachment_file))
+        # Test that attachachment file is not duplicated at update
+        response = self.client.post(
+            reverse(
+                'update_attachment',
+                kwargs={'attachment_pk': attachment.pk}),
+            data={
+                'filetype': self.filetype.pk,
+                'author': "newauthor",
+                'next': f"/test_object/{self.object.pk}",
+                'embed': 'File'
+            }
+        )
+        self.assertEqual(response.status_code, 302)
+        # Refresh object
+        attachment = get_attachment_model().objects.get(pk=attachment.pk)
+        self.assertEqual(attachment.attachment_file.name, old_name)
+        # Test that attachachment file is not duplicated at update
+        big_image = self.get_big_dummy_uploaded_image()
+        response = self.client.post(
+            reverse(
+                'update_attachment',
+                kwargs={'attachment_pk': attachment.pk}),
+            data={
+                'attachment_file': big_image,
+                'filetype': self.filetype.pk,
+                'author': "newauthor",
+                'next': f"/test_object/{self.object.pk}",
+                'embed': 'File'
+            }
+        )
+        self.assertEqual(response.status_code, 302)
+        # Refresh object
+        attachment = get_attachment_model().objects.get(pk=attachment.pk)
+        self.assertNotEqual(attachment.attachment_file.name, old_name)
 
     @patch("paperclip.forms.settings.PAPERCLIP_MAX_BYTES_SIZE_IMAGE", 1093)
     def test_attachment_is_larger_max_size(self):

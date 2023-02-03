@@ -136,7 +136,7 @@ class Attachment(models.Model):
     def save(self, *args, **kwargs):
         if self.attachment_file:
             self.is_image = self.is_an_image()
-            name = self.prepare_file_suffix()
+            name = self.prepare_file_suffix(kwargs.pop("basename", None))
             self.attachment_file.name = name
         if not kwargs.pop("skip_file_save", False) and PAPERCLIP_RESIZE_ATTACHMENTS_ON_UPLOAD and self.attachment_file and self.is_image and 'svg' not in mimetype(self.attachment_file).split('/')[-1]:
             # Resize image
