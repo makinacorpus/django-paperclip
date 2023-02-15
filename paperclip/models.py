@@ -1,4 +1,6 @@
 import os
+import random
+import string
 from io import BytesIO
 from pathlib import Path
 
@@ -14,9 +16,15 @@ from embed_video.fields import EmbedVideoField
 from PIL import Image
 
 from paperclip.settings import (PAPERCLIP_ENABLE_LINK, PAPERCLIP_ENABLE_VIDEO,
-                                PAPERCLIP_LICENSE_MODEL, PAPERCLIP_FILETYPE_MODEL, PAPERCLIP_MAX_ATTACHMENT_HEIGHT,
-                                PAPERCLIP_MAX_ATTACHMENT_WIDTH, PAPERCLIP_RESIZE_ATTACHMENTS_ON_UPLOAD)
-from paperclip.utils import mimetype, is_an_image
+                                PAPERCLIP_FILETYPE_MODEL,
+                                PAPERCLIP_LICENSE_MODEL,
+                                PAPERCLIP_MAX_ATTACHMENT_HEIGHT,
+                                PAPERCLIP_MAX_ATTACHMENT_WIDTH,
+                                PAPERCLIP_RESIZE_ATTACHMENTS_ON_UPLOAD,
+                                PAPERCLIP_RANDOM_SUFFIX_SIZE)
+from paperclip.utils import is_an_image, mimetype
+
+from .validators import FileMimetypeValidator
 
 
 class FileType(models.Model):
@@ -64,15 +72,19 @@ class AttachmentManager(models.Manager):
                            filetype=filetype)
 
 
+def random_suffix_regexp():
+    return f"-[a-z0-9]{{{PAPERCLIP_RANDOM_SUFFIX_SIZE}}}"
+
+
 def attachment_upload(instance, filename):
-    """Stores the attachment in a "per module/appname/primary key" folder"""
-    name, ext = os.path.splitext(filename)
-    renamed = slugify(instance.title or name) + ext
+    _, name = os.path.split(filename)
+    name, ext = os.path.splitext(name)
+    name = slugify(name) + ext
     return 'paperclip/%s/%s/%s' % (
         '%s_%s' % (instance.content_object._meta.app_label,
                    instance.content_object._meta.model_name),
         instance.content_object.pk,
-        renamed)
+        name)
 
 
 class Attachment(models.Model):
@@ -84,7 +96,8 @@ class Attachment(models.Model):
 
     attachment_file = models.FileField(_('File'), blank=True,
                                        upload_to=attachment_upload,
-                                       max_length=512)
+                                       max_length=512,
+                                       validators=[FileMimetypeValidator()])
     if PAPERCLIP_ENABLE_VIDEO:
         attachment_video = EmbedVideoField(_('Video URL'), blank=True)
     if PAPERCLIP_ENABLE_LINK:
@@ -118,10 +131,14 @@ class Attachment(models.Model):
                                        verbose_name=_("Insertion date"))
     date_update = models.DateTimeField(editable=False, auto_now=True,
                                        verbose_name=_("Update date"))
+    random_suffix = models.CharField(null=False, blank=True, default='', max_length=128)
 
     def save(self, *args, **kwargs):
-        self.is_image = self.is_an_image()
-        if PAPERCLIP_RESIZE_ATTACHMENTS_ON_UPLOAD and self.is_image and self.attachment_file:
+        if self.attachment_file:
+            self.is_image = self.is_an_image()
+            name = self.prepare_file_suffix(kwargs.pop("basename", None))
+            self.attachment_file.name = name
+        if not kwargs.pop("skip_file_save", False) and PAPERCLIP_RESIZE_ATTACHMENTS_ON_UPLOAD and self.attachment_file and self.is_image and 'svg' not in mimetype(self.attachment_file).split('/')[-1]:
             # Resize image
             image = Image.open(self.attachment_file).convert('RGB')
             image.thumbnail((PAPERCLIP_MAX_ATTACHMENT_WIDTH, PAPERCLIP_MAX_ATTACHMENT_HEIGHT))
@@ -134,9 +151,8 @@ class Attachment(models.Model):
             output.seek(0)
             # Replace attachment
             content_file = ContentFile(output.read())
-            file = File(content_file)
-            name = self.attachment_file.name
-            self.attachment_file.save(name, file, save=False)
+            f = File(content_file)
+            self.attachment_file.save(name, f, save=False)
         super().save(*args, **kwargs)
 
     class Meta:
@@ -168,5 +184,31 @@ class Attachment(models.Model):
         return mimetype(self.attachment_file)
 
     def is_an_image(self):
-
         return is_an_image(mimetype(self.attachment_file))
+
+    def prepare_file_suffix(self, basename=None):
+        """ Add random file suffix and return new filename to use in attachment_file.save
+        """
+        if self.attachment_file or basename:
+            if not self.random_suffix:
+                # Create random suffix
+                # #### /!\ If you change this line, make sure to update 'random_suffix_regexp' method above
+                self.random_suffix = '-' + ''.join(random.choices(string.ascii_lowercase + string.digits, k=PAPERCLIP_RANDOM_SUFFIX_SIZE))
+                # #### /!\ If you change this line, make sure to update 'random_suffix_regexp' method above
+                if basename:
+                    basename, ext = os.path.splitext(basename)
+                else:
+                    name, ext = os.path.splitext(self.attachment_file.name)
+                subfolder = '%s/%s' % (
+                    '%s_%s' % (self.content_object._meta.app_label,
+                               self.content_object._meta.model_name),
+                    self.content_object.pk)
+                # Compute maximum size left for filename
+                max_filename_size = self._meta.get_field('attachment_file').max_length - len('paperclip/') - PAPERCLIP_RANDOM_SUFFIX_SIZE - len(subfolder) - len(ext) - 1
+                # In case PAPERCLIP_RANDOM_SUFFIX_SIZE is too big
+                max_filename_size = max(0, max_filename_size)
+                # Create new name with suffix and proper size
+                name = slugify(basename or self.title or name)[:max_filename_size]
+                return name + self.random_suffix + ext
+            return self.attachment_file.name
+        return None

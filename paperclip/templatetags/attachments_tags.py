@@ -44,7 +44,7 @@ def icon_name(value):
     mimetype = value.mimetype
     if not mimetype or mimetype == ('application', 'octet-stream'):
         return 'bin'
-    ext = mimetypes.guess_extension('/'.join(mimetype))
+    ext = mimetypes.guess_extension(mimetype)
     return ext[1:] if ext else 'bin'
 
 

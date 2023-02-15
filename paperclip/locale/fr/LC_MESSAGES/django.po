@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-07-05 17:28+0000\n"
+"POT-Creation-Date: 2023-01-19 09:38+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -34,6 +34,12 @@ msgstr "Coucher de soleil sur le lac"
 
 msgid "The uploaded file is too large"
 msgstr "Le fichier téléchargé est trop large"
+
+msgid "The uploaded file is not wide enough"
+msgstr "Le fichier téléchargé n'est pas assez large"
+
+msgid "The uploaded file is not tall enough"
+msgstr "Le fichier téléchargé n'est pas assez grand"
 
 msgid "File type"
 msgstr "Type de fichier"
@@ -164,6 +170,20 @@ msgstr "Êtes vous sûr de vouloir supprimer ce fichier {file} ?"
 
 msgid "New file attachment"
 msgstr "Nouveau fichier attaché"
+
+#, python-format
+msgid ""
+"File type “%(extension)s” is not allowed. Allowed types are: "
+"%(allowed_extensions)s."
+msgstr ""
+"Le type de fichier “%(extension)s” n'est pas autorisé. Les types autorisés "
+"sont: %(allowed_extensions)s."
+
+#, python-format
+msgid "File mime type “%(mimetype)s” is not allowed for “%(extension)s”."
+msgstr ""
+"Le type de fichier “%(mimetype)s” n'est pas autorisé pour l'extension "
+"“%(extension)s”."
 
 #, python-format
 msgid "Add attachment %s"

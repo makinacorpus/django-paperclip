@@ -10,6 +10,7 @@ MODE_CHOICED = [('File', _('File')), ]
 
 
 class AttachmentForm(forms.ModelForm):
+
     if settings.PAPERCLIP_ENABLE_VIDEO:
         MODE_CHOICED.append(('Youtube', _('Youtube/Soundcloud URL')))
 
@@ -45,6 +46,7 @@ class AttachmentForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['legend'].widget.attrs['placeholder'] = _('Sunset on lake')
 
+        self.redirect_on_error = False
         # Allow to override filetype choices
         filetype_model = self.fields['filetype'].queryset.model
         self.fields['filetype'].queryset = filetype_model.objects_for(request)
@@ -93,14 +95,14 @@ class AttachmentForm(forms.ModelForm):
                 uploaded_image.file.readline()
             except FileNotFoundError:
                 return uploaded_image
-        if settings.PAPERCLIP_MAX_BYTES_SIZE_IMAGE and settings.PAPERCLIP_MAX_BYTES_SIZE_IMAGE < uploaded_image.size:
+        if settings.PAPERCLIP_MAX_BYTES_SIZE_IMAGE and uploaded_image.size and settings.PAPERCLIP_MAX_BYTES_SIZE_IMAGE < uploaded_image.size:
             raise forms.ValidationError(_('The uploaded file is too large'))
         if not is_image:
             return uploaded_image
         width, height = get_image_dimensions(uploaded_image)
-        if settings.PAPERCLIP_MIN_IMAGE_UPLOAD_WIDTH and settings.PAPERCLIP_MIN_IMAGE_UPLOAD_WIDTH > width:
+        if settings.PAPERCLIP_MIN_IMAGE_UPLOAD_WIDTH and width and settings.PAPERCLIP_MIN_IMAGE_UPLOAD_WIDTH > width:
             raise forms.ValidationError(_('The uploaded file is not wide enough'))
-        if settings.PAPERCLIP_MIN_IMAGE_UPLOAD_HEIGHT and settings.PAPERCLIP_MIN_IMAGE_UPLOAD_HEIGHT > height:
+        if settings.PAPERCLIP_MIN_IMAGE_UPLOAD_HEIGHT and height and settings.PAPERCLIP_MIN_IMAGE_UPLOAD_HEIGHT > height:
             raise forms.ValidationError(_('The uploaded file is not tall enough'))
         return uploaded_image
 
@@ -111,4 +113,12 @@ class AttachmentForm(forms.ModelForm):
         obj = self._object
         self.instance.creator = request.user
         self.instance.content_object = obj
-        return super().save(*args, **kwargs)
+        if "attachment_file" in self.changed_data:
+            # New file : regenerate new random suffix for this attachment
+            self.instance.random_suffix = None
+            return super().save(*args, **kwargs)
+        else:
+            # Do not run attachement_file.save if no update needed or file will be duplicated
+            instance = super().save(commit=False)
+            instance.save(**{'skip_file_save': True})
+            return instance

@@ -1,16 +1,20 @@
-from django.shortcuts import get_object_or_404
-from django.views.decorators.http import require_POST, require_http_methods
-from django.http import HttpResponseRedirect, HttpResponse, Http404, JsonResponse
+import json
+
 from django.apps import apps
-from django.utils.encoding import force_str
-from django.utils.translation import gettext_lazy as _
-from django.template import RequestContext, Template
-from django.contrib.admin.models import LogEntry, CHANGE
+from django.contrib import messages
+from django.contrib.admin.models import CHANGE, LogEntry
 from django.contrib.auth.decorators import permission_required
 from django.contrib.contenttypes.models import ContentType
-from django.contrib import messages
+from django.http import (Http404, HttpResponse, HttpResponseRedirect,
+                         JsonResponse)
+from django.shortcuts import get_object_or_404
+from django.template import RequestContext, Template
+from django.utils.encoding import force_str
+from django.utils.translation import gettext_lazy as _
+from django.views.decorators.http import require_http_methods, require_POST
 
 from paperclip import settings
+
 from .forms import AttachmentForm
 
 
@@ -66,6 +70,15 @@ def _handle_attachment_form(request, obj, form, change_msg, success_msg,
             )
         messages.success(request, success_msg)
         return HttpResponseRedirect(form.success_url())
+
+    if request.POST and form.redirect_on_error:
+        all_errors = json.loads(form.errors.as_json())
+        errors_message = ""
+        for __, errors in all_errors.items():
+            for error in errors:
+                errors_message += f"{error['message']}\n"
+        messages.error(request, errors_message)
+        return HttpResponseRedirect(form.data.get('next'))
 
     template_string = """{% load attachments_tags %}
         {% attachment_form object attachment_form %}"""
@@ -148,7 +161,7 @@ def get_attachments(request, app_label, model_name, pk):
             'type': attachment.filetype.type,
             'author': attachment.author,
             'filename': attachment.filename,
-            'mimetype': attachment.mimetype,
+            'mimetype': attachment.mimetype.split('/'),
             'is_image': attachment.is_image,
             'starred': attachment.starred,
         }

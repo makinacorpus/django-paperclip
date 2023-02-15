@@ -11,8 +11,8 @@ from django.urls import reverse
 from PIL import Image
 
 from paperclip.settings import get_attachment_model, get_filetype_model
-
-from .models import TestObject, License
+from paperclip.models import random_suffix_regexp
+from .models import License, TestObject
 
 
 @override_settings(MEDIA_ROOT=TemporaryDirectory().name)
@@ -24,13 +24,13 @@ class ViewTestCase(TestCase):
         cls.object = TestObject.objects.create(name="foo object")
         cls.filetype = get_filetype_model().objects.create(type="foo filetype")
 
-        file = BytesIO()
+        file = BytesIO(b"File content")
         file.name = 'foo_file.txt'
         file.seek(0)
         cls.attachment = get_attachment_model().objects.create(content_object=cls.object, filetype=cls.filetype,
                                                                attachment_file=SimpleUploadedFile(file.name,
                                                                                                   file.read(),
-                                                                                                  content_type='text/txt'),
+                                                                                                  content_type='text/plain'),
                                                                creator=cls.user,
                                                                author="foo author", title="foo title",
                                                                legend="foo legend", starred=True)
@@ -52,7 +52,8 @@ class ViewTestCase(TestCase):
         response = self.client.get('/test_object/{pk}/'.format(pk=self.pk))
         self.assertContains(response, "Attached files")
         self.assertContains(response, "foo title")
-        self.assertContains(response, "foo-title.txt")
+        self.assertContains(response, "foo-title")
+        self.assertContains(response, ".txt")
         self.assertContains(response, "foo legend")
         self.assertContains(response, "foo author")
         self.assertContains(response, "star-on.svg")
@@ -67,34 +68,37 @@ class ViewTestCase(TestCase):
                                     {'embed': 'File', 'filetype': self.filetype.pk, 'next': '/foo-url/',
                                      'attachment_file': f})
         self.assertRedirects(response, "/foo-url/", fetch_redirect_response=False)
-        self.assertQuerysetEqual(get_attachment_model().objects.all(),
-                                 (f'<Attachment: foo_user attached paperclip/test_app_testobject/{self.pk}/file.txt>',
-                                  '<Attachment: foo_user attached '
-                                  f'paperclip/test_app_testobject/{self.pk}/foo-title.txt>'))
+        attachment = get_attachment_model().objects.first()
+        regexp = f"foo_user attached paperclip/test_app_testobject/{self.pk}/file{random_suffix_regexp()}.txt"
+        self.assertRegex(str(attachment), regexp)
 
     def test_update_view(self):
         perm = Permission.objects.get(codename='change_attachment')
         self.user.user_permissions.add(perm)
         self.client.login(username="foo_user", password="foo_password")
+        used_suffix = self.attachment.random_suffix
         response = self.client.post('/paperclip/update/{pk}/'.format(pk=self.attachment.pk),
                                     {'embed': 'File',
                                      'filetype': self.filetype.pk,
                                      'next': '/foo-url/',
                                      'title': 'test'})
         self.assertRedirects(response, "/foo-url/", fetch_redirect_response=False)
-        self.assertQuerysetEqual(get_attachment_model().objects.all(),
-                                 (f'<Attachment: foo_user attached '
-                                  f'paperclip/test_app_testobject/{self.pk}/foo-title.txt>',
-                                  ))
+        attachment = get_attachment_model().objects.first()
+        self.assertEqual(f"foo_user attached paperclip/test_app_testobject/{self.pk}/foo-title{used_suffix}.txt", str(attachment))
         response = self.client.get('/paperclip/update/{pk}/'.format(pk=self.attachment.pk))
-        self.assertContains(response, b'Update foo-title.txt')
+        self.assertContains(response, b'Update foo-title')
 
     def test_update_view_deleted_file(self):
         perm = Permission.objects.get(codename='change_attachment')
         self.user.user_permissions.add(perm)
         self.client.login(username="foo_user", password="foo_password")
+        file = BytesIO(b"File content")
+        file.name = 'foo_file.txt'
+        file.seek(0)
         attachment = get_attachment_model().objects.create(content_object=self.object, filetype=self.filetype,
-                                                           attachment_file='foo_file.txt',
+                                                           attachment_file=SimpleUploadedFile(file.name,
+                                                                                              file.read(),
+                                                                                              content_type='text/plain'),
                                                            creator=self.user,
                                                            author="foo author", title="foo title",
                                                            legend="foo legend", starred=True)
@@ -104,61 +108,68 @@ class ViewTestCase(TestCase):
                                      'next': '/foo-url/',
                                      'title': 'test'})
         self.assertRedirects(response, "/foo-url/", fetch_redirect_response=False)
-        self.assertQuerysetEqual(get_attachment_model().objects.all(),
-                                 ('<Attachment: foo_user attached foo_file.txt>',
-                                  '<Attachment: foo_user attached '
-                                  f'paperclip/test_app_testobject/{self.pk}/foo-title.txt>'
-                                  )
-                                 )
+        attachment.refresh_from_db()
+        self.assertEqual(attachment.title, 'test')
 
     def test_delete_view(self):
         object_attachment = TestObject.objects.create(name="foo object")
+        file = BytesIO(b"File content")
+        file.name = 'attach.txt'
+        file.seek(0)
         attachment = get_attachment_model().objects.create(content_object=object_attachment, filetype=self.filetype,
-                                                           attachment_file="attach.txt", creator=self.user,
+                                                           attachment_file=SimpleUploadedFile(file.name,
+                                                                                              file.read(),
+                                                                                              content_type='text/plain'),
+                                                           creator=self.user,
                                                            author="bar author", title="bar title",
                                                            legend="bar legend", starred=True)
         perm = Permission.objects.get(codename='delete_attachment')
         self.user.user_permissions.add(perm)
         self.client.login(username="foo_user", password="foo_password")
-        self.assertQuerysetEqual(get_attachment_model().objects.all(),
-                                 ('<Attachment: foo_user attached attach.txt>',
-                                  '<Attachment: foo_user attached '
-                                  f'paperclip/test_app_testobject/{self.pk}/foo-title.txt>', ))
+        self.assertEqual(get_attachment_model().objects.count(), 2)
+        self.assertIn(attachment, get_attachment_model().objects.all())
         response = self.client.post('/paperclip/delete/{pk}/'.format(pk=attachment.pk))
         self.assertRedirects(response, "/", fetch_redirect_response=False)
-        self.assertQuerysetEqual(get_attachment_model().objects.all(),
-                                 ('<Attachment: foo_user attached '
-                                  f'paperclip/test_app_testobject/{self.pk}/foo-title.txt>', ))
+        self.assertEqual(get_attachment_model().objects.count(), 1)
+        self.assertNotIn(attachment, get_attachment_model().objects.all())
 
     def test_delete_view_no_permission_delete(self):
         user_other = User.objects.create_user("other_user", password="other_password", last_name="other lastname",
                                               first_name="other firstname")
         object_attachment = TestObject.objects.create(name="foo object")
+        file = BytesIO(b"File content")
+        file.name = 'attach.txt'
+        file.seek(0)
         attachment = get_attachment_model().objects.create(content_object=object_attachment, filetype=self.filetype,
-                                                           attachment_file="attach.txt", creator=user_other,
+                                                           attachment_file=SimpleUploadedFile(file.name,
+                                                                                              file.read(),
+                                                                                              content_type='text/plain'),
+                                                           creator=user_other,
                                                            author="bar author", title="bar title",
                                                            legend="bar legend", starred=True)
         perm = Permission.objects.get(codename='delete_attachment')
         self.user.user_permissions.add(perm)
         self.client.login(username="foo_user", password="foo_password")
-        self.assertQuerysetEqual(get_attachment_model().objects.all(),
-                                 ('<Attachment: other_user attached attach.txt>',
-                                  '<Attachment: foo_user attached '
-                                  f'paperclip/test_app_testobject/{self.pk}/foo-title.txt>',))
+        self.assertEqual(get_attachment_model().objects.count(), 2)
+        self.assertIn(attachment, get_attachment_model().objects.all())
         response = self.client.post('/paperclip/delete/{pk}/'.format(pk=attachment.pk))
         self.assertRedirects(response, "/", fetch_redirect_response=False)
 
         messages = list(get_messages(response.wsgi_request))
         self.assertEqual(str(messages[0]), 'You are not allowed to delete this attachment.')
-        self.assertQuerysetEqual(get_attachment_model().objects.all(),
-                                 ('<Attachment: other_user attached attach.txt>',
-                                  '<Attachment: foo_user attached '
-                                  f'paperclip/test_app_testobject/{self.pk}/foo-title.txt>', ))
+        self.assertEqual(get_attachment_model().objects.count(), 2)
+        self.assertIn(attachment, get_attachment_model().objects.all())
 
     def test_star_view(self):
         object_attachment = TestObject.objects.create(name="foo object")
+        file = BytesIO(b"File content")
+        file.name = 'attach.txt'
+        file.seek(0)
         attachment = get_attachment_model().objects.create(content_object=object_attachment, filetype=self.filetype,
-                                                           attachment_file="attach.txt", creator=self.user,
+                                                           attachment_file=SimpleUploadedFile(file.name,
+                                                                                              file.read(),
+                                                                                              content_type='text/plain'),
+                                                           creator=self.user,
                                                            author="bar author", title="bar title",
                                                            legend="bar legend")
         perm = Permission.objects.get(codename='change_attachment')
@@ -179,16 +190,31 @@ class ViewTestCase(TestCase):
         self.user.user_permissions.add(perm)
         self.client.login(username="foo_user", password="foo_password")
         response = self.client.get('/paperclip/get/test_app/testobject/{pk}/'.format(pk=self.pk), safe=False)
-        self.assertEqual(response.json(), [{"id": 1,
-                                            "title": "foo title",
-                                            "legend": "foo legend",
-                                            "url": f"/paperclip/test_app_testobject/{self.pk}/foo-title.txt",
-                                            "type": "foo filetype",
-                                            "author": "foo author",
-                                            "filename": "foo-title.txt",
-                                            "mimetype": ["text", "plain"],
-                                            "is_image": False,
-                                            "starred": True}])
+        self.assertEqual(response.json()[0]["id"], 1)
+        self.assertEqual(response.json()[0]["title"], "foo title")
+        self.assertEqual(response.json()[0]["legend"], "foo legend")
+        regexp = f"/paperclip/test_app_testobject/{self.pk}/foo-title{random_suffix_regexp()}.txt"
+        self.assertRegex(response.json()[0]["url"], regexp)
+        self.assertEqual(response.json()[0]["type"], "foo filetype")
+        self.assertEqual(response.json()[0]["author"], "foo author")
+        regexp = f"foo-title{random_suffix_regexp()}.txt"
+        self.assertRegex(response.json()[0]["filename"], regexp)
+        self.assertEqual(response.json()[0]["mimetype"], ["text", "plain"])
+        self.assertEqual(response.json()[0]["is_image"], False)
+        self.assertEqual(response.json()[0]["starred"], True)
+
+    def test_add_view_with_invalid_file(self):
+        perm = Permission.objects.get(codename='add_attachment')
+        self.user.user_permissions.add(perm)
+        self.client.login(username="foo_user", password="foo_password")
+
+        f = SimpleUploadedFile("file.extension", b"file_content")
+        response = self.client.post('/paperclip/add-with-redirect/test_app/testobject/{pk}/'.format(pk=self.pk),
+                                    {'embed': 'File', 'filetype': self.filetype.pk, 'next': '/foo-url/',
+                                     'attachment_file': f})
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual("File type “extension” is not allowed. Allowed types are: ['jpg', 'jpeg', 'png', 'pdf', 'txt', 'plain'].\n", str(messages[0]))
+        self.assertRedirects(response, "/foo-url/", fetch_redirect_response=False)
 
 
 @override_settings(MEDIA_ROOT=TemporaryDirectory().name)
@@ -280,8 +306,43 @@ class TestResizeAttachmentsOnUpload(TestCase):
         self.assertEqual(response.status_code, 302)
         # Refresh object
         attachment = get_attachment_model().objects.get(pk=attachment.pk)
+        old_name = attachment.attachment_file.name
         self.assertEqual(attachment.author, "newauthor")
         self.assertEqual((100, 200), get_image_dimensions(attachment.attachment_file))
+        # Test that attachachment file is not duplicated at update
+        response = self.client.post(
+            reverse(
+                'update_attachment',
+                kwargs={'attachment_pk': attachment.pk}),
+            data={
+                'filetype': self.filetype.pk,
+                'author': "newauthor",
+                'next': f"/test_object/{self.object.pk}",
+                'embed': 'File'
+            }
+        )
+        self.assertEqual(response.status_code, 302)
+        # Refresh object
+        attachment = get_attachment_model().objects.get(pk=attachment.pk)
+        self.assertEqual(attachment.attachment_file.name, old_name)
+        # Test that attachachment file is not duplicated at update
+        big_image = self.get_big_dummy_uploaded_image()
+        response = self.client.post(
+            reverse(
+                'update_attachment',
+                kwargs={'attachment_pk': attachment.pk}),
+            data={
+                'attachment_file': big_image,
+                'filetype': self.filetype.pk,
+                'author': "newauthor",
+                'next': f"/test_object/{self.object.pk}",
+                'embed': 'File'
+            }
+        )
+        self.assertEqual(response.status_code, 302)
+        # Refresh object
+        attachment = get_attachment_model().objects.get(pk=attachment.pk)
+        self.assertNotEqual(attachment.attachment_file.name, old_name)
 
     @patch("paperclip.forms.settings.PAPERCLIP_MAX_BYTES_SIZE_IMAGE", 1093)
     def test_attachment_is_larger_max_size(self):
@@ -445,3 +506,48 @@ class TestResizeAttachmentsOnUpload(TestCase):
 class LicenseModelTestCase(TestCase):
     def test_str(self):
         self.assertEqual(str(License.objects.create(label="foo")), "foo")
+
+
+class FileSuffixTestCase(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = User.objects.create_user("foo_user", password="foo_password", last_name="foo lastname",
+                                            first_name="foo firstname")
+        cls.object = TestObject.objects.create(name="foo object")
+        cls.filetype = get_filetype_model().objects.create(type="foo filetype")
+
+    def test_filename_generation(self):
+        # Prepare attachment
+        file = BytesIO(b"File content")
+        file.name = 'foo_file.txt'
+        file.seek(0)
+        attachment = get_attachment_model().objects.create(content_object=self.object, filetype=self.filetype,
+                                                           creator=self.user,
+                                                           author="foo author",
+                                                           legend="foo legend", starred=True)
+        # Assert filename and suffix are not computed if there is no file in attachment
+        self.assertIsNone(attachment.prepare_file_suffix())
+        # Assert filename is made of attachment file name plus random suffix
+        attachment.attachment_file = SimpleUploadedFile(
+            file.name,
+            file.read(),
+            content_type='text/plain'
+        )
+        name_1 = attachment.prepare_file_suffix()
+        regexp = random_suffix_regexp()
+        self.assertRegex(attachment.random_suffix, regexp)
+        new_name = f"foo_file{attachment.random_suffix}.txt"
+        self.assertEqual(name_1, new_name)
+        # Assert filename is made of attachment title plus random suffix
+        attachment.random_suffix = None
+        attachment.title = "foo_title"
+        name_2 = attachment.prepare_file_suffix()
+        self.assertRegex(attachment.random_suffix, regexp)
+        new_name = f"foo_title{attachment.random_suffix}.txt"
+        self.assertEqual(name_2, new_name)
+        # Assert filename is made of basename argument plus random suffix
+        attachment.random_suffix = None
+        name_3 = attachment.prepare_file_suffix("basename.txt")
+        self.assertRegex(attachment.random_suffix, regexp)
+        new_name = f"basename{attachment.random_suffix}.txt"
+        self.assertEqual(name_3, new_name)
