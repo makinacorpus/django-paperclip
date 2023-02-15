@@ -2,7 +2,7 @@
 CHANGELOG
 =========
 
-2.6.1+dev  (XXXX-XX-XX)
+2.7.0  (2023-02-15)
 =======================
 
 * Add safety checks on uploaded files
