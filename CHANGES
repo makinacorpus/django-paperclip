@@ -2,7 +2,7 @@
 CHANGELOG
 =========
 
-2.7.0+dev  (XXXX-XX-XX)
+2.7.1  (2023-02-17)
 =======================
 
 * Fix link between attachment and file is lost when updating old attachment (created in version <2.7.0) without random suffix
