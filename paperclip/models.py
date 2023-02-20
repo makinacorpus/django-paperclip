@@ -196,9 +196,11 @@ class Attachment(models.Model):
                 self.random_suffix = '-' + ''.join(random.choices(string.ascii_lowercase + string.digits, k=PAPERCLIP_RANDOM_SUFFIX_SIZE))
                 # #### /!\ If you change this line, make sure to update 'random_suffix_regexp' method above
                 if basename:
+                    _, basename = os.path.split(basename)
                     basename, ext = os.path.splitext(basename)
                 else:
-                    name, ext = os.path.splitext(self.attachment_file.name)
+                    _, name = os.path.split(self.attachment_file.name)
+                    name, ext = os.path.splitext(name)
                 subfolder = '%s/%s' % (
                     '%s_%s' % (self.content_object._meta.app_label,
                                self.content_object._meta.model_name),
@@ -210,5 +212,5 @@ class Attachment(models.Model):
                 # Create new name with suffix and proper size
                 name = slugify(basename or self.title or name)[:max_filename_size]
                 return name + self.random_suffix + ext
-            return self.attachment_file.name
+            return os.path.split(self.attachment_file.name)
         return None
