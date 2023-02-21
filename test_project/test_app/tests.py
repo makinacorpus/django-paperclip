@@ -1,4 +1,5 @@
 from io import BytesIO
+import os
 from tempfile import TemporaryDirectory
 from unittest.mock import patch
 
@@ -309,7 +310,6 @@ class TestResizeAttachmentsOnUpload(TestCase):
         old_name = attachment.attachment_file.name
         self.assertEqual(attachment.author, "newauthor")
         self.assertEqual((100, 200), get_image_dimensions(attachment.attachment_file))
-        # Test that attachachment file is not duplicated at update
         response = self.client.post(
             reverse(
                 'update_attachment',
@@ -324,8 +324,9 @@ class TestResizeAttachmentsOnUpload(TestCase):
         self.assertEqual(response.status_code, 302)
         # Refresh object
         attachment = get_attachment_model().objects.get(pk=attachment.pk)
-        self.assertEqual(attachment.attachment_file.name, old_name)
-        # Test that attachachment file is not duplicated at update
+        old_name, ext = os.path.splitext(old_name)
+        regexp = f"{old_name}(_[a-zA-Z0-9]{{7}})?{ext}"
+        self.assertRegex(attachment.attachment_file.name, regexp)
         big_image = self.get_big_dummy_uploaded_image()
         response = self.client.post(
             reverse(
