@@ -5,16 +5,24 @@ CHANGELOG
 2.7.2+dev (XXXX-XX-XX)
 =======================
 
+* Drop support for django < 4.2
+* Support django 4.2
+* Pre support django 5.2
+* Drop support python < 3.9
+* Add support for python 3.9 to 3.13
+
 
 2.7.2  (2023-02-21)
 =======================
 
 * Fix link between attachment and file is lost when updating old attachment (created in version <2.7.0) without title and random suffix
 
+
 2.7.1  (2023-02-17)
 =======================
 
 * Fix link between attachment and file is lost when updating old attachment (created in version <2.7.0) without random suffix
+
 
 2.7.0  (2023-02-15)
 =======================
