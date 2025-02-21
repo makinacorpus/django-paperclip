@@ -17,9 +17,9 @@ Add attachments to Django models, used in `MapEntity <https://github.com/makinac
 .. |master-coverage| image:: https://codecov.io/gh/makinacorpus/django-paperclip/branch/master/graph/badge.svg?token=OB6f944vAt
     :target: https://codecov.io/gh/makinacorpus/django-paperclip
 
-.. |python-versions| image:: https://img.shields.io/badge/python-%3E%3D%203.6-blue.svg
+.. |python-versions| image:: https://img.shields.io/badge/python-%3E%3D%203.9-blue.svg
 
-.. |django-versions| image:: https://img.shields.io/badge/django-%3E%3D%202.2-blue.svg
+.. |django-versions| image:: https://img.shields.io/badge/django-%3E%3D%204.2-blue.svg
 
 
 =======
