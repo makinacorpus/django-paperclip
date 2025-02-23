@@ -27,7 +27,7 @@ jobs:
 
       - name: Compile messages
         run: |
-          pip install django
+          pip install django setuptools wheel -U
           sudo apt-get -qq update
           sudo apt-get -y install gettext
           django-admin compilemessages
