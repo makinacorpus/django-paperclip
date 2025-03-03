@@ -5,3 +5,4 @@
 *.egg*/
 /db.sqlite3
 /env/
+/build/
