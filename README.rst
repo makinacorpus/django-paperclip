@@ -106,6 +106,7 @@ Define the following django setting:
     PAPERCLIP_LICENSE_MODEL = 'myapp.License'
     PAPERCLIP_ATTACHMENT_MODEL = 'myapp.Attachment'
     PAPERCLIP_ACTION_HISTORY_ENABLED = True
+    PAPERCLIP_TEMPLATE_PACK = 'bootstrap4'  # optional, to use Bootstrap 4 templates
 
 * Make migration and migrate
 
@@ -119,6 +120,8 @@ Three templates are embeded and can easily be overriden :
 * ``paperclip/attachment_list.html`` : renders a table displaying attached files for an object and an upload form using the two following templates
 * ``paperclip/_attachment_table.html`` : renders a table displaying attached files for an object. You can add extra columns using ``block extra_column_header`` and ``block extra_column_data``
 * ``paperclip/_attachment_form.html`` : renders an upload form
+
+Bootstrap 4 versions of these templates are also available under ``paperclip/bootstrap4/`` (``paperclip/bootstrap4/attachment_list.html``, ``paperclip/bootstrap4/_attachment_table.html``, ``paperclip/bootstrap4/_attachment_form.html``) and are used automatically when ``PAPERCLIP_TEMPLATE_PACK = 'bootstrap4'`` is set in your Django settings.
 
 
 

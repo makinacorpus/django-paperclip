@@ -1,0 +1,69 @@
+{% load i18n attachments_tags %}
+
+<h4>{{ form_title }}</h4>
+
+{{ form.media }}
+{{ attachment_form.media }}
+
+<form class="attachment"
+      action="{{ attachment_form.form_url }}"
+      enctype="multipart/form-data"
+      method="post">
+  {% csrf_token %}
+
+  {% for hidden in attachment_form.hidden_fields %}
+    {{ hidden }}
+  {% endfor %}
+
+  {% if attachment_form.non_field_errors %}
+    <div class="alert alert-danger">
+      {{ attachment_form.non_field_errors }}
+    </div>
+  {% endif %}
+
+  {% for field in attachment_form.visible_fields %}
+    <div id="div_id_{{ field.html_name }}" class="form-group">
+      <label for="{{ field.id_for_label }}"{% if field.field.required %} class="requiredField"{% endif %}>
+        {{ field.label }}{% if field.field.required %}<span class="asteriskField">*</span>{% endif %}
+      </label>
+      {% if field.widget_type == "radioselect" %}
+        <div>
+          {% for choice in field|bs4_field %}
+            <div class="form-check form-check-inline">
+              {{ choice.tag }}
+              <label class="form-check-label" for="{{ choice.id_for_label }}">{{ choice.choice_label }}</label>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        {{ field|bs4_field }}
+      {% endif %}
+      {% for error in field.errors %}
+        <div class="invalid-feedback d-block">{{ error }}</div>
+      {% endfor %}
+      {% if field.help_text %}
+        <small class="form-text text-muted">{{ field.help_text }}</small>
+      {% endif %}
+    </div>
+  {% endfor %}
+
+  <div class="form-group">
+    {% if attachment_form.is_creation %}
+      <input type="submit"
+             id="submit_attachment"
+             name="submit_attachment"
+             class="btn btn-primary"
+             value="{% trans "Submit attachment" %}"/>
+    {% else %}
+      <input type="button"
+             id="button-id-cancel"
+             class="btn btn-secondary"
+             value="{% trans "Cancel" %}"/>
+      <input type="submit"
+             id="submit_attachment"
+             name="submit_attachment"
+             class="btn btn-primary"
+             value="{% trans "Update attachment" %}"/>
+    {% endif %}
+  </div>
+</form>
