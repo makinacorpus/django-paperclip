@@ -3,7 +3,6 @@ import random
 import string
 from io import BytesIO
 from pathlib import Path
-from django.db.models.functions import Now
 
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
@@ -95,18 +94,14 @@ class Attachment(models.Model):
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
 
-    attachment_file = models.FileField(
-        _("File"),
-        blank=True,
-        upload_to=attachment_upload,
-        max_length=512,
-        db_default="",
-        validators=[FileMimetypeValidator()],
-    )
+    attachment_file = models.FileField(_('File'), blank=True,
+                                       upload_to=attachment_upload,
+                                       max_length=512,
+                                       validators=[FileMimetypeValidator()])
     if PAPERCLIP_ENABLE_VIDEO:
-        attachment_video = EmbedVideoField(_('Video URL'), blank=True, default="", db_default="")
+        attachment_video = EmbedVideoField(_('Video URL'), blank=True)
     if PAPERCLIP_ENABLE_LINK:
-        attachment_link = models.URLField(_('Picture URL'), blank=True, default="", db_default="")
+        attachment_link = models.URLField(_('Picture URL'), blank=True)
     filetype = models.ForeignKey(PAPERCLIP_FILETYPE_MODEL, verbose_name=_('File type'), on_delete=models.CASCADE)
 
     creator = models.ForeignKey(settings.AUTH_USER_MODEL,
@@ -118,26 +113,25 @@ class Attachment(models.Model):
                                 null=True,
                                 blank=True,
                                 on_delete=models.SET_NULL)
-    author = models.CharField(blank=True, default="", db_default="", max_length=128,
+    author = models.CharField(blank=True, default='', max_length=128,
                               verbose_name=_('Author'),
                               help_text=_("Original creator"))
-    title = models.CharField(blank=True, default='', db_default='', max_length=128,
+    title = models.CharField(blank=True, default='', max_length=128,
                              verbose_name=_("Filename"),
                              help_text=_("Renames the file"))
-    legend = models.CharField(blank=True, default='', db_default='', max_length=128,
+    legend = models.CharField(blank=True, default='', max_length=128,
                               verbose_name=_("Legend"),
                               help_text=_("Details displayed"))
     starred = models.BooleanField(default=False,
-                                  db_default=False,
                                   verbose_name=_("Starred"),
                                   help_text=_("Mark as starred"))
-    is_image = models.BooleanField(editable=False, default=False, db_default=False, verbose_name=_("Is image"),
+    is_image = models.BooleanField(editable=False, default=False, verbose_name=_("Is image"),
                                    help_text=_("Is an image file"), db_index=True)
     date_insert = models.DateTimeField(editable=False, auto_now_add=True,
-                                       verbose_name=_("Insertion date"), db_default=Now())
+                                       verbose_name=_("Insertion date"))
     date_update = models.DateTimeField(editable=False, auto_now=True,
-                                       verbose_name=_("Update date"), db_default=Now())
-    random_suffix = models.CharField(null=False, blank=True, default="", db_default="", max_length=128)
+                                       verbose_name=_("Update date"))
+    random_suffix = models.CharField(null=False, blank=True, default='', max_length=128)
 
     def save(self, *args, **kwargs):
         force_refresh_suffix = kwargs.pop("force_refresh_suffix", False)

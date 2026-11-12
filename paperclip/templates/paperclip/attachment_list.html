@@ -1,8 +1,5 @@
 {% load i18n attachments_tags thumbnail static %}
-{% get_template_pack as template_pack %}
-{% if template_pack == "bootstrap4" %}
-    {% include "paperclip/bootstrap4/attachment_list.html" %}
-{% else %}
+
 <div class="file-attachment file-attachment-detail">
     <h3>{% trans "Attached files" %}</h3>
     {% block info_list_attachments %}
@@ -40,4 +37,3 @@
      data-confirm-delete-close-button="{% trans "Cancel" %}"
      data-confirm-delete-confirm-button="{% trans "Delete" %}"></div>
 <script type="text/javascript" src="{% static "paperclip/paperclip.js" %}"></script>
-{% endif %}
