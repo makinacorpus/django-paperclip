@@ -32,6 +32,11 @@ PAPERCLIP_MAX_BYTES_SIZE_IMAGE = getattr(
 PAPERCLIP_RESIZE_ATTACHMENTS_ON_UPLOAD = getattr(
     settings, "PAPERCLIP_RESIZE_ATTACHMENTS_ON_UPLOAD", False
 )
+PAPERCLIP_TEMPLATE_PACK = getattr(settings, 'PAPERCLIP_TEMPLATE_PACK', None)
+
+
+def get_template_pack():
+    return PAPERCLIP_TEMPLATE_PACK or getattr(settings, 'PAPERCLIP_TEMPLATE_PACK', None)
 
 
 def get_filetype_model():
