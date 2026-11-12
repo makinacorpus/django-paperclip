@@ -114,6 +114,43 @@ class AttachmentForm(forms.ModelForm):
                 "update_attachment", kwargs={"attachment_pk": self.instance.pk}
             )
 
+        if settings.get_template_pack() == 'bootstrap4':
+            from crispy_forms.bootstrap import FormActions
+            from crispy_forms.helper import FormHelper
+            from crispy_forms.layout import Button, Submit
+
+            self.helper = FormHelper(form=self)
+            self.helper.template_pack = 'bootstrap4'
+            self.helper.form_tag = True
+            self.helper.form_class = 'attachment form-horizontal'
+            self.helper.help_text_inline = True
+            self.helper.form_style = 'default'
+            self.helper.label_class = 'col-md-3'
+            self.helper.field_class = 'col-md-9'
+
+            if self.is_creation:
+                form_actions = [
+                    Submit(
+                        'submit_attachment',
+                        _('Submit attachment'),
+                        css_class='btn-primary',
+                    )
+                ]
+            else:
+                form_actions = [
+                    Button('cancel', _('Cancel'), css_class='btn-secondary'),
+                    Submit(
+                        'submit_attachment',
+                        _('Update attachment'),
+                        css_class='btn-primary',
+                    ),
+                ]
+
+            self.helper.form_action = self.form_url
+            self.helper.layout.fields.append(
+                FormActions(*form_actions, css_class='form-actions')
+            )
+
     def clean(self):
         cleaned_data = super().clean()
         if settings.PAPERCLIP_ENABLE_VIDEO or settings.PAPERCLIP_ENABLE_LINK:

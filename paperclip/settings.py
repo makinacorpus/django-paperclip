@@ -36,7 +36,13 @@ PAPERCLIP_TEMPLATE_PACK = getattr(settings, 'PAPERCLIP_TEMPLATE_PACK', None)
 
 
 def get_template_pack():
-    return PAPERCLIP_TEMPLATE_PACK or getattr(settings, 'PAPERCLIP_TEMPLATE_PACK', None)
+    template_pack = PAPERCLIP_TEMPLATE_PACK or getattr(settings, 'PAPERCLIP_TEMPLATE_PACK', None)
+    if template_pack == 'bootstrap4':
+        if not hasattr(settings, 'CRISPY_ALLOWED_TEMPLATE_PACKS'):
+            setattr(settings, 'CRISPY_ALLOWED_TEMPLATE_PACKS', ('bootstrap4',))
+        if not hasattr(settings, 'CRISPY_TEMPLATE_PACK'):
+            setattr(settings, 'CRISPY_TEMPLATE_PACK', 'bootstrap4')
+    return template_pack
 
 
 def get_filetype_model():

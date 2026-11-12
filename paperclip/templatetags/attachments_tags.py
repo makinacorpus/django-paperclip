@@ -61,28 +61,6 @@ def get_template_pack():
     return settings.get_template_pack()
 
 
-@register.filter
-def bs4_field(field):
-    widget = field.field.widget
-    attrs = widget.attrs.copy()
-    css_classes = attrs.get('class', '').split()
-    if field.widget_type == 'file':
-        bs_class = 'form-control-file'
-    elif field.widget_type in ('radioselect', 'checkbox'):
-        bs_class = 'form-check-input'
-    else:
-        bs_class = 'form-control'
-    if bs_class not in css_classes:
-        css_classes.append(bs_class)
-    if field.errors and 'is-invalid' not in css_classes:
-        css_classes.append('is-invalid')
-    attrs['class'] = ' '.join(css_classes)
-    if field.widget_type == 'radioselect':
-        widget.attrs['class'] = attrs['class']
-        return field
-    return field.as_widget(attrs=attrs)
-
-
 @register.inclusion_tag(DynamicTemplateName(), takes_context=True)
 def attachment_form(context, obj, form=None):
     """
