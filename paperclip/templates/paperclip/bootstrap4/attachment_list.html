@@ -12,22 +12,22 @@
                 {% include "paperclip/bootstrap4/_attachment_table.html" %}
             {% endblock inclusion_attachment_table %}
         {% else %}
+            <div class="alert alert-info">
             {% trans "No file attached" %}
+            </div>
         {% endif %}
 
     {% else %}
+        <div class="alert alert-danger">
         {% trans "You are not allowed to see attachments." %}
+        </div>
     {% endif %}
 </div>
 
 {% block permissions_add_attachment %}
     {% if perms|add_attachment %}
-    <div class="file-attachment-form">
-        <div class="create">
         {% attachment_form object %}
-        </div>
         <div class="update"></div>
-    </div>
     {% endif %}
 {% endblock permissions_add_attachment %}
 
