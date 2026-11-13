@@ -44,11 +44,11 @@
         <td>{{ att.date_update }}</td>
         {% block extra_column_data %}{% endblock %}
         {% block actions_attachment_data %}
-            <td>
+            <td class="text-nowrap">
             {% block star_attachment %}
                 {% if perms|change_attachment %}
                 <a href="#"
-                   class="btn btn-sm btn-link p-0 {{ att.starred|yesno:"unstar,star" }}"
+                   class="btn btn-sm btn-link p-0 mr-1 {{ att.starred|yesno:"unstar,star" }}"
                    data-star-url="{% url 'star_attachment' att.pk %}"
                    title="{% if att.starred %}{% trans "Remove star" %}{% else %}{% trans "Star item" %}{% endif %}">
                    <img src="{% get_static_prefix %}paperclip/star-{{ att.starred|yesno:"on,off" }}.svg"/>
@@ -57,26 +57,37 @@
                     <img src="{% get_static_prefix %}paperclip/star-{{ att.starred|yesno:"on,off" }}.svg"/>
                 {% endif %}
             {% endblock star_attachment %}
-            {% block change_attachment %}
-                {% if perms|change_attachment %}
-                    &nbsp;
-                    <a href="#"
-                       class="btn btn-sm btn-outline-primary update-action"
-                       data-update-url="{% url 'update_attachment' att.pk %}?next={{ attachment_form_next|urlencode }}">
-                        {% trans "Update" %}
-                    </a>
-                {% endif %}
-            {% endblock change_attachment %}
-            {% block delete_attachment %}
-                {% if perms|delete_attachment %}
-                    &nbsp;
-                    <a href="#"
-                       class="btn btn-sm btn-outline-danger delete-action"
-                       data-delete-url="{% url 'delete_attachment' att.pk %}?next={{ attachment_form_next|urlencode }}">
-                       {% trans "Delete" %}
-                    </a>
-                {% endif %}
-            {% endblock delete_attachment %}
+            {% if perms|change_attachment or perms|delete_attachment %}
+                <div class="btn-group" role="group">
+                    <button type="button"
+                            class="btn btn-sm btn-outline-secondary dropdown-toggle"
+                            data-toggle="dropdown"
+                            aria-haspopup="true"
+                            aria-expanded="false">
+                        {% trans "Actions" %}
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        {% block change_attachment %}
+                            {% if perms|change_attachment %}
+                                <a href="#"
+                                   class="dropdown-item update-action"
+                                   data-update-url="{% url 'update_attachment' att.pk %}?next={{ attachment_form_next|urlencode }}">
+                                    {% trans "Update" %}
+                                </a>
+                            {% endif %}
+                        {% endblock change_attachment %}
+                        {% block delete_attachment %}
+                            {% if perms|delete_attachment %}
+                                <a href="#"
+                                   class="dropdown-item text-danger delete-action"
+                                   data-delete-url="{% url 'delete_attachment' att.pk %}?next={{ attachment_form_next|urlencode }}">
+                                    {% trans "Delete" %}
+                                </a>
+                            {% endif %}
+                        {% endblock delete_attachment %}
+                    </div>
+                </div>
+            {% endif %}
             </td>
         {% endblock actions_attachment_data %}
     </tr>
