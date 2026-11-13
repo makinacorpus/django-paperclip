@@ -3,52 +3,52 @@ import mimetypes
 from django.template import Library, Node, Variable
 from django.utils.translation import gettext_lazy as _
 
-from paperclip.forms import AttachmentForm
 from paperclip import settings
+from paperclip.forms import AttachmentForm
 
 register = Library()
 
 
 @register.filter
 def read_attachment(perms):
-    perm = settings.get_attachment_permission('read_attachment')
+    perm = settings.get_attachment_permission("read_attachment")
     return perm in perms
 
 
 @register.filter
 def add_attachment(perms):
-    perm = settings.get_attachment_permission('add_attachment')
+    perm = settings.get_attachment_permission("add_attachment")
     return perm in perms
 
 
 @register.filter
 def delete_attachment(perms):
-    perm = settings.get_attachment_permission('delete_attachment')
+    perm = settings.get_attachment_permission("delete_attachment")
     return perm in perms
 
 
 @register.filter
 def change_attachment(perms):
-    perm = settings.get_attachment_permission('change_attachment')
+    perm = settings.get_attachment_permission("change_attachment")
     return perm in perms
 
 
 @register.filter
 def delete_attachment_others(perms):
-    perm = settings.get_attachment_permission('delete_attachment_others')
+    perm = settings.get_attachment_permission("delete_attachment_others")
     return perm in perms
 
 
 @register.filter
 def icon_name(value):
     mimetype = value.mimetype
-    if not mimetype or mimetype == ('application', 'octet-stream'):
-        return 'bin'
+    if not mimetype or mimetype == ("application", "octet-stream"):
+        return "bin"
     ext = mimetypes.guess_extension(mimetype)
-    return ext[1:] if ext else 'bin'
+    return ext[1:] if ext else "bin"
 
 
-@register.inclusion_tag('paperclip/_attachment_form.html', takes_context=True)
+@register.inclusion_tag("paperclip/_attachment_form.html", takes_context=True)
 def attachment_form(context, obj, form=None):
     """
     Renders a "upload attachment" form. `obj` argument is required and
@@ -60,18 +60,18 @@ def attachment_form(context, obj, form=None):
     """
     # Unbound form by default (this is why a template tag is used!)
     if form is None:
-        request = context['request']
-        next_url = context['attachment_form_next']
-        form_class = context.get('attachment_form_class', AttachmentForm)
+        request = context["request"]
+        next_url = context["attachment_form_next"]
+        form_class = context.get("attachment_form_class", AttachmentForm)
         form = form_class(request, object=obj, next_url=next_url)
 
     form_title = _("New file attachment")
     if form.instance.pk:
-        form_title = "%s %s" % (_("Update"), form.instance.filename)
+        form_title = "{} {}".format(_("Update"), form.instance.filename)
 
     return {
-        'attachment_form': form,
-        'form_title': form_title,
+        "attachment_form": form,
+        "form_title": form_title,
     }
 
 
@@ -97,14 +97,16 @@ class AttachmentsForObjectNode(Node):
             file_type = None
 
         if file_type:
-            method = 'attachments_for_object_only_type'
+            method = "attachments_for_object_only_type"
             args = [obj, file_type]
         else:
-            method = 'attachments_for_object'
+            method = "attachments_for_object"
             args = [obj]
 
-        context[var_name] = getattr(settings.get_attachment_model().objects, method)(*args)
-        return ''
+        context[var_name] = getattr(settings.get_attachment_model().objects, method)(
+            *args
+        )
+        return ""
 
 
 @register.tag
@@ -125,6 +127,7 @@ def get_attachments_for(parser, token):
         {% get_attachments_for obj as "my_attachments" %}
 
     """
+
     def next_bit_for(bits, key, if_none=None):
         try:
             return bits[bits.index(key) + 1]
@@ -133,8 +136,8 @@ def get_attachments_for(parser, token):
 
     bits = token.contents.split()
     args = {
-        'obj': next_bit_for(bits, 'get_attachments_for'),
-        'var_name': next_bit_for(bits, 'as', '"attachments"'),
-        'file_type': next_bit_for(bits, 'only_type'),
+        "obj": next_bit_for(bits, "get_attachments_for"),
+        "var_name": next_bit_for(bits, "as", '"attachments"'),
+        "file_type": next_bit_for(bits, "only_type"),
     }
     return AttachmentsForObjectNode(**args)

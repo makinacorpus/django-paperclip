@@ -27,14 +27,14 @@ jobs:
 
       - name: Compile messages
         run: |
-          pip install django setuptools wheel -U
+          pip install django build -U
           sudo apt-get -qq update
           sudo apt-get -y install gettext
           django-admin compilemessages
 
       - name: Build package
         run: |
-          python setup.py sdist bdist_wheel
+          python -m build
 
       - name: Publish package distributions to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1

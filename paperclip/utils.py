@@ -10,4 +10,4 @@ def mimetype(attachment_file):
 
 
 def is_an_image(mimetype):
-    return False if not mimetype else mimetype.split('/')[0].startswith('image')
+    return False if not mimetype else mimetype.split("/")[0].startswith("image")

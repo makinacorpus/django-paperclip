@@ -1,5 +1,14 @@
 from django.db import models
-from paperclip.models import FileType as BaseFileType, License as BaseLicense, Attachment as BaseAttachment
+
+from paperclip.models import (
+    Attachment as BaseAttachment,
+)
+from paperclip.models import (
+    FileType as BaseFileType,
+)
+from paperclip.models import (
+    License as BaseLicense,
+)
 
 
 class TestObject(models.Model):
