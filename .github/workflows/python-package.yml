@@ -44,5 +44,5 @@ jobs:
         coverage xml -o coverage.xml
 
     - name: Coverage upload
-      uses: codecov/codecov-action@v4
+      uses: codecov/codecov-action@v7
 
