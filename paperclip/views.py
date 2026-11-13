@@ -9,7 +9,6 @@ from django.http import (Http404, HttpResponse, HttpResponseRedirect,
                          JsonResponse)
 from django.shortcuts import get_object_or_404
 from django.template import RequestContext, Template
-from django.utils.encoding import force_str
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_http_methods, require_POST
 
