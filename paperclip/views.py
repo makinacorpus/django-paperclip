@@ -60,7 +60,7 @@ def _handle_attachment_form(request, obj, form, change_msg, success_msg,
     if form.is_valid():
         attachment = form.save(request, obj)
         if settings.PAPERCLIP_ACTION_HISTORY_ENABLED:
-            LogEntry.objects.log_action(
+            LogEntry.objects.log_actions(
                 user_id=request.user.pk,
                 content_type_id=attachment.content_type.id,
                 object_id=obj.pk,
@@ -103,7 +103,7 @@ def delete_attachment(request, attachment_pk):
     if can_delete:
         g.delete()
         if settings.PAPERCLIP_ACTION_HISTORY_ENABLED:
-            LogEntry.objects.log_action(
+            LogEntry.objects.log_actions(
                 user_id=request.user.pk,
                 content_type_id=g.content_type.id,
                 object_id=g.object_id,
@@ -129,7 +129,7 @@ def star_attachment(request, attachment_pk):
     else:
         change_message = _('Unstar attachment %s')
     if settings.PAPERCLIP_ACTION_HISTORY_ENABLED:
-        LogEntry.objects.log_action(
+        LogEntry.objects.log_actions(
             user_id=request.user.pk,
             content_type_id=g.content_type.id,
             object_id=g.object_id,
