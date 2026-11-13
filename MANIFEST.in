@@ -1,4 +1,4 @@
-include README.rst CHANGES COPYRIGHT LICENSE
+include README.md CHANGES COPYRIGHT LICENSE
 recursive-include paperclip/locale *.mo
 recursive-include paperclip/templates *.html
 recursive-include paperclip/templatetags *.py

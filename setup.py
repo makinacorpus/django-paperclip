@@ -15,10 +15,10 @@ setup(
     url='https://github.com/makinacorpus/django-paperclip',
     download_url="https://pypi.python.org/pypi/paperclip/",
     description="Attach files to Django models",
-    long_description=open(os.path.join(here, 'README.rst')).read() + '\n\n' +
-                     open(os.path.join(here, 'CHANGES')).read(),
+    long_description=open(os.path.join(here, 'README.md')).read() + '\n\n' +
+                     open(os.path.join(here, 'CHANGES.md')).read(),
+    long_description_content_type='text/markdown',
     license='LPGL, see LICENSE file.',
-    python_requires='>=3.10',
     install_requires=[
         'Django',
         'pillow',
@@ -49,10 +49,8 @@ setup(
         'Programming Language :: Python :: 3.12',
         'Programming Language :: Python :: 3.13',
         'Framework :: Django',
-        'Framework :: Django :: 4.2',
-        'Framework :: Django :: 5.0',
-        'Framework :: Django :: 5.1',
         'Framework :: Django :: 5.2',
-
+        'Framework :: Django :: 6.0',
+        'Framework :: Django :: 6.1'
     ]
 )

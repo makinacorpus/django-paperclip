@@ -9,7 +9,6 @@ from django.http import (Http404, HttpResponse, HttpResponseRedirect,
                          JsonResponse)
 from django.shortcuts import get_object_or_404
 from django.template import RequestContext, Template
-from django.utils.encoding import force_str
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_http_methods, require_POST
 
@@ -60,12 +59,11 @@ def _handle_attachment_form(request, obj, form, change_msg, success_msg,
     if form.is_valid():
         attachment = form.save(request, obj)
         if settings.PAPERCLIP_ACTION_HISTORY_ENABLED:
-            LogEntry.objects.log_action(
+            LogEntry.objects.log_actions(
                 user_id=request.user.pk,
-                content_type_id=attachment.content_type.id,
-                object_id=obj.pk,
-                object_repr=force_str(obj),
+                queryset=[obj],
                 action_flag=CHANGE,
+                single_object=True,
                 change_message=change_msg % attachment.title,
             )
         messages.success(request, success_msg)
@@ -103,12 +101,11 @@ def delete_attachment(request, attachment_pk):
     if can_delete:
         g.delete()
         if settings.PAPERCLIP_ACTION_HISTORY_ENABLED:
-            LogEntry.objects.log_action(
+            LogEntry.objects.log_actions(
                 user_id=request.user.pk,
-                content_type_id=g.content_type.id,
-                object_id=g.object_id,
-                object_repr=force_str(g.content_object),
+                queryset=[g],
                 action_flag=CHANGE,
+                single_object=True,
                 change_message=_('Remove attachment %s') % g.title,
             )
         messages.success(request, _('Your attachment was deleted.'))
@@ -129,11 +126,9 @@ def star_attachment(request, attachment_pk):
     else:
         change_message = _('Unstar attachment %s')
     if settings.PAPERCLIP_ACTION_HISTORY_ENABLED:
-        LogEntry.objects.log_action(
+        LogEntry.objects.log_actions(
             user_id=request.user.pk,
-            content_type_id=g.content_type.id,
-            object_id=g.object_id,
-            object_repr=force_str(g.content_object),
+            queryset=[g],
             action_flag=CHANGE,
             change_message=change_message % g.title,
         )
