@@ -50,10 +50,10 @@ def icon_name(value):
 
 class DynamicTemplateName:
     def __iter__(self):
-        if settings.get_template_pack() == 'bootstrap4':
-            yield 'paperclip/bootstrap4/_attachment_form.html'
+        if settings.get_template_pack() == "bootstrap4":
+            yield "paperclip/bootstrap4/_attachment_form.html"
         else:
-            yield 'paperclip/_attachment_form.html'
+            yield "paperclip/_attachment_form.html"
 
 
 @register.simple_tag

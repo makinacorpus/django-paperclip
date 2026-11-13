@@ -61,10 +61,14 @@ class ViewTestCase(TestCase):
         self.user.user_permissions.add(perm)
         self.client.login(username="foo_user", password="foo_password")
         response = self.client.get(f"/test_object/{self.pk}/")
-        self.assertTemplateUsed(response, 'paperclip/attachment_list.html')
-        self.assertTemplateUsed(response, 'paperclip/_attachment_table.html')
-        self.assertTemplateNotUsed(response, 'paperclip/bootstrap4/attachment_list.html')
-        self.assertTemplateNotUsed(response, 'paperclip/bootstrap4/_attachment_table.html')
+        self.assertTemplateUsed(response, "paperclip/attachment_list.html")
+        self.assertTemplateUsed(response, "paperclip/_attachment_table.html")
+        self.assertTemplateNotUsed(
+            response, "paperclip/bootstrap4/attachment_list.html"
+        )
+        self.assertTemplateNotUsed(
+            response, "paperclip/bootstrap4/_attachment_table.html"
+        )
         self.assertContains(response, "Attached files")
         self.assertContains(response, "foo title")
         self.assertContains(response, "foo-title")
@@ -73,18 +77,18 @@ class ViewTestCase(TestCase):
         self.assertContains(response, "foo author")
         self.assertContains(response, "star-on.svg")
 
-    @override_settings(PAPERCLIP_TEMPLATE_PACK='bootstrap4')
+    @override_settings(PAPERCLIP_TEMPLATE_PACK="bootstrap4")
     def test_detail_view_bootstrap4(self):
-        perm_read = Permission.objects.get(codename='read_attachment')
-        perm_add = Permission.objects.get(codename='add_attachment')
-        perm_change = Permission.objects.get(codename='change_attachment')
-        perm_delete = Permission.objects.get(codename='delete_attachment')
+        perm_read = Permission.objects.get(codename="read_attachment")
+        perm_add = Permission.objects.get(codename="add_attachment")
+        perm_change = Permission.objects.get(codename="change_attachment")
+        perm_delete = Permission.objects.get(codename="delete_attachment")
         self.user.user_permissions.add(perm_read, perm_add, perm_change, perm_delete)
         self.client.login(username="foo_user", password="foo_password")
-        response = self.client.get('/test_object/{pk}/'.format(pk=self.pk))
-        self.assertTemplateUsed(response, 'paperclip/bootstrap4/attachment_list.html')
-        self.assertTemplateUsed(response, 'paperclip/bootstrap4/_attachment_table.html')
-        self.assertTemplateUsed(response, 'paperclip/bootstrap4/_attachment_form.html')
+        response = self.client.get(f"/test_object/{self.pk}/")
+        self.assertTemplateUsed(response, "paperclip/bootstrap4/attachment_list.html")
+        self.assertTemplateUsed(response, "paperclip/bootstrap4/_attachment_table.html")
+        self.assertTemplateUsed(response, "paperclip/bootstrap4/_attachment_form.html")
         self.assertContains(response, "table-striped")
         self.assertContains(response, "btn-outline-primary")
         self.assertContains(response, "btn-outline-danger")
@@ -95,8 +99,10 @@ class ViewTestCase(TestCase):
         self.assertContains(response, "custom-file-input")
         self.assertContains(response, "custom-control-input")
         self.assertContains(response, "btn-primary")
-        response_update = self.client.get('/paperclip/update/{pk}/'.format(pk=self.attachment.pk))
-        self.assertTemplateUsed(response_update, 'paperclip/bootstrap4/_attachment_form.html')
+        response_update = self.client.get(f"/paperclip/update/{self.attachment.pk}/")
+        self.assertTemplateUsed(
+            response_update, "paperclip/bootstrap4/_attachment_form.html"
+        )
         self.assertContains(response_update, "card card-body")
         self.assertContains(response_update, "btn-secondary")
 

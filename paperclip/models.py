@@ -3,7 +3,6 @@ import random
 import string
 from io import BytesIO
 from pathlib import Path
-from django.db.models.functions import Now
 
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
@@ -109,9 +108,13 @@ class Attachment(models.Model):
         validators=[FileMimetypeValidator()],
     )
     if PAPERCLIP_ENABLE_VIDEO:
-        attachment_video = EmbedVideoField(_("Video URL"), blank=True, default="", db_default="")
+        attachment_video = EmbedVideoField(
+            _("Video URL"), blank=True, default="", db_default=""
+        )
     if PAPERCLIP_ENABLE_LINK:
-        attachment_link = models.URLField(_("Picture URL"), blank=True, default="", db_default="")
+        attachment_link = models.URLField(
+            _("Picture URL"), blank=True, default="", db_default=""
+        )
     filetype = models.ForeignKey(
         PAPERCLIP_FILETYPE_MODEL, verbose_name=_("File type"), on_delete=models.CASCADE
     )
