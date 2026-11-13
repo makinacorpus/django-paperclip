@@ -1,4 +1,5 @@
 from django.contrib.contenttypes.admin import GenericStackedInline
+
 from paperclip import settings
 
 
