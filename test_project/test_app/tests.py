@@ -90,10 +90,11 @@ class ViewTestCase(TestCase):
         self.assertTemplateUsed(response, "paperclip/bootstrap4/_attachment_table.html")
         self.assertTemplateUsed(response, "paperclip/bootstrap4/_attachment_form.html")
         self.assertContains(response, "table-striped")
-        self.assertContains(response, "btn-outline-primary")
-        self.assertContains(response, "btn-outline-danger")
+        self.assertContains(response, "btn-outline-secondary")
+        self.assertContains(response, "dropdown-menu")
+        self.assertContains(response, "dropdown-item update-action")
+        self.assertContains(response, "dropdown-item text-danger delete-action")
         self.assertContains(response, "card card-body")
-        self.assertContains(response, "card-title")
         self.assertContains(response, "form-group row")
         self.assertContains(response, "form-control")
         self.assertContains(response, "custom-file-input")
@@ -147,7 +148,10 @@ class ViewTestCase(TestCase):
             str(attachment),
         )
         response = self.client.get(f"/paperclip/update/{self.attachment.pk}/")
-        self.assertContains(response, b"Update foo-title")
+        self.assertContains(response, b"Update attachment")
+        self.assertContains(
+            response, f'action="/paperclip/update/{self.attachment.pk}/"'
+        )
 
     def test_update_view_deleted_file(self):
         perm = Permission.objects.get(codename="change_attachment")
