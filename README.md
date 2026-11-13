@@ -140,6 +140,7 @@ ALTER TABLE paperclip_attachment ADD COLUMN attachment_video VARCHAR(200) NOT NU
 | `PAPERCLIP_ALLOWED_EXTENSIONS` | `None` | List/iterable of allowed lowercase file extensions without leading dots (e.g. `['pdf', 'jpg', 'png']`). When set, file extension and actual MIME type (via `python-magic`) are validated. |
 | `PAPERCLIP_EXTRA_ALLOWED_MIMETYPES` | `{}` | Mapping of extension to additional allowed MIME types (e.g. `{'geojson': ['application/json']}`). |
 | `PAPERCLIP_RANDOM_SUFFIX_SIZE` | `12` | Length of the random alphanumeric suffix appended to stored filenames. |
+| `PAPERCLIP_TEMPLATE_PACK` | `None` | Template pack to use for rendering attachments. Set to `'bootstrap4'` to use the built-in Bootstrap 4 templates and `django-crispy-forms` layout. |
 
 ---
 
@@ -162,6 +163,35 @@ Three templates are embedded and can easily be overridden in your project:
 - `paperclip/attachment_list.html` — Renders the attached files table and the upload form using the two partials below.
 - `paperclip/_attachment_table.html` — Renders the table of attached files for an object. You can add extra columns using `{% block extra_column_header %}` and `{% block extra_column_data %}`.
 - `paperclip/_attachment_form.html` — Renders the upload/edit attachment form.
+
+### Bootstrap 4 Template Pack
+
+Built-in Bootstrap 4 templates are also provided under `paperclip/bootstrap4/`:
+
+- `paperclip/bootstrap4/attachment_list.html`
+- `paperclip/bootstrap4/_attachment_table.html`
+- `paperclip/bootstrap4/_attachment_form.html`
+
+To enable them:
+
+1. Install `django-crispy-forms` and `crispy-bootstrap4`, and add them to `INSTALLED_APPS`:
+
+   ```python
+   INSTALLED_APPS = [
+       # ...
+       'crispy_forms',
+       'crispy_bootstrap4',
+       'paperclip',
+   ]
+   ```
+
+2. Set `PAPERCLIP_TEMPLATE_PACK` in `settings.py`:
+
+   ```python
+   PAPERCLIP_TEMPLATE_PACK = 'bootstrap4'
+   ```
+
+When `PAPERCLIP_TEMPLATE_PACK = 'bootstrap4'` is set, `AttachmentForm` is automatically configured with a Bootstrap 4 `FormHelper` (horizontal form with `FormActions`), and `CRISPY_ALLOWED_TEMPLATE_PACKS` / `CRISPY_TEMPLATE_PACK` default to `'bootstrap4'` if not already defined.
 
 ---
 
@@ -207,6 +237,14 @@ context['attachment_form_class'] = MyAttachmentForm
 ```django
 {# template #}
 {% attachment_form object %}
+```
+
+### `get_template_pack`
+
+Returns the configured `PAPERCLIP_TEMPLATE_PACK` value (e.g. `'bootstrap4'` or `None`).
+
+```django
+{% get_template_pack as template_pack %}
 ```
 
 ### Filters
