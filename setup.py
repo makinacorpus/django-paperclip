@@ -16,7 +16,7 @@ setup(
     download_url="https://pypi.python.org/pypi/paperclip/",
     description="Attach files to Django models",
     long_description=open(os.path.join(here, 'README.md')).read() + '\n\n' +
-                     open(os.path.join(here, 'CHANGES')).read(),
+                     open(os.path.join(here, 'CHANGES.md')).read(),
     long_description_content_type='text/markdown',
     license='LPGL, see LICENSE file.',
     install_requires=[
