@@ -39,7 +39,7 @@ jobs:
     - name: Test with coverage
       run: |
         coverage run ./manage.py test
-        covergae xml -o coverage.xml
+        coverage xml -o coverage.xml
 
     - name: Coverage upload
       uses: codecov/codecov-action@v4
