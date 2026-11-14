@@ -1,11 +1,10 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
 
-from django.db import migrations, models
+import django
 import embed_video.fields
 from django.conf import settings
+from django.db import migrations, models
+
 import paperclip.models
-import django
 
 
 class Migration(migrations.Migration):

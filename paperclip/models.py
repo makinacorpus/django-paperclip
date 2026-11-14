@@ -104,12 +104,17 @@ class Attachment(models.Model):
         blank=True,
         upload_to=attachment_upload,
         max_length=512,
+        db_default="",
         validators=[FileMimetypeValidator()],
     )
     if PAPERCLIP_ENABLE_VIDEO:
-        attachment_video = EmbedVideoField(_("Video URL"), blank=True)
+        attachment_video = EmbedVideoField(
+            _("Video URL"), blank=True, default="", db_default=""
+        )
     if PAPERCLIP_ENABLE_LINK:
-        attachment_link = models.URLField(_("Picture URL"), blank=True)
+        attachment_link = models.URLField(
+            _("Picture URL"), blank=True, default="", db_default=""
+        )
     filetype = models.ForeignKey(
         PAPERCLIP_FILETYPE_MODEL, verbose_name=_("File type"), on_delete=models.CASCADE
     )

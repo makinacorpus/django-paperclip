@@ -7,3 +7,6 @@
 /env/
 /build/
 /.ruff_cache/
+/.venv/
+/.codex/
+/skills/

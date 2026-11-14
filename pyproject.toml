@@ -36,6 +36,8 @@ dependencies = [
     "easy-thumbnails",
     "django-embed-video",
     "python-magic",
+    "django-crispy-forms",
+    "crispy-bootstrap4",
 ]
 
 [project.optional-dependencies]
@@ -57,8 +59,6 @@ include = ["paperclip*"]
 [tool.ruff]
 target-version = "py311"
 exclude = [
-    "paperclip/migrations",
-    "test_project/test_app/migrations",
 ]
 
 [tool.ruff.lint]

@@ -48,7 +48,20 @@ def icon_name(value):
     return ext[1:] if ext else "bin"
 
 
-@register.inclusion_tag("paperclip/_attachment_form.html", takes_context=True)
+class DynamicTemplateName:
+    def __iter__(self):
+        if settings.get_template_pack() == "bootstrap4":
+            yield "paperclip/bootstrap4/_attachment_form.html"
+        else:
+            yield "paperclip/_attachment_form.html"
+
+
+@register.simple_tag
+def get_template_pack():
+    return settings.get_template_pack()
+
+
+@register.inclusion_tag(DynamicTemplateName(), takes_context=True)
 def attachment_form(context, obj, form=None):
     """
     Renders a "upload attachment" form. `obj` argument is required and
